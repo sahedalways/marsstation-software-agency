@@ -47,7 +47,7 @@ export default function IUSPage() {
             const total = document.documentElement.scrollHeight - window.innerHeight;
             scrollRef.current = clamp(window.scrollY / total, 0, 1);
 
-            const y = window.scrollY + window.innerHeight * 0.7;
+            const y = window.scrollY + window.innerHeight * 0.3;
             const servicesTop = servicesRef.current?.offsetTop ?? 0;
             const contactTop = contactRef.current?.offsetTop ?? 0;
 
