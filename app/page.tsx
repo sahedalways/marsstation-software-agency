@@ -27,13 +27,7 @@ export default function IUSPage() {
     const [cardsIn, setCardsIn] = useState(false);
 
     useEffect(() => {
-        if (phase === 'services') {
-            setCardsIn(false);
-            const id = setTimeout(() => setCardsIn(true), 100);
-            return () => clearTimeout(id);
-        } else {
-            setCardsIn(false);
-        }
+        setCardsIn(phase === 'services');
     }, [phase]);
 
     useEffect(() => {
@@ -49,7 +43,7 @@ export default function IUSPage() {
             const p = clamp(window.scrollY / total, 0, 1);
             scrollRef.current = p;
 
-            const y = window.scrollY + window.innerHeight / 2;
+            const y = window.scrollY + window.innerHeight * 0.6;
             const heroTop = heroRef.current?.offsetTop ?? 0;
             const servicesTop = servicesRef.current?.offsetTop ?? 0;
             const contactTop = contactRef.current?.offsetTop ?? 0;
