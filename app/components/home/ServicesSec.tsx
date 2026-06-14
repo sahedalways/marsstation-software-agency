@@ -171,7 +171,7 @@ export function ServicesSec({ cardsIn, mob }: Props) {
                 >
                     <h2
                         style={{
-                            fontSize: mob ? 'clamp(18px, 4.5vw, 24px)' : 'clamp(28px, 3.4vw, 44px)',
+                            fontSize: mob ? 'clamp(16px, 4.5vw, 22px)' : 'clamp(20px, 2.6vw, 34px)',
                             fontWeight: 300,
                             lineHeight: 1.25,
                             color: '#fff',

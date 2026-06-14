@@ -1,6 +1,8 @@
 // components/common/Footer.tsx
 'use client';
 
+import Link from 'next/link';
+
 interface FooterProps {
     mob: boolean;
 }
@@ -62,16 +64,36 @@ export function Footer({ mob }: FooterProps) {
                 }}
             >
                 {/* Logo */}
-                <div
-                    style={{
-                        fontSize: mob ? '18px' : '22px',
-                        fontWeight: 700,
-                        color: '#fff',
-                        letterSpacing: '0.02em',
-                    }}
-                >
-                    {appName}
-                </div>
+                <Link href="/" style={{ textDecoration: 'none' }}>
+                    <div
+                        style={{
+                            fontSize: mob ? '18px' : '22px',
+                            fontWeight: 700,
+                            color: '#fff',
+                            letterSpacing: '0.02em',
+                            cursor: 'pointer',
+                            padding: '6px 12px',
+                            borderRadius: '10px',
+                            display: 'inline-block',
+                            transition: 'all 0.25s ease',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.background =
+                                'linear-gradient(135deg, rgba(90,40,184,0.25), rgba(255,255,255,0.05))';
+                            e.currentTarget.style.backdropFilter = 'blur(10px)';
+                            e.currentTarget.style.boxShadow = '0 0 25px rgba(90,40,184,0.4)';
+                            e.currentTarget.style.transform = 'translateY(-1px)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'transparent';
+                            e.currentTarget.style.backdropFilter = 'none';
+                            e.currentTarget.style.boxShadow = 'none';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                        }}
+                    >
+                        {appName}
+                    </div>
+                </Link>
 
                 {/* Divider */}
                 <div
