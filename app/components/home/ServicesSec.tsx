@@ -1,153 +1,89 @@
 'use client';
+import { useEffect, useRef } from 'react';
 
-import { useEffect, useRef, useState } from 'react';
-
-interface ServicesSectionProps {
-    phase: string;
-    mob: boolean;
+interface Props {
     cardsIn: boolean;
+    mob: boolean;
 }
 
-export function ServicesSec({ phase, mob, cardsIn }: ServicesSectionProps) {
-    const canvasRef = useRef<HTMLCanvasElement>(null);
+export function ServicesSec({ cardsIn, mob }: Props) {
     const globeCanvasRef = useRef<HTMLCanvasElement>(null);
-    const [globeIn, setGlobeIn] = useState(false);
 
-    // Globe drop-in trigger
     useEffect(() => {
-        if (phase === 'services') {
-            setGlobeIn(false);
-            const id = setTimeout(() => setGlobeIn(true), 50);
-            return () => clearTimeout(id);
-        } else {
-            setGlobeIn(false);
-        }
-    }, [phase]);
-
-    // 🌐 Wireframe Globe Canvas
-    useEffect(() => {
-        if (phase !== 'services') return;
-
+        if (!cardsIn) return;
         const canvas = globeCanvasRef.current;
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
-
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        let raf = 0;
-        let rotation = 0;
-
+        let raf = 0,
+            rotation = 0;
         const size = mob ? 280 : 560;
-
-        const resize = () => {
-            canvas.width = Math.floor(size * dpr);
-            canvas.height = Math.floor(size * dpr);
-            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        };
-
-        // 3D point → 2D projection
+        canvas.width = Math.floor(size * dpr);
+        canvas.height = Math.floor(size * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         const project = (x: number, y: number, z: number, cx: number, cy: number) => {
-            const perspective = 500;
-            const scale = perspective / (perspective + z);
-            return {
-                x: cx + x * scale,
-                y: cy + y * scale,
-                scale,
-                z,
-            };
+            const s = 500 / (500 + z);
+            return { x: cx + x * s, y: cy + y * s };
         };
-
         const drawGlobe = () => {
             ctx.clearRect(0, 0, size, size);
-
-            const cx = size / 2;
-            const cy = size / 2;
-            const radius = size * 0.42;
-
-            // Slight tilt (like image)
-            const tiltX = -0.35;
-
-            // ===== Latitudes (horizontal rings) =====
-            const latCount = 8;
-            for (let i = 1; i < latCount; i++) {
-                const lat = (i / latCount) * Math.PI - Math.PI / 2;
-                const ringRadius = Math.cos(lat) * radius;
-                const ringY = Math.sin(lat) * radius;
-
+            const cx = size / 2,
+                cy = size / 2,
+                radius = size * 0.42,
+                tiltX = -0.35;
+            for (let i = 1; i < 8; i++) {
+                const lat = (i / 8) * Math.PI - Math.PI / 2;
+                const rr = Math.cos(lat) * radius,
+                    ry = Math.sin(lat) * radius;
                 ctx.beginPath();
-                const segments = 80;
-                for (let j = 0; j <= segments; j++) {
-                    const angle = (j / segments) * Math.PI * 2;
-                    let x = Math.cos(angle) * ringRadius;
-                    let y = ringY;
-                    let z = Math.sin(angle) * ringRadius;
-
-                    // Apply X tilt
+                for (let j = 0; j <= 80; j++) {
+                    const a = (j / 80) * Math.PI * 2;
+                    let x = Math.cos(a) * rr,
+                        y = ry,
+                        z = Math.sin(a) * rr;
                     const y2 = y * Math.cos(tiltX) - z * Math.sin(tiltX);
                     const z2 = y * Math.sin(tiltX) + z * Math.cos(tiltX);
-
                     const p = project(x, y2, z2, cx, cy);
-
-                    // Visibility based on z (back side fade)
-                    const alpha = z2 > 0 ? 0.15 : 0.55;
-                    ctx.strokeStyle = `rgba(180, 130, 255, ${alpha})`;
-
                     if (j === 0) ctx.moveTo(p.x, p.y);
                     else ctx.lineTo(p.x, p.y);
                 }
                 ctx.lineWidth = 0.8;
-                ctx.strokeStyle = 'rgba(180, 130, 255, 0.4)';
+                ctx.strokeStyle = 'rgba(180,130,255,0.4)';
                 ctx.stroke();
             }
-
-            // ===== Longitudes (vertical rings) — rotating =====
-            const lonCount = 12;
-            for (let i = 0; i < lonCount; i++) {
-                const lon = (i / lonCount) * Math.PI * 2 + rotation;
-
+            for (let i = 0; i < 12; i++) {
+                const lon = (i / 12) * Math.PI * 2 + rotation;
                 ctx.beginPath();
-                const segments = 80;
-                for (let j = 0; j <= segments; j++) {
-                    const lat = (j / segments) * Math.PI - Math.PI / 2;
-                    let x = Math.cos(lat) * Math.cos(lon) * radius;
-                    let y = Math.sin(lat) * radius;
-                    let z = Math.cos(lat) * Math.sin(lon) * radius;
-
-                    // Apply X tilt
+                for (let j = 0; j <= 80; j++) {
+                    const lat = (j / 80) * Math.PI - Math.PI / 2;
+                    let x = Math.cos(lat) * Math.cos(lon) * radius,
+                        y = Math.sin(lat) * radius,
+                        z = Math.cos(lat) * Math.sin(lon) * radius;
                     const y2 = y * Math.cos(tiltX) - z * Math.sin(tiltX);
                     const z2 = y * Math.sin(tiltX) + z * Math.cos(tiltX);
-
                     const p = project(x, y2, z2, cx, cy);
-
                     if (j === 0) ctx.moveTo(p.x, p.y);
                     else ctx.lineTo(p.x, p.y);
                 }
                 ctx.lineWidth = 0.8;
-                ctx.strokeStyle = 'rgba(170, 110, 255, 0.45)';
+                ctx.strokeStyle = 'rgba(170,110,255,0.45)';
                 ctx.stroke();
             }
-
-            // ===== Outer glow ring =====
             ctx.beginPath();
             ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-            ctx.strokeStyle = 'rgba(200, 150, 255, 0.65)';
+            ctx.strokeStyle = 'rgba(200,150,255,0.65)';
             ctx.lineWidth = 1.2;
             ctx.shadowBlur = 18;
-            ctx.shadowColor = 'rgba(140, 80, 240, 0.7)';
+            ctx.shadowColor = 'rgba(140,80,240,0.7)';
             ctx.stroke();
             ctx.shadowBlur = 0;
-
-            rotation += 0.003; // slow rotation
+            rotation += 0.003;
             raf = requestAnimationFrame(drawGlobe);
         };
-
-        resize();
         drawGlobe();
-
-        return () => {
-            cancelAnimationFrame(raf);
-        };
-    }, [phase, mob]);
+        return () => cancelAnimationFrame(raf);
+    }, [cardsIn, mob]);
 
     const cards = [
         {
@@ -179,59 +115,29 @@ export function ServicesSec({ phase, mob, cardsIn }: ServicesSectionProps) {
     return (
         <>
             <style>{`
-                @keyframes flyFromLeft {
-                    from { opacity: 0; translate: -80px 0; }
-                    to   { opacity: 1; translate: 0 0; }
-                }
-                @keyframes flyFromBottom {
-                    from { opacity: 0; translate: 0 80px; }
-                    to   { opacity: 1; translate: 0 0; }
-                }
-                @keyframes flyFromRight {
-                    from { opacity: 0; translate: 80px 0; }
-                    to   { opacity: 1; translate: 0 0; }
-                }
-                @keyframes globeDropIn {
-                    from {
-                        opacity: 0;
-                        transform: translateY(-180px) scale(0.7);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateY(0) scale(1);
-                    }
-                }
-
-                @keyframes paragraphFadeUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(24px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
+                @keyframes fadeUp { from { opacity:0; transform:translateY(40px); } to { opacity:1; transform:translateY(0); } }
+                @keyframes flyLeft { from { opacity:0; translate:-80px 0; } to { opacity:1; translate:0 0; } }
+                @keyframes flyBottom { from { opacity:0; translate:0 80px; } to { opacity:1; translate:0 0; } }
+                @keyframes flyRight { from { opacity:0; translate:80px 0; } to { opacity:1; translate:0 0; } }
+                @keyframes globeDrop { from { opacity:0; transform:translateY(-180px) scale(0.7); } to { opacity:1; transform:translateY(0) scale(1); } }
                 .svc-card-0 { transform: rotate(8deg) translateY(40px); }
                 .svc-card-1 { transform: rotate(-6deg) translateY(0px); }
                 .svc-card-2 { transform: rotate(8deg) translateY(40px); }
             `}</style>
-
             <div
                 style={{
                     position: 'relative',
                     width: '100%',
-                    minHeight: '100vh',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    justifyContent: 'flex-start',
-                    padding: mob ? '48px 16px 40px' : '70px 48px 60px',
-                    zIndex: 10,
+                    padding: mob ? '40px 16px' : '60px 48px',
                     overflow: 'hidden',
+                    opacity: cardsIn ? 1 : 0,
+                    transition: 'opacity 0.01s',
                 }}
             >
-                {/* 🌐 Wireframe Globe (Top Right) */}
+                {/* Globe */}
                 <div
                     style={{
                         position: 'absolute',
@@ -241,22 +147,17 @@ export function ServicesSec({ phase, mob, cardsIn }: ServicesSectionProps) {
                         height: mob ? '280px' : '560px',
                         pointerEvents: 'none',
                         zIndex: 1,
-                        opacity: globeIn ? 1 : 0,
-                        animation: globeIn
-                            ? 'globeDropIn 1.2s cubic-bezier(.22,.68,0,1.2) both'
+                        opacity: cardsIn ? 1 : 0,
+                        animation: cardsIn
+                            ? 'globeDrop 1.2s cubic-bezier(.22,.68,0,1.2) both'
                             : 'none',
                     }}
                 >
                     <canvas
                         ref={globeCanvasRef}
-                        style={{
-                            width: '100%',
-                            height: '100%',
-                            display: 'block',
-                        }}
+                        style={{ width: '100%', height: '100%', display: 'block' }}
                     />
                 </div>
-
                 {/* Heading */}
                 <div
                     style={{
@@ -264,7 +165,6 @@ export function ServicesSec({ phase, mob, cardsIn }: ServicesSectionProps) {
                         maxWidth: '900px',
                         textAlign: 'center',
                         marginBottom: mob ? '14px' : '20px',
-                        position: 'relative',
                         marginTop: mob ? '24px' : '40px',
                         zIndex: 2,
                     }}
@@ -277,11 +177,8 @@ export function ServicesSec({ phase, mob, cardsIn }: ServicesSectionProps) {
                             color: '#fff',
                             letterSpacing: '-0.02em',
                             marginBottom: mob ? '10px' : '16px',
-                            opacity: phase === 'services' ? 1 : 0,
-                            animation:
-                                phase === 'services'
-                                    ? 'paragraphFadeUp 0.75s ease-out 0.25s both'
-                                    : 'none',
+                            opacity: cardsIn ? 1 : 0,
+                            animation: cardsIn ? 'fadeUp 0.75s ease-out 0.15s both' : 'none',
                         }}
                     >
                         Legal support for IT: protecting your
@@ -296,11 +193,8 @@ export function ServicesSec({ phase, mob, cardsIn }: ServicesSectionProps) {
                             maxWidth: mob ? '320px' : '480px',
                             margin: '0 auto',
                             fontWeight: 300,
-                            opacity: phase === 'services' ? 1 : 0,
-                            animation:
-                                phase === 'services'
-                                    ? 'paragraphFadeUp 0.75s ease-out 0.25s both'
-                                    : 'none',
+                            opacity: cardsIn ? 1 : 0,
+                            animation: cardsIn ? 'fadeUp 0.75s ease-out 0.3s both' : 'none',
                         }}
                     >
                         We take into account the specifics of the activities of IT companies and
@@ -308,8 +202,7 @@ export function ServicesSec({ phase, mob, cardsIn }: ServicesSectionProps) {
                         problems.
                     </p>
                 </div>
-
-                {/* Cards Container */}
+                {/* Cards */}
                 <div
                     style={{
                         display: 'flex',
@@ -319,9 +212,8 @@ export function ServicesSec({ phase, mob, cardsIn }: ServicesSectionProps) {
                         width: '100%',
                         maxWidth: '1150px',
                         flexWrap: 'nowrap',
-                        position: 'relative',
                         zIndex: 2,
-                        paddingBottom: mob ? '50px' : '80px',
+                        paddingBottom: mob ? '40px' : '60px',
                         paddingTop: mob ? '12px' : '20px',
                     }}
                 >
@@ -334,10 +226,10 @@ export function ServicesSec({ phase, mob, cardsIn }: ServicesSectionProps) {
                                 height: mob ? '220px' : '370px',
                                 zIndex: c.zIdx,
                                 flexShrink: 0,
+                                opacity: cardsIn ? 1 : 0,
                                 animation: cardsIn
-                                    ? `${['flyFromLeft', 'flyFromBottom', 'flyFromRight'][i]} 1.2s cubic-bezier(.16,1,.3,1) ${['0s', '0.18s', '0.36s'][i]} both`
+                                    ? `${['flyLeft', 'flyBottom', 'flyRight'][i]} 1s cubic-bezier(.16,1,.3,1) ${[0, 0.12, 0.24][i]}s both`
                                     : 'none',
-                                visibility: cardsIn ? 'visible' : 'hidden',
                             }}
                         >
                             <div
@@ -376,7 +268,6 @@ export function ServicesSec({ phase, mob, cardsIn }: ServicesSectionProps) {
                                         }}
                                     />
                                 )}
-
                                 {c.glowPos === 'right' && (
                                     <div
                                         style={{
@@ -393,7 +284,6 @@ export function ServicesSec({ phase, mob, cardsIn }: ServicesSectionProps) {
                                         }}
                                     />
                                 )}
-
                                 {c.glowPos === 'bottom' && (
                                     <div
                                         style={{
@@ -410,7 +300,6 @@ export function ServicesSec({ phase, mob, cardsIn }: ServicesSectionProps) {
                                         }}
                                     />
                                 )}
-
                                 <button
                                     style={{
                                         padding: mob ? '6px 14px' : '8px 18px',
@@ -432,7 +321,6 @@ export function ServicesSec({ phase, mob, cardsIn }: ServicesSectionProps) {
                                 >
                                     {c.btn}
                                 </button>
-
                                 <div style={{ position: 'relative', zIndex: 2 }}>
                                     <h3
                                         style={{

@@ -6,7 +6,7 @@ interface NavbarProps {
 }
 
 export function Navbar({ mob }: NavbarProps) {
-    const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Marsstation';
+    const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Mars Station';
 
     return (
         <nav
