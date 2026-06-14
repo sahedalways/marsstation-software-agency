@@ -709,7 +709,7 @@ export function useCanvasAnimation({
             ctx.clearRect(0, 0, W, H);
             t += 0.016;
             moonRot += 0.0015; // slow moon rotation
-            orbitAngle += 0.008; // satellite orbit speed
+            orbitAngle += 0.004;
 
             ctx.fillStyle = '#07070f';
             ctx.fillRect(0, 0, W, H);
