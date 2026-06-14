@@ -1,14 +1,15 @@
+// components/home/HeroSec.tsx
 'use client';
 
 import { RefObject } from 'react';
 
-interface HeroSectionProps {
+interface HeroSecProps {
     phase: string;
     mob: boolean;
     btnRef: RefObject<HTMLButtonElement | null>;
 }
 
-export function HeroSec({ phase, mob, btnRef }: HeroSectionProps) {
+export function HeroSec({ phase, mob, btnRef }: HeroSecProps) {
     if (phase !== 'hero') return null;
 
     return (
@@ -45,9 +46,7 @@ export function HeroSec({ phase, mob, btnRef }: HeroSectionProps) {
                     marginBottom: mob ? '14px' : '18px',
                 }}
             >
-                Digital Law
-                <br />
-                on your side
+                Digital Law on your side
             </h1>
 
             <p
@@ -62,7 +61,7 @@ export function HeroSec({ phase, mob, btnRef }: HeroSectionProps) {
             >
                 Obtaining IT benefits, business support,
                 <br />
-                program registration &amp; complex contracts
+                program registration, development of complex contracts
             </p>
 
             <button

@@ -6,6 +6,8 @@ interface NavbarProps {
 }
 
 export function Navbar({ mob }: NavbarProps) {
+    const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Marsstation';
+
     return (
         <nav
             style={{
@@ -22,13 +24,13 @@ export function Navbar({ mob }: NavbarProps) {
         >
             <span
                 style={{
-                    fontSize: mob ? '15px' : '17px',
+                    fontSize: mob ? '15px' : '19px',
                     fontWeight: 700,
                     letterSpacing: '0.08em',
                     color: '#fff',
                 }}
             >
-                IUS
+                {appName}
             </span>
             <button
                 className="ius-btn"

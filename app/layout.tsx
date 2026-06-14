@@ -1,15 +1,16 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata } from 'next';
+import './globals.css';
+import { siteConfig } from './config/site';
 
 export const metadata: Metadata = {
-  title: "IUS — Digital Law on your side",
-  description: "Obtaining IT benefits, business support, program registration, development of complex contracts",
+    title: `${siteConfig.name} — ${siteConfig.tagline}`,
+    description: siteConfig.description,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  );
+    return (
+        <html lang="en">
+            <body>{children}</body>
+        </html>
+    );
 }
