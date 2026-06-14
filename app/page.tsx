@@ -6,6 +6,7 @@ import { ServicesSec } from './components/home/ServicesSec';
 import { ContactSec } from './components/home/ContactSec';
 import { useCanvasAnimation } from './hooks/useCanvasAnimation';
 import { Footer } from './components/common/Footer';
+import { BackToTopButton } from './components/common/BackToTopButton';
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 type Phase = 'hero' | 'services' | 'contact';
@@ -287,6 +288,8 @@ export default function IUSPage() {
 
                 {/* ─── Footer ─── */}
                 <Footer mob={mob} />
+
+                <BackToTopButton />
             </main>
         </>
     );
