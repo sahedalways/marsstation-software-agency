@@ -5,6 +5,7 @@ import { HeroSec } from './components/home/HeroSec';
 import { ServicesSec } from './components/home/ServicesSec';
 import { ContactSec } from './components/home/ContactSec';
 import { useCanvasAnimation } from './hooks/useCanvasAnimation';
+import { Footer } from './components/common/Footer';
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 type Phase = 'hero' | 'services' | 'contact';
@@ -265,7 +266,15 @@ export default function IUSPage() {
                     <ServicesSec cardsIn={cardsIn} mob={mob} />
                 </section>
 
-                <section ref={contactRef} style={{ width: '100%', position: 'relative' }}>
+                <section
+                    ref={contactRef}
+                    style={{
+                        minHeight: 'auto',
+                        width: '100%',
+                        position: 'relative',
+                        display: 'block',
+                    }}
+                >
                     <ContactSec
                         contactIn={contactIn}
                         mob={mob}
@@ -273,6 +282,9 @@ export default function IUSPage() {
                         setAgreed={setAgreed}
                     />
                 </section>
+
+                {/* ─── Footer ─── */}
+                <Footer mob={mob} />
             </main>
         </>
     );

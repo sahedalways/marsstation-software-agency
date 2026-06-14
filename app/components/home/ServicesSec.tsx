@@ -141,8 +141,8 @@ export function ServicesSec({ cardsIn, mob }: Props) {
                 <div
                     style={{
                         position: 'absolute',
-                        top: mob ? '-60px' : '-120px',
-                        right: mob ? '-60px' : '-120px',
+                        top: mob ? '-50px' : '-100px',
+                        right: mob ? '-110px' : '-100px',
                         width: mob ? '280px' : '560px',
                         height: mob ? '280px' : '560px',
                         pointerEvents: 'none',
