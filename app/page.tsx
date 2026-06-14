@@ -236,14 +236,14 @@ export default function IUSPage() {
                 <section
                     ref={heroRef}
                     style={{
-                        minHeight: '100vh',
+                        minHeight: mob ? '60vh' : '100vh',
                         width: '100%',
                         position: 'relative',
                         display: 'flex',
                         alignItems: 'flex-start',
                         justifyContent: 'center',
                         overflow: 'hidden',
-                        paddingTop: '15vh',
+                        paddingTop: mob ? '12vh' : '15vh',
                     }}
                 >
                     <canvas
@@ -254,6 +254,7 @@ export default function IUSPage() {
                             width: '100%',
                             height: '100%',
                             zIndex: 0,
+
                             pointerEvents: 'none',
                         }}
                     />

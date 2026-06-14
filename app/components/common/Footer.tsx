@@ -13,7 +13,7 @@ export function Footer({ mob }: FooterProps) {
     return (
         <section
             style={{
-                marginTop: '70px',
+                marginTop: mob ? '50px' : '70px',
                 width: '100%',
                 position: 'relative',
                 overflow: 'hidden',

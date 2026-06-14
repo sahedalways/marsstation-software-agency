@@ -67,12 +67,16 @@ export function useCanvasAnimation({
 
         const resize = () => {
             const dpr = window.devicePixelRatio || 1;
-            canvas.width = window.innerWidth * dpr;
-            canvas.height = window.innerHeight * dpr;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         };
         resize();
         window.addEventListener('resize', resize);
+
+        const ro = new ResizeObserver(resize);
+        ro.observe(canvas);
 
         const stars = Array.from({ length: 130 }, () => ({
             x: Math.random(),
@@ -697,8 +701,9 @@ export function useCanvasAnimation({
 
         const frame = () => {
             const p = (smoothRef.current += (scrollRef.current - smoothRef.current) * 0.072);
-            const W = window.innerWidth;
-            const H = window.innerHeight;
+            const rect = canvas.getBoundingClientRect();
+            const W = rect.width;
+            const H = rect.height;
             const isMob = W < 768;
 
             ctx.clearRect(0, 0, W, H);
@@ -766,23 +771,19 @@ export function useCanvasAnimation({
                 ctx.fill();
             }
 
-            const baseR = isMob ? Math.min(W, H) * 0.28 : Math.min(W, H) * 0.43;
+            const baseR = isMob ? Math.min(W, H) * 0.3 : Math.min(W, H) * 0.43;
 
             const hcx = W * 0.5;
-            const btnBottom = btnRef.current
-                ? btnRef.current.getBoundingClientRect().bottom + 96
-                : H * 0.62;
-
-            const hcy = H - baseR * 0.3;
+            const hcy = isMob ? H * 0.92 : H - baseR * 0.3;
             const hgr = baseR;
 
-            const scx = isMob ? W * 0.75 : W * 0.77;
-            const scy = isMob ? H * 0.28 : H * 0.33;
-            const sgr = baseR * (isMob ? 0.5 : 0.52);
+            const scx = isMob ? W * 0.72 : W * 0.77;
+            const scy = isMob ? H * 0.22 : H * 0.33;
+            const sgr = baseR * (isMob ? 0.42 : 0.52);
 
-            const ccx = isMob ? W * 0.22 : W * 0.21;
-            const ccy = isMob ? H * 0.43 : H * 0.48;
-            const cgr = baseR * (isMob ? 0.65 : 0.68);
+            const ccx = isMob ? W * 0.2 : W * 0.21;
+            const ccy = isMob ? H * 0.35 : H * 0.48;
+            const cgr = baseR * (isMob ? 0.55 : 0.68);
 
             let gcx: number, gcy: number, gr: number;
 
@@ -835,6 +836,7 @@ export function useCanvasAnimation({
         return () => {
             cancelAnimationFrame(rafRef.current);
             window.removeEventListener('resize', resize);
+            ro.disconnect();
         };
     }, [canvasRef, btnRef, scrollRef, smoothRef, rafRef]);
 }

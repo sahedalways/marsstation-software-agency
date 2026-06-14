@@ -10,7 +10,7 @@ interface HeroSecProps {
 }
 
 export function HeroSec({ phase, mob, btnRef }: HeroSecProps) {
-    if (phase !== 'hero') return null;
+    const isActive = phase === 'hero';
 
     return (
         <>
@@ -29,11 +29,11 @@ export function HeroSec({ phase, mob, btnRef }: HeroSecProps) {
             <div
                 style={{
                     position: 'absolute',
-                    top: mob ? '13%' : '16%',
+                    top: mob ? '6%' : '16%',
                     left: 0,
                     right: 0,
                     textAlign: 'center',
-                    padding: mob ? '0 28px' : '0 48px',
+                    padding: mob ? '0 20px' : '0 48px',
                     zIndex: 10,
                     opacity: phase === 'hero' ? 1 : 0,
                     animation:
@@ -48,7 +48,7 @@ export function HeroSec({ phase, mob, btnRef }: HeroSecProps) {
                         color: 'rgba(255,255,255,0.40)',
                         letterSpacing: '0.14em',
                         textTransform: 'uppercase',
-                        marginBottom: mob ? '10px' : '14px',
+                        marginBottom: mob ? '10px' : '30px',
                         opacity: phase === 'hero' ? 1 : 0,
                         animation:
                             phase === 'hero'
@@ -61,12 +61,12 @@ export function HeroSec({ phase, mob, btnRef }: HeroSecProps) {
 
                 <h1
                     style={{
-                        fontSize: mob ? 'clamp(26px, 7.5vw, 38px)' : 'clamp(32px, 5vw, 62px)',
+                        fontSize: mob ? 'clamp(22px, 7vw, 32px)' : 'clamp(32px, 5vw, 62px)',
                         fontWeight: 300,
                         letterSpacing: '-0.03em',
                         lineHeight: 1.08,
                         color: '#fff',
-                        marginBottom: mob ? '14px' : '18px',
+                        marginBottom: mob ? '10px' : '18px',
                         opacity: phase === 'hero' ? 1 : 0,
                         animation:
                             phase === 'hero'
@@ -79,11 +79,11 @@ export function HeroSec({ phase, mob, btnRef }: HeroSecProps) {
 
                 <p
                     style={{
-                        fontSize: mob ? '12px' : '14px',
+                        fontSize: mob ? '11px' : '14px',
                         color: 'rgba(255,255,255,0.44)',
                         lineHeight: 1.8,
-                        marginBottom: mob ? '22px' : '30px',
-                        maxWidth: mob ? '290px' : '440px',
+                        marginBottom: mob ? '16px' : '30px',
+                        maxWidth: mob ? '260px' : '440px',
                         margin: `0 auto ${mob ? '22px' : '30px'}`,
                         opacity: phase === 'hero' ? 1 : 0,
                         animation:

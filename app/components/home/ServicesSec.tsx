@@ -203,158 +203,211 @@ export function ServicesSec({ cardsIn, mob }: Props) {
                     </p>
                 </div>
                 {/* Cards */}
-                <div
-                    style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'flex-start',
-                        gap: mob ? '10px' : '24px',
-                        width: '100%',
-                        maxWidth: '1150px',
-                        flexWrap: 'nowrap',
-                        zIndex: 2,
-                        paddingBottom: mob ? '40px' : '60px',
-                        paddingTop: mob ? '12px' : '20px',
-                    }}
-                >
-                    {cards.map((c, i) => (
-                        <div
-                            key={i}
-                            className={`svc-card-${i}`}
-                            style={{
-                                width: mob ? '33%' : '350px',
-                                height: mob ? '220px' : '370px',
-                                zIndex: c.zIdx,
-                                flexShrink: 0,
-                                opacity: cardsIn ? 1 : 0,
-                                animation: cardsIn
-                                    ? `${['flyLeft', 'flyBottom', 'flyRight'][i]} 1s cubic-bezier(.16,1,.3,1) ${[0, 0.12, 0.24][i]}s both`
-                                    : 'none',
-                            }}
-                        >
+                <>
+                    <style>{`
+        .svc-card-wrap {
+            transition: transform 0.5s cubic-bezier(.16,1,.3,1);
+            will-change: transform;
+        }
+        .svc-card-wrap:hover {
+            transform: translateY(-8px);
+        }
+        .svc-card-inner {
+            transition: border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
+        }
+        .svc-card-wrap:hover .svc-card-inner {
+            border-color: rgba(170,115,255,0.85) !important;
+            box-shadow:
+                0 0 30px rgba(140,75,250,0.3),
+                0 18px 50px rgba(0,0,0,0.95),
+                inset 0 0 22px rgba(120,55,235,0.08) !important;
+            background: rgb(10,5,22) !important;
+        }
+        .svc-glow {
+            transition: opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease;
+        }
+        .svc-card-wrap:hover .svc-glow {
+            filter: blur(55px);
+            transform: scale(1.1);
+        }
+        .svc-card-btn {
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+        .svc-card-wrap:hover .svc-card-btn {
+            background: rgba(140,75,250,0.18) !important;
+            border-color: rgba(170,115,255,0.55) !important;
+        }
+        .svc-card-title {
+            transition: transform 0.4s cubic-bezier(.16,1,.3,1);
+        }
+        .svc-card-wrap:hover .svc-card-title {
+            transform: translateY(-2px);
+        }
+    `}</style>
+
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'flex-start',
+                            gap: mob ? '8px' : '24px',
+                            width: '100%',
+                            maxWidth: '1150px',
+                            flexWrap: 'nowrap',
+                            zIndex: 2,
+                            paddingBottom: mob ? '40px' : '60px',
+                            paddingTop: mob ? '12px' : '20px',
+                            paddingLeft: mob ? '10px' : '0',
+                            paddingRight: mob ? '10px' : '0',
+                            boxSizing: 'border-box',
+                        }}
+                    >
+                        {cards.map((c, i) => (
                             <div
+                                key={i}
+                                className={`svc-card-wrap svc-card-${i}`}
                                 style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    borderRadius: mob ? '14px' : '20px',
-                                    padding: mob ? '16px' : '28px',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'space-between',
-                                    position: 'relative',
-                                    overflow: 'hidden',
-                                    background: 'rgb(6,3,14)',
-                                    border: c.accent
-                                        ? '1px solid rgba(150,95,250,0.75)'
-                                        : '1px solid rgba(105,62,205,0.38)',
-                                    boxShadow: c.accent
-                                        ? '0 0 20px rgba(130,70,250,0.1), 0 12px 40px rgba(0,0,0,0.9)'
-                                        : '0 12px 38px rgba(0,0,0,0.9)',
+                                    width: mob ? '33.33%' : '350px',
+                                    height: mob ? '200px' : '370px',
+                                    zIndex: c.zIdx,
+                                    flexShrink: 0,
+                                    opacity: cardsIn ? 1 : 0,
+                                    animation: cardsIn
+                                        ? `${['flyLeft', 'flyBottom', 'flyRight'][i]} 1s cubic-bezier(.16,1,.3,1) ${[0, 0.12, 0.24][i]}s both`
+                                        : 'none',
+                                    cursor: 'pointer',
                                 }}
                             >
-                                {c.glowPos === 'top-left' && (
-                                    <div
-                                        style={{
-                                            position: 'absolute',
-                                            top: '-18%',
-                                            left: '-18%',
-                                            width: '80%',
-                                            height: '80%',
-                                            background:
-                                                'radial-gradient(circle at 25% 25%, rgba(120,48,240,0.75) 0%, rgba(75,18,170,0.38) 35%, transparent 65%)',
-                                            filter: 'blur(48px)',
-                                            pointerEvents: 'none',
-                                            zIndex: 0,
-                                        }}
-                                    />
-                                )}
-                                {c.glowPos === 'right' && (
-                                    <div
-                                        style={{
-                                            position: 'absolute',
-                                            top: '10%',
-                                            right: '-18%',
-                                            width: '62%',
-                                            height: '68%',
-                                            background:
-                                                'radial-gradient(circle at 85% 48%, rgba(105,38,225,0.7) 0%, rgba(58,14,135,0.3) 42%, transparent 70%)',
-                                            filter: 'blur(40px)',
-                                            pointerEvents: 'none',
-                                            zIndex: 0,
-                                        }}
-                                    />
-                                )}
-                                {c.glowPos === 'bottom' && (
-                                    <div
-                                        style={{
-                                            position: 'absolute',
-                                            bottom: '-18%',
-                                            left: '5%',
-                                            width: '88%',
-                                            height: '62%',
-                                            background:
-                                                'radial-gradient(ellipse at 50% 88%, rgba(115,42,235,0.68) 0%, rgba(62,16,148,0.28) 38%, transparent 68%)',
-                                            filter: 'blur(42px)',
-                                            pointerEvents: 'none',
-                                            zIndex: 0,
-                                        }}
-                                    />
-                                )}
-                                <button
+                                <div
+                                    className="svc-card-inner"
                                     style={{
-                                        padding: mob ? '6px 14px' : '8px 18px',
-                                        fontSize: mob ? '9px' : '12px',
-                                        alignSelf: 'flex-start',
-                                        borderRadius: '999px',
-                                        background: 'rgba(255,255,255,0.04)',
-                                        border: '1px solid rgba(255,255,255,0.18)',
-                                        color: '#fff',
-                                        fontWeight: 400,
-                                        cursor: 'pointer',
-                                        backdropFilter: 'blur(10px)',
-                                        WebkitBackdropFilter: 'blur(10px)',
-                                        letterSpacing: '0.01em',
+                                        width: '100%',
+                                        height: '100%',
+                                        borderRadius: mob ? '12px' : '20px',
+                                        padding: mob ? '12px' : '28px',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        justifyContent: 'space-between',
                                         position: 'relative',
-                                        zIndex: 2,
-                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        background: 'rgb(6,3,14)',
+                                        border: c.accent
+                                            ? '1px solid rgba(150,95,250,0.75)'
+                                            : '1px solid rgba(105,62,205,0.38)',
+                                        boxShadow: c.accent
+                                            ? '0 0 20px rgba(130,70,250,0.1), 0 12px 40px rgba(0,0,0,0.9)'
+                                            : '0 12px 38px rgba(0,0,0,0.9)',
                                     }}
                                 >
-                                    {c.btn}
-                                </button>
-                                <div style={{ position: 'relative', zIndex: 2 }}>
-                                    <h3
+                                    {c.glowPos === 'top-left' && (
+                                        <div
+                                            className="svc-glow"
+                                            style={{
+                                                position: 'absolute',
+                                                top: '-18%',
+                                                left: '-18%',
+                                                width: '80%',
+                                                height: '80%',
+                                                background:
+                                                    'radial-gradient(circle at 25% 25%, rgba(120,48,240,0.75) 0%, rgba(75,18,170,0.38) 35%, transparent 65%)',
+                                                filter: 'blur(48px)',
+                                                pointerEvents: 'none',
+                                                zIndex: 0,
+                                            }}
+                                        />
+                                    )}
+                                    {c.glowPos === 'right' && (
+                                        <div
+                                            className="svc-glow"
+                                            style={{
+                                                position: 'absolute',
+                                                top: '10%',
+                                                right: '-18%',
+                                                width: '62%',
+                                                height: '68%',
+                                                background:
+                                                    'radial-gradient(circle at 85% 48%, rgba(105,38,225,0.7) 0%, rgba(58,14,135,0.3) 42%, transparent 70%)',
+                                                filter: 'blur(40px)',
+                                                pointerEvents: 'none',
+                                                zIndex: 0,
+                                            }}
+                                        />
+                                    )}
+                                    {c.glowPos === 'bottom' && (
+                                        <div
+                                            className="svc-glow"
+                                            style={{
+                                                position: 'absolute',
+                                                bottom: '-18%',
+                                                left: '5%',
+                                                width: '88%',
+                                                height: '62%',
+                                                background:
+                                                    'radial-gradient(ellipse at 50% 88%, rgba(115,42,235,0.68) 0%, rgba(62,16,148,0.28) 38%, transparent 68%)',
+                                                filter: 'blur(42px)',
+                                                pointerEvents: 'none',
+                                                zIndex: 0,
+                                            }}
+                                        />
+                                    )}
+                                    <button
+                                        className="svc-card-btn"
                                         style={{
-                                            fontSize: mob ? '13px' : '22px',
-                                            fontWeight: 400,
+                                            padding: mob ? '5px 10px' : '8px 18px',
+                                            fontSize: mob ? '8px' : '12px',
+                                            alignSelf: 'flex-start',
+                                            borderRadius: '999px',
+                                            background: 'rgba(255,255,255,0.04)',
+                                            border: '1px solid rgba(255,255,255,0.18)',
                                             color: '#fff',
-                                            lineHeight: 1.25,
-                                            marginBottom: mob ? '8px' : '12px',
-                                            letterSpacing: '-0.01em',
+                                            fontWeight: 400,
+                                            cursor: 'pointer',
+                                            backdropFilter: 'blur(10px)',
+                                            WebkitBackdropFilter: 'blur(10px)',
+                                            letterSpacing: '0.01em',
+                                            position: 'relative',
+                                            zIndex: 2,
+                                            whiteSpace: 'nowrap',
                                         }}
                                     >
-                                        {c.label}
-                                    </h3>
-                                    <p
-                                        style={
-                                            {
-                                                fontSize: mob ? '9px' : '13px',
-                                                color: 'rgba(255,255,255,0.5)',
-                                                lineHeight: 1.6,
-                                                fontWeight: 300,
-                                                display: '-webkit-box',
-                                                WebkitLineClamp: 4,
-                                                WebkitBoxOrient: 'vertical',
-                                                overflow: 'hidden',
-                                            } as React.CSSProperties
-                                        }
-                                    >
-                                        {c.body}
-                                    </p>
+                                        {c.btn}
+                                    </button>
+                                    <div style={{ position: 'relative', zIndex: 2 }}>
+                                        <h3
+                                            className="svc-card-title"
+                                            style={{
+                                                fontSize: mob ? '11px' : '22px',
+                                                fontWeight: 400,
+                                                color: '#fff',
+                                                lineHeight: 1.25,
+                                                marginBottom: mob ? '6px' : '12px',
+                                                letterSpacing: '-0.01em',
+                                            }}
+                                        >
+                                            {c.label}
+                                        </h3>
+                                        <p
+                                            style={
+                                                {
+                                                    fontSize: mob ? '8px' : '13px',
+                                                    color: 'rgba(255,255,255,0.5)',
+                                                    lineHeight: 1.55,
+                                                    fontWeight: 300,
+                                                    display: '-webkit-box',
+                                                    WebkitLineClamp: mob ? 5 : 4,
+                                                    WebkitBoxOrient: 'vertical',
+                                                    overflow: 'hidden',
+                                                } as React.CSSProperties
+                                            }
+                                        >
+                                            {c.body}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                </>
             </div>
         </>
     );
