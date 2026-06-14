@@ -27,9 +27,10 @@ export function ContactSec({ phase, mob, agreed, setAgreed }: ContactSectionProp
                 position: 'absolute',
                 inset: 0,
                 display: 'flex',
-                alignItems: 'center',
+                alignItems: 'flex-start',
                 justifyContent: 'flex-end',
-                padding: mob ? '60px 18px 24px' : '72px 56px 56px 0',
+
+                padding: mob ? '85px 18px 24px' : '105px 56px 56px 0',
                 zIndex: 10,
             }}
         >

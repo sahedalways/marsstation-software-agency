@@ -24,173 +24,6 @@ export function ServicesSec({ phase, mob, cardsIn }: ServicesSectionProps) {
         }
     }, [phase]);
 
-    // ⭐ Stars + Shooting Stars Canvas
-    useEffect(() => {
-        if (phase !== 'services') return;
-
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        let raf = 0;
-
-        let stars: {
-            x: number;
-            y: number;
-            r: number;
-            o: number;
-            speed: number;
-            color: string;
-        }[] = [];
-
-        let shootingStars: {
-            x: number;
-            y: number;
-            length: number;
-            speed: number;
-            angle: number;
-            opacity: number;
-            decay: number;
-            thickness: number;
-            active: boolean;
-        }[] = [];
-
-        const getW = () => canvas.clientWidth;
-        const getH = () => canvas.clientHeight;
-
-        const createStars = () => {
-            stars = [];
-            const STAR_COUNT = mob ? 150 : 350;
-            for (let i = 0; i < STAR_COUNT; i++) {
-                const rand = Math.random();
-                const radius = rand > 0.8 ? Math.random() * 1.2 + 0.5 : Math.random() * 0.6 + 0.2;
-                const colors = ['#ffffff', '#ffffff', '#e0f2ff', '#fff4e0', '#f0faff'];
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                stars.push({
-                    x: Math.random() * getW(),
-                    y: Math.random() * getH(),
-                    r: radius,
-                    o: Math.random(),
-                    speed: Math.random() * 0.015 + 0.005,
-                    color: color,
-                });
-            }
-        };
-
-        const createShootingStar = () => {
-            shootingStars.push({
-                x: Math.random() * getW() * 0.8,
-                y: Math.random() * getH() * 0.4,
-                length: Math.random() * 80 + 50,
-                speed: Math.random() * 8 + 12,
-                angle: Math.PI / 4 + (Math.random() * 0.3 - 0.15),
-                opacity: 1,
-                decay: Math.random() * 0.015 + 0.01,
-                thickness: Math.random() * 1.5 + 1,
-                active: true,
-            });
-        };
-
-        const shootingStarInterval = setInterval(() => {
-            if (Math.random() < 0.4) createShootingStar();
-        }, 2000);
-
-        const resizeCanvas = () => {
-            const width = getW();
-            const height = getH();
-            canvas.width = Math.max(1, Math.floor(width * dpr));
-            canvas.height = Math.max(1, Math.floor(height * dpr));
-            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-            createStars();
-        };
-
-        const draw = () => {
-            const width = getW();
-            const height = getH();
-            ctx.fillStyle = '#020108';
-            ctx.fillRect(0, 0, width, height);
-
-            const gradient = ctx.createRadialGradient(
-                width * 0.5,
-                height * 0.5,
-                0,
-                width * 0.5,
-                height * 0.5,
-                width * 0.8
-            );
-            gradient.addColorStop(0, 'rgba(30, 15, 80, 0.15)');
-            gradient.addColorStop(0.5, 'rgba(10, 5, 40, 0.05)');
-            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, width, height);
-
-            stars.forEach((s) => {
-                s.o += s.speed;
-                const opacity = Math.sin(s.o) * 0.4 + 0.6;
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-                if (s.r > 1.0) {
-                    ctx.shadowBlur = 4;
-                    ctx.shadowColor = s.color;
-                } else {
-                    ctx.shadowBlur = 0;
-                }
-                ctx.globalAlpha = opacity;
-                ctx.fillStyle = s.color;
-                ctx.fill();
-            });
-
-            ctx.shadowBlur = 0;
-
-            shootingStars.forEach((meteor) => {
-                if (!meteor.active) return;
-                meteor.x += Math.cos(meteor.angle) * meteor.speed;
-                meteor.y += Math.sin(meteor.angle) * meteor.speed;
-                meteor.opacity -= meteor.decay;
-                if (meteor.opacity <= 0 || meteor.x > width || meteor.y > height) {
-                    meteor.active = false;
-                    return;
-                }
-                const tailX = meteor.x - Math.cos(meteor.angle) * meteor.length;
-                const tailY = meteor.y - Math.sin(meteor.angle) * meteor.length;
-                const tailGradient = ctx.createLinearGradient(tailX, tailY, meteor.x, meteor.y);
-                tailGradient.addColorStop(0, `rgba(255, 255, 255, 0)`);
-                tailGradient.addColorStop(0.3, `rgba(200, 220, 255, ${meteor.opacity * 0.3})`);
-                tailGradient.addColorStop(0.7, `rgba(255, 255, 255, ${meteor.opacity * 0.7})`);
-                tailGradient.addColorStop(1, `rgba(255, 255, 255, ${meteor.opacity})`);
-                ctx.beginPath();
-                ctx.moveTo(tailX, tailY);
-                ctx.lineTo(meteor.x, meteor.y);
-                ctx.strokeStyle = tailGradient;
-                ctx.lineWidth = meteor.thickness;
-                ctx.lineCap = 'round';
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.arc(meteor.x, meteor.y, meteor.thickness + 0.5, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 255, 255, ${meteor.opacity})`;
-                ctx.shadowBlur = 8;
-                ctx.shadowColor = '#ffffff';
-                ctx.fill();
-                ctx.shadowBlur = 0;
-            });
-
-            shootingStars = shootingStars.filter((m) => m.active);
-            ctx.globalAlpha = 1.0;
-            raf = requestAnimationFrame(draw);
-        };
-
-        resizeCanvas();
-        draw();
-        window.addEventListener('resize', resizeCanvas);
-        return () => {
-            cancelAnimationFrame(raf);
-            clearInterval(shootingStarInterval);
-            window.removeEventListener('resize', resizeCanvas);
-        };
-    }, [phase, mob]);
-
     // 🌐 Wireframe Globe Canvas
     useEffect(() => {
         if (phase !== 'services') return;
@@ -398,20 +231,6 @@ export function ServicesSec({ phase, mob, cardsIn }: ServicesSectionProps) {
                     overflow: 'hidden',
                 }}
             >
-                {/* Star canvas */}
-                <canvas
-                    ref={canvasRef}
-                    style={{
-                        position: 'absolute',
-                        inset: 0,
-                        width: '100%',
-                        height: '100%',
-                        pointerEvents: 'none',
-                        zIndex: 0,
-                        background: 'transparent',
-                    }}
-                />
-
                 {/* 🌐 Wireframe Globe (Top Right) */}
                 <div
                     style={{
@@ -516,7 +335,7 @@ export function ServicesSec({ phase, mob, cardsIn }: ServicesSectionProps) {
                                 zIndex: c.zIdx,
                                 flexShrink: 0,
                                 animation: cardsIn
-                                    ? `${['flyFromLeft', 'flyFromBottom', 'flyFromRight'][i]} 0.65s cubic-bezier(.22,.68,0,1.2) ${['0s', '0.10s', '0.20s'][i]} both`
+                                    ? `${['flyFromLeft', 'flyFromBottom', 'flyFromRight'][i]} 1.2s cubic-bezier(.16,1,.3,1) ${['0s', '0.18s', '0.36s'][i]} both`
                                     : 'none',
                                 visibility: cardsIn ? 'visible' : 'hidden',
                             }}

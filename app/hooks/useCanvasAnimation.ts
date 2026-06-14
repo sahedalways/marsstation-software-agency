@@ -14,7 +14,6 @@ interface UseCanvasAnimationProps {
     scrollRef: MutableRefObject<number>;
     smoothRef: MutableRefObject<number>;
     rafRef: MutableRefObject<number>;
-    setPhase: (phase: Phase) => void;
 }
 
 const initRoundRect = () => {
@@ -58,7 +57,6 @@ export function useCanvasAnimation({
     scrollRef,
     smoothRef,
     rafRef,
-    setPhase,
 }: UseCanvasAnimationProps) {
     useEffect(() => {
         initRoundRect();
@@ -829,7 +827,7 @@ export function useCanvasAnimation({
             }
 
             const np: Phase = p < 0.4 ? 'hero' : p < 0.72 ? 'services' : 'contact';
-            setPhase(np);
+
             rafRef.current = requestAnimationFrame(frame);
         };
 
@@ -838,5 +836,5 @@ export function useCanvasAnimation({
             cancelAnimationFrame(rafRef.current);
             window.removeEventListener('resize', resize);
         };
-    }, [canvasRef, btnRef, scrollRef, smoothRef, rafRef, setPhase]);
+    }, [canvasRef, btnRef, scrollRef, smoothRef, rafRef]);
 }
