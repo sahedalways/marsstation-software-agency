@@ -277,6 +277,7 @@ export default function IUSPage() {
                     }}
                 >
                     <ContactSec
+                        phase={phase}
                         contactIn={contactIn}
                         mob={mob}
                         agreed={agreed}

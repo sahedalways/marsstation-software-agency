@@ -2,13 +2,14 @@
 import { useEffect, useRef, useState } from 'react';
 
 interface Props {
+    phase: string;
     contactIn: boolean;
     mob: boolean;
     agreed: boolean;
     setAgreed: (v: boolean) => void;
 }
 
-export function ContactSec({ contactIn, mob, agreed, setAgreed }: Props) {
+export function ContactSec({ phase, contactIn, mob, agreed, setAgreed }: Props) {
     const globeCanvasRef = useRef<HTMLCanvasElement>(null);
     const [agreedLocal, setAgreedLocal] = useState(agreed);
 
@@ -108,23 +109,49 @@ export function ContactSec({ contactIn, mob, agreed, setAgreed }: Props) {
     return (
         <>
             <style>{`
-       @keyframes contactGlobeDrop {
-    from {
-        opacity: 0;
-        transform: translate(-80px, -140px) scale(0.72) rotate(-25deg);
-    }
-    to {
-        opacity: 1;
-        transform: translate(0, 0) scale(1) rotate(-25deg);
-    }
-}
-            `}</style>
+            @keyframes contactGlobeDrop {
+                from {
+                    opacity: 0;
+                    transform: translate(-80px, -140px) scale(0.72) rotate(-0deg);
+                }
+                to {
+                    opacity: 1;
+                    transform: translate(0, 0) scale(1) rotate(-25deg);
+                }
+            }
+
+            @keyframes riseUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(40px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes dropDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-40px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+        `}</style>
 
             <div
                 style={{
                     position: 'relative',
                     width: '100%',
-
                     overflow: 'hidden',
                 }}
             >
@@ -156,14 +183,11 @@ export function ContactSec({ contactIn, mob, agreed, setAgreed }: Props) {
                         position: 'relative',
                         zIndex: 2,
                         width: '100%',
-
                         display: 'flex',
                         alignItems: 'flex-start',
                         justifyContent: 'center',
                         paddingTop: mob ? '60px' : '80px',
                         padding: mob ? '50px 18px 20px' : '70px 48px 80px',
-                        opacity: contactIn ? 1 : 0,
-                        animation: contactIn ? 'contactFadeUp 0.7s ease-out 0.1s both' : 'none',
                     }}
                 >
                     <div
@@ -172,6 +196,7 @@ export function ContactSec({ contactIn, mob, agreed, setAgreed }: Props) {
                             maxWidth: '100%',
                         }}
                     >
+                        {/* ─── Heading texts (rise from bottom) ─── */}
                         <p
                             style={{
                                 fontSize: mob ? '9.5px' : '11px',
@@ -180,6 +205,10 @@ export function ContactSec({ contactIn, mob, agreed, setAgreed }: Props) {
                                 textTransform: 'uppercase',
                                 marginBottom: mob ? '8px' : '12px',
                                 textAlign: 'center',
+                                opacity: contactIn ? 1 : 0,
+                                animation: contactIn
+                                    ? 'riseUp 0.9s cubic-bezier(.16,1,.3,1) 0.3s both'
+                                    : 'none',
                             }}
                         >
                             Get in touch
@@ -196,6 +225,10 @@ export function ContactSec({ contactIn, mob, agreed, setAgreed }: Props) {
                                 letterSpacing: '-0.02em',
                                 marginBottom: mob ? '18px' : '30px',
                                 textAlign: 'center',
+                                opacity: contactIn ? 1 : 0,
+                                animation: contactIn
+                                    ? 'riseUp 1s cubic-bezier(.16,1,.3,1) 0.45s both'
+                                    : 'none',
                             }}
                         >
                             Your Partner in Law:
@@ -203,29 +236,40 @@ export function ContactSec({ contactIn, mob, agreed, setAgreed }: Props) {
                             Reliable Legal Support for Your Business
                         </h2>
 
-                        {/* Form */}
+                        {/* ─── Form fields (drop from top) ─── */}
                         <div
                             style={{
                                 display: 'flex',
                                 flexDirection: 'column',
-                                gap: mob ? '9px' : '13px',
+                                gap: mob ? '14px' : '16px',
                             }}
                         >
+                            {/* Row 1 */}
                             <div
                                 style={{
                                     display: 'grid',
-                                    gridTemplateColumns: '1fr 1fr',
-                                    gap: mob ? '7px' : '11px',
+                                    gridTemplateColumns: mob ? '1fr' : '1fr 1fr',
+                                    gap: mob ? '12px' : '14px',
+                                    opacity: contactIn ? 1 : 0,
+                                    animation: contactIn
+                                        ? 'dropDown 0.85s cubic-bezier(.16,1,.3,1) 0.65s both'
+                                        : 'none',
                                 }}
                             >
                                 <Field label="Name" placeholder="Your name" mob={mob} />
                                 <Field label="Surname" placeholder="Your surname" mob={mob} />
                             </div>
+
+                            {/* Row 2 */}
                             <div
                                 style={{
                                     display: 'grid',
-                                    gridTemplateColumns: '1fr 1fr',
-                                    gap: mob ? '7px' : '11px',
+                                    gridTemplateColumns: mob ? '1fr' : '1fr 1fr',
+                                    gap: mob ? '12px' : '14px',
+                                    opacity: contactIn ? 1 : 0,
+                                    animation: contactIn
+                                        ? 'dropDown 0.85s cubic-bezier(.16,1,.3,1) 0.78s both'
+                                        : 'none',
                                 }}
                             >
                                 <Field
@@ -234,15 +278,33 @@ export function ContactSec({ contactIn, mob, agreed, setAgreed }: Props) {
                                     type="email"
                                     mob={mob}
                                 />
+
                                 <div>
-                                    <Lbl mob={mob}>Phone</Lbl>
-                                    <div style={{ display: 'flex', gap: '5px' }}>
+                                    <Lbl
+                                        mob={mob}
+                                        style={{
+                                            fontSize: mob ? '12px' : '13px',
+                                            fontWeight: 500,
+                                            color: 'rgba(255,255,255,0.55)',
+                                            marginBottom: '6px',
+                                            display: 'block',
+                                        }}
+                                    >
+                                        Phone
+                                    </Lbl>
+
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            gap: '8px',
+                                        }}
+                                    >
                                         <div
                                             style={{
                                                 background: 'rgba(255,255,255,0.04)',
                                                 border: '1px solid rgba(255,255,255,0.10)',
                                                 borderRadius: '8px',
-                                                padding: mob ? '6px 7px' : '9px 10px',
+                                                padding: mob ? '7px 8px' : '9px 10px',
                                                 display: 'flex',
                                                 alignItems: 'center',
                                                 gap: '3px',
@@ -262,6 +324,7 @@ export function ContactSec({ contactIn, mob, agreed, setAgreed }: Props) {
                                                 ▾
                                             </span>
                                         </div>
+
                                         <input
                                             type="tel"
                                             placeholder="+380"
@@ -270,7 +333,7 @@ export function ContactSec({ contactIn, mob, agreed, setAgreed }: Props) {
                                                 background: 'rgba(255,255,255,0.04)',
                                                 border: '1px solid rgba(255,255,255,0.10)',
                                                 borderRadius: '8px',
-                                                padding: mob ? '6px 10px' : '9px 12px',
+                                                padding: mob ? '7px 10px' : '9px 12px',
                                                 color: '#fff',
                                                 fontSize: mob ? '11px' : '12px',
                                                 outline: 'none',
@@ -289,19 +352,24 @@ export function ContactSec({ contactIn, mob, agreed, setAgreed }: Props) {
                                 </div>
                             </div>
 
+                            {/* Checkbox (drops down) */}
                             <div
                                 style={{
                                     display: 'flex',
                                     alignItems: 'center',
-                                    gap: '8px',
+                                    gap: '10px',
                                     cursor: 'pointer',
+                                    opacity: contactIn ? 1 : 0,
+                                    animation: contactIn
+                                        ? 'dropDown 0.8s cubic-bezier(.16,1,.3,1) 0.92s both'
+                                        : 'none',
                                 }}
                                 onClick={handleAgree}
                             >
                                 <div
                                     style={{
-                                        width: mob ? '13px' : '15px',
-                                        height: mob ? '13px' : '15px',
+                                        width: mob ? '14px' : '15px',
+                                        height: mob ? '14px' : '15px',
                                         borderRadius: '4px',
                                         flexShrink: 0,
                                         border: agreedLocal
@@ -328,10 +396,11 @@ export function ContactSec({ contactIn, mob, agreed, setAgreed }: Props) {
                                         </span>
                                     )}
                                 </div>
+
                                 <span
                                     style={{
-                                        fontSize: mob ? '10px' : '11px',
-                                        color: 'rgba(255,255,255,0.38)',
+                                        fontSize: mob ? '11px' : '12px',
+                                        color: 'rgba(255,255,255,0.42)',
                                         lineHeight: 1.4,
                                     }}
                                 >
@@ -347,10 +416,11 @@ export function ContactSec({ contactIn, mob, agreed, setAgreed }: Props) {
                                 </span>
                             </div>
 
+                            {/* Button (rises up) */}
                             <button
                                 style={{
                                     width: '100%',
-                                    padding: mob ? '11px' : '13px',
+                                    padding: mob ? '12px' : '13px',
                                     background: 'linear-gradient(135deg, #5a28b8 0%, #3e18a0 100%)',
                                     border: '1px solid rgba(120,70,240,0.40)',
                                     borderRadius: '9px',
@@ -359,16 +429,22 @@ export function ContactSec({ contactIn, mob, agreed, setAgreed }: Props) {
                                     fontWeight: 500,
                                     cursor: 'pointer',
                                     letterSpacing: '0.03em',
-                                    transition: 'opacity 0.2s, transform 0.15s',
                                     fontFamily: 'inherit',
+                                    marginTop: mob ? '6px' : '10px',
+                                    opacity: contactIn ? 1 : 0,
+                                    animation: contactIn
+                                        ? 'riseUp 0.9s cubic-bezier(.16,1,.3,1) 1.05s both'
+                                        : 'none',
+                                    transition: 'transform 0.25s ease, box-shadow 0.25s ease',
                                 }}
                                 onMouseEnter={(e) => {
-                                    e.currentTarget.style.opacity = '0.88';
-                                    e.currentTarget.style.transform = 'translateY(-1px)';
+                                    e.currentTarget.style.transform = 'translateY(-2px)';
+                                    e.currentTarget.style.boxShadow =
+                                        '0 8px 24px rgba(90,40,184,0.45)';
                                 }}
                                 onMouseLeave={(e) => {
-                                    e.currentTarget.style.opacity = '1';
                                     e.currentTarget.style.transform = 'translateY(0)';
+                                    e.currentTarget.style.boxShadow = 'none';
                                 }}
                             >
                                 Send Request
