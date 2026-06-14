@@ -774,7 +774,8 @@ export function useCanvasAnimation({
             const btnBottom = btnRef.current
                 ? btnRef.current.getBoundingClientRect().bottom + 96
                 : H * 0.62;
-            const hcy = btnBottom + baseR * 1;
+
+            const hcy = H - baseR * 0.3;
             const hgr = baseR;
 
             const scx = isMob ? W * 0.75 : W * 0.77;

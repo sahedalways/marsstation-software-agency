@@ -6,29 +6,26 @@ import { ServicesSec } from './components/home/ServicesSec';
 import { ContactSec } from './components/home/ContactSec';
 import { useCanvasAnimation } from './hooks/useCanvasAnimation';
 
-// ─── Math utils ───────────────────────────────────────────────────────────────
-const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
-const inv = (v: number, lo: number, hi: number) => clamp((v - lo) / (hi - lo), 0, 1);
-const ease = (t: number) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t);
 
-// ─── Types ────────────────────────────────────────────────────────────────────
 type Phase = 'hero' | 'services' | 'contact';
 
 export default function IUSPage() {
-    const wrapRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const btnRef = useRef<HTMLButtonElement>(null);
     const scrollRef = useRef(0);
     const smoothRef = useRef(0);
     const rafRef = useRef(0);
 
+    const heroRef = useRef<HTMLDivElement>(null);
+    const servicesRef = useRef<HTMLDivElement>(null);
+    const contactRef = useRef<HTMLDivElement>(null);
+
     const [phase, setPhase] = useState<Phase>('hero');
     const [agreed, setAgreed] = useState(false);
     const [mob, setMob] = useState(false);
     const [cardsIn, setCardsIn] = useState(false);
 
-    // Trigger card fly-in when services phase becomes active
     useEffect(() => {
         if (phase === 'services') {
             setCardsIn(false);
@@ -38,6 +35,7 @@ export default function IUSPage() {
             setCardsIn(false);
         }
     }, [phase]);
+
     useEffect(() => {
         const fn = () => setMob(window.innerWidth < 768);
         fn();
@@ -45,22 +43,26 @@ export default function IUSPage() {
         return () => window.removeEventListener('resize', fn);
     }, []);
 
-    // Scroll tracking
     useEffect(() => {
         const fn = () => {
-            const el = wrapRef.current;
-            if (!el) return;
-            scrollRef.current = clamp(
-                window.scrollY / (el.scrollHeight - window.innerHeight),
-                0,
-                1
-            );
+            const total = document.documentElement.scrollHeight - window.innerHeight;
+            const p = clamp(window.scrollY / total, 0, 1);
+            scrollRef.current = p;
+
+            const y = window.scrollY + window.innerHeight / 2;
+            const heroTop = heroRef.current?.offsetTop ?? 0;
+            const servicesTop = servicesRef.current?.offsetTop ?? 0;
+            const contactTop = contactRef.current?.offsetTop ?? 0;
+
+            if (y >= contactTop) setPhase('contact');
+            else if (y >= servicesTop) setPhase('services');
+            else setPhase('hero');
         };
         window.addEventListener('scroll', fn, { passive: true });
+        fn();
         return () => window.removeEventListener('scroll', fn);
     }, []);
 
-    // Canvas animation
     useCanvasAnimation({
         canvasRef,
         btnRef,
@@ -70,7 +72,6 @@ export default function IUSPage() {
         setPhase,
     });
 
-    // ── JSX ───────────────────────────────────────────────────────────────────
     return (
         <>
             <style>{`
@@ -116,17 +117,25 @@ export default function IUSPage() {
         input:focus { border-color: rgba(110,65,220,0.80)!important; }
       `}</style>
 
-            <div ref={wrapRef} style={{ height: '500vh', background: '#07070f' }}>
-                <div
+            {/* Fixed navbar */}
+            <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 10 }}>
+                <Navbar mob={mob} />
+            </div>
+
+            <main style={{ position: 'relative', zIndex: 1, background: '#07070f' }}>
+                <section
+                    ref={heroRef}
                     style={{
-                        position: 'sticky',
-                        top: 0,
+                        minHeight: '100vh',
                         width: '100%',
-                        height: '100vh',
+                        position: 'relative',
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        justifyContent: 'center',
                         overflow: 'hidden',
+                        paddingTop: '15vh',
                     }}
                 >
-                    {/* Canvas */}
                     <canvas
                         ref={canvasRef}
                         style={{
@@ -135,18 +144,45 @@ export default function IUSPage() {
                             width: '100%',
                             height: '100%',
                             zIndex: 0,
+                            pointerEvents: 'none',
                         }}
                     />
+                    <div style={{ position: 'relative', zIndex: 1, width: '100%' }}>
+                        <HeroSec phase={phase} mob={mob} btnRef={btnRef} />
+                    </div>
+                </section>
 
-                    <Navbar mob={mob} />
-
-                    <HeroSec phase={phase} mob={mob} btnRef={btnRef} />
-
+                <section
+                    ref={servicesRef}
+                    style={{
+                        minHeight: '100vh',
+                        width: '100%',
+                        position: 'relative',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: '#07070f',
+                    }}
+                >
                     <ServicesSec phase={phase} mob={mob} cardsIn={cardsIn} />
+                </section>
 
+                {/* CONTACT SECTION */}
+                <section
+                    ref={contactRef}
+                    style={{
+                        minHeight: '100vh',
+                        width: '100%',
+                        position: 'relative',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: '#07070f',
+                    }}
+                >
                     <ContactSec phase={phase} mob={mob} agreed={agreed} setAgreed={setAgreed} />
-                </div>
-            </div>
+                </section>
+            </main>
         </>
     );
 }
