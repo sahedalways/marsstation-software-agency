@@ -457,7 +457,15 @@ export function ContactSec({ phase, contactIn, mob, agreed, setAgreed }: Props) 
     );
 }
 
-function Lbl({ children, mob }: { children: React.ReactNode; mob: boolean }) {
+function Lbl({
+    children,
+    mob,
+    style,
+}: {
+    children: React.ReactNode;
+    mob: boolean;
+    style?: React.CSSProperties;
+}) {
     return (
         <label
             style={{
@@ -466,6 +474,7 @@ function Lbl({ children, mob }: { children: React.ReactNode; mob: boolean }) {
                 color: 'rgba(255,255,255,0.40)',
                 marginBottom: mob ? '4px' : '6px',
                 letterSpacing: '0.03em',
+                ...style,
             }}
         >
             {children}
