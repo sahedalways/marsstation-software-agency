@@ -18,6 +18,7 @@ interface Props {
 export function ContactSec({ phase, contactIn, mob, agreed, setAgreed }: Props) {
     const [submitting, setSubmitting] = useState(false);
     const [successModal, setSuccessModal] = useState(false);
+    const [failedModal, setFailedModal] = useState(false);
     const [country, setCountry] = useState('GB');
     const globeCanvasRef = useRef<HTMLCanvasElement>(null);
     const [form, setForm] = useState({
@@ -163,21 +164,33 @@ export function ContactSec({ phase, contactIn, mob, agreed, setAgreed }: Props) 
         try {
             setSubmitting(true);
 
-            // API CALL
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            const res = await fetch('/api/contact', {
+                method: 'POST',
 
-            setSuccessModal(true);
+                headers: {
+                    'Content-Type': 'application/json',
+                },
 
-            // optional reset
-            setForm({
-                name: '',
-                surname: '',
-                email: '',
-                phone: `+${getCountryCallingCode(country as any)} `,
-                agreed: false,
+                body: JSON.stringify(form),
             });
+
+            const data = await res.json();
+
+            if (data.success) {
+                setSuccessModal(true);
+
+                setForm({
+                    name: '',
+                    surname: '',
+                    email: '',
+                    phone: `+${getCountryCallingCode(country as any)} `,
+                    agreed: false,
+                });
+            } else {
+                setFailedModal(true);
+            }
         } catch (error) {
-            console.log(error);
+            setFailedModal(true);
         } finally {
             setSubmitting(false);
         }
@@ -611,6 +624,17 @@ export function ContactSec({ phase, contactIn, mob, agreed, setAgreed }: Props) 
                         title="Request Sent Successfully"
                         message="Thank you for contacting us. Our legal team will contact you shortly."
                         onClose={() => setSuccessModal(false)}
+                    />
+                )}
+
+                {failedModal && (
+                    <ToastMsgModal
+                        open={failedModal}
+                        mob={mob}
+                        type="error"
+                        title="Something Went Wrong"
+                        message="Your request could not be sent. Please try again later."
+                        onClose={() => setFailedModal(false)}
                     />
                 )}
             </div>

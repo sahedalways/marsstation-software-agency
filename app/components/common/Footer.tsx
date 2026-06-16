@@ -1,6 +1,7 @@
 // components/common/Footer.tsx
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 
 interface FooterProps {
@@ -67,31 +68,45 @@ export function Footer({ mob }: FooterProps) {
                 <Link href="/" style={{ textDecoration: 'none' }}>
                     <div
                         style={{
-                            fontSize: mob ? '18px' : '22px',
-                            fontWeight: 700,
-                            color: '#fff',
-                            letterSpacing: '0.02em',
+                            display: 'inline-flex',
+                            alignItems: 'center',
                             cursor: 'pointer',
                             padding: '6px 12px',
                             borderRadius: '10px',
-                            display: 'inline-block',
                             transition: 'all 0.25s ease',
                         }}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.background =
                                 'linear-gradient(135deg, rgba(90,40,184,0.25), rgba(255,255,255,0.05))';
+
                             e.currentTarget.style.backdropFilter = 'blur(10px)';
+
                             e.currentTarget.style.boxShadow = '0 0 25px rgba(90,40,184,0.4)';
+
                             e.currentTarget.style.transform = 'translateY(-1px)';
                         }}
                         onMouseLeave={(e) => {
                             e.currentTarget.style.background = 'transparent';
+
                             e.currentTarget.style.backdropFilter = 'none';
+
                             e.currentTarget.style.boxShadow = 'none';
+
                             e.currentTarget.style.transform = 'translateY(0)';
                         }}
                     >
-                        {appName}
+                        <Image
+                            src="/images/secondary-logo.png"
+                            alt="Secondary Logo"
+                            width={mob ? 90 : 140}
+                            height={mob ? 35 : 45}
+                            style={{
+                                width: 'auto',
+                                height: mob ? '35px' : '45px',
+                                objectFit: 'contain',
+                            }}
+                            priority
+                        />
                     </div>
                 </Link>
 

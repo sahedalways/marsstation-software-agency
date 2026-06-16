@@ -1,5 +1,6 @@
 // components/Navbar.tsx
 'use client';
+import Image from 'next/image';
 import Link from 'next/link';
 
 interface NavbarProps {
@@ -26,31 +27,50 @@ export function Navbar({ mob }: NavbarProps) {
             <Link href="/" style={{ textDecoration: 'none' }}>
                 <span
                     style={{
-                        fontSize: mob ? '15px' : '19px',
-                        fontWeight: 700,
-                        letterSpacing: '0.08em',
-                        color: '#fff',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                         cursor: 'pointer',
-                        padding: '6px 12px',
+
+                        padding: mob ? '3px 6px' : '4px 8px',
+
                         borderRadius: '8px',
-                        transition: 'all 0.25s ease',
-                        display: 'inline-block',
+
+                        background: 'rgba(255,255,255,0.82)',
+
+                        border: '1px solid rgba(255,255,255,0.35)',
+
+                        boxShadow: '0 5px 18px rgba(255,255,255,0.08)',
+
+                        transition: 'all .25s ease',
                     }}
                     onMouseEnter={(e) => {
-                        e.currentTarget.style.background =
-                            'linear-gradient(135deg, rgba(90,40,184,0.25), rgba(255,255,255,0.06))';
-                        e.currentTarget.style.backdropFilter = 'blur(8px)';
-                        e.currentTarget.style.boxShadow = '0 0 20px rgba(90,40,184,0.35)';
-                        e.currentTarget.style.transform = 'translateY(-1px)';
+                        e.currentTarget.style.background = 'rgba(255,255,255,0.95)';
+
+                        e.currentTarget.style.boxShadow = '0 0 25px rgba(115,42,235,.35)';
+
+                        e.currentTarget.style.transform = 'translateY(-2px) scale(1.03)';
                     }}
                     onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'transparent';
-                        e.currentTarget.style.backdropFilter = 'none';
-                        e.currentTarget.style.boxShadow = 'none';
-                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.background = 'rgba(255,255,255,0.82)';
+
+                        e.currentTarget.style.boxShadow = '0 5px 18px rgba(255,255,255,0.08)';
+
+                        e.currentTarget.style.transform = 'translateY(0) scale(1)';
                     }}
                 >
-                    {appName}
+                    <Image
+                        src="/images/logo.png"
+                        alt="Logo"
+                        width={mob ? 85 : 120}
+                        height={mob ? 30 : 40}
+                        style={{
+                            width: 'auto',
+                            height: mob ? '30px' : '40px',
+                            objectFit: 'contain',
+                        }}
+                        priority
+                    />
                 </span>
             </Link>
             <button

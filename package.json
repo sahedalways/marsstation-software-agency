@@ -12,6 +12,7 @@
         "countries-list": "^3.3.0",
         "framer-motion": "^12.40.0",
         "next": "14.2.35",
+        "nodemailer": "^9.0.0",
         "react": "^18",
         "react-dom": "^18",
         "react-phone-number-input": "^3.4.17",
