@@ -45,70 +45,69 @@ const initRoundRect = () => {
 
 // ─── Three.js Scene Setup with Real Moon Texture ────────────────────────────
 interface PlanetScene {
-    renderer: THREE.WebGLRenderer;
-    scene: THREE.Scene;
-    camera: THREE.OrthographicCamera;
-    planet: THREE.Mesh;
+    renderer: THREE.WebGLRenderer | null;
+    scene: THREE.Scene | null;
+    camera: THREE.OrthographicCamera | null;
+    planet: THREE.Mesh | null;
     dispose: () => void;
 }
 
 function createPlanetScene(): PlanetScene {
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(512, 512);
-    renderer.setClearColor(0x000000, 0);
-    renderer.toneMapping = THREE.NoToneMapping;
+    try {
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setSize(512, 512);
+        renderer.setClearColor(0x000000, 0);
+        renderer.toneMapping = THREE.NoToneMapping;
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
-    camera.position.z = 5;
+        const scene = new THREE.Scene();
+        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
+        camera.position.z = 5;
 
-    const textureLoader = new THREE.TextureLoader();
+        const textureLoader = new THREE.TextureLoader();
 
-    // High-res equirectangular moon texture (NASA / Three.js official example)
-    // This wraps perfectly around the sphere without distortion.
-    // If you want to use your own PNG, replace this URL with a direct .jpg/.png link.
-    const moonTextureUrl =
-        'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/moon_1024.jpg';
+        const moonTextureUrl =
+            'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/moon_1024.jpg';
 
-    const diffuseTex = textureLoader.load(moonTextureUrl);
-    // Use the same texture for bump mapping to get realistic 3D crater relief
-    const bumpTex = textureLoader.load(moonTextureUrl);
+        const diffuseTex = textureLoader.load(moonTextureUrl);
+        const bumpTex = textureLoader.load(moonTextureUrl);
 
-    // High poly sphere for smooth surface
-    const geometry = new THREE.SphereGeometry(0.7, 196, 196);
-    const material = new THREE.MeshStandardMaterial({
-        map: diffuseTex,
-        bumpMap: bumpTex,
-        bumpScale: 0.04, // Subtle relief for craters
-        roughness: 0.95, // Matte lunar surface
-        metalness: 0.0,
-    });
+        const geometry = new THREE.SphereGeometry(0.7, 196, 196);
+        const material = new THREE.MeshStandardMaterial({
+            map: diffuseTex,
+            bumpMap: bumpTex,
+            bumpScale: 0.04,
+            roughness: 0.95,
+            metalness: 0.0,
+        });
 
-    const planet = new THREE.Mesh(geometry, material);
-    scene.add(planet);
+        const planet = new THREE.Mesh(geometry, material);
+        scene.add(planet);
 
-    // Lighting: Strong directional from top-left, creating sharp terminator shadow
-    const keyLight = new THREE.DirectionalLight(0xffffff, 2.8);
-    keyLight.position.set(-2.5, 3.5, 4);
-    scene.add(keyLight);
+        const keyLight = new THREE.DirectionalLight(0xffffff, 2.8);
+        keyLight.position.set(-2.5, 3.5, 4);
+        scene.add(keyLight);
 
-    const fillLight = new THREE.DirectionalLight(0x8899aa, 0.2);
-    fillLight.position.set(2, -1, 2);
-    scene.add(fillLight);
+        const fillLight = new THREE.DirectionalLight(0x8899aa, 0.2);
+        fillLight.position.set(2, -1, 2);
+        scene.add(fillLight);
 
-    const ambient = new THREE.AmbientLight(0x050510, 0.3); // Very dark ambient
-    scene.add(ambient);
+        const ambient = new THREE.AmbientLight(0x050510, 0.3);
+        scene.add(ambient);
 
-    const dispose = () => {
-        geometry.dispose();
-        material.dispose();
-        diffuseTex.dispose();
-        bumpTex.dispose();
-        renderer.dispose();
-    };
+        const dispose = () => {
+            geometry.dispose();
+            material.dispose();
+            diffuseTex.dispose();
+            bumpTex.dispose();
+            renderer.dispose();
+        };
 
-    return { renderer, scene, camera, planet, dispose };
+        return { renderer, scene, camera, planet, dispose };
+    } catch (error) {
+        console.warn('WebGL initialization failed, falling back to 2D rendering:', error);
+        return { renderer: null, scene: null, camera: null, planet: null, dispose: () => {} };
+    }
 }
 
 export function useCanvasAnimation({
@@ -132,12 +131,16 @@ export function useCanvasAnimation({
             planet: planetMesh,
         } = planetScene;
 
-        const frustum = 0.75;
-        threeCamera.left = -frustum;
-        threeCamera.right = frustum;
-        threeCamera.top = frustum;
-        threeCamera.bottom = -frustum;
-        threeCamera.updateProjectionMatrix();
+        const hasWebGL = threeRenderer !== null && threeCamera !== null;
+
+        if (hasWebGL && threeCamera) {
+            const frustum = 0.75;
+            threeCamera.left = -frustum;
+            threeCamera.right = frustum;
+            threeCamera.top = frustum;
+            threeCamera.bottom = -frustum;
+            threeCamera.updateProjectionMatrix();
+        }
 
         const resize = () => {
             const dpr = window.devicePixelRatio || 1;
@@ -503,7 +506,25 @@ export function useCanvasAnimation({
             ctx.restore();
         };
 
+        const drawFallbackPlanet = (cx: number, cy: number, r: number) => {
+            ctx.save();
+            const grad = ctx.createRadialGradient(cx - r * 0.3, cy - r * 0.3, r * 0.2, cx, cy, r);
+            grad.addColorStop(0, 'rgba(200,180,140,0.8)');
+            grad.addColorStop(0.5, 'rgba(150,130,90,0.95)');
+            grad.addColorStop(1, 'rgba(60,50,30,1)');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        };
+
         const renderPlanetToCanvas = (gcx: number, gcy: number, gr: number) => {
+            if (!hasWebGL || !threeRenderer || !threeCamera || !planetMesh) {
+                drawFallbackPlanet(gcx, gcy, gr);
+                return;
+            }
+
             const renderSize = 512;
             const margin = 1.15;
             threeRenderer.setSize(renderSize, renderSize);
