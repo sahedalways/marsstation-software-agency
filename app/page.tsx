@@ -7,11 +7,14 @@ import { ContactSec } from './components/home/ContactSec';
 import { useCanvasAnimation } from './hooks/useCanvasAnimation';
 import { Footer } from './components/common/Footer';
 import { BackToTopButton } from './components/common/BackToTopButton';
+import { ChatButton } from './components/common/ChatButton';
+import { ChatWindow } from './components/chat/ChatWindow';
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 type Phase = 'hero' | 'services' | 'contact';
 
 export default function IUSPage() {
+    const [chatOpen, setChatOpen] = useState(false);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const btnRef = useRef<HTMLButtonElement>(null);
     const scrollRef = useRef(0);
@@ -288,6 +291,10 @@ export default function IUSPage() {
 
                 {/* ─── Footer ─── */}
                 <Footer mob={mob} />
+
+                {/* ── Chat Button + Window ── */}
+                <ChatButton onClick={() => setChatOpen(true)} isOpen={chatOpen} />
+                <ChatWindow isOpen={chatOpen} onClose={() => setChatOpen(false)} />
 
                 <BackToTopButton />
             </main>
