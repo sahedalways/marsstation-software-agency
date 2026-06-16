@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { siteConfig } from './config/site';
+import { PreloaderProvider } from './contexts/PreloaderContext';
+import { Preloader } from './components/common/Preloader';
 
 export const metadata: Metadata = {
     title: `${siteConfig.name} — ${siteConfig.tagline}`,
@@ -10,7 +12,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
-            <body>{children}</body>
+            <body>
+                <PreloaderProvider>
+                    <Preloader />
+                    {children}
+                </PreloaderProvider>
+            </body>
         </html>
     );
 }
