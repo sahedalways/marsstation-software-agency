@@ -1,5 +1,11 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import { InputField } from '../common/InputField';
+import { Lbl } from '../common/Lbl';
+import { validateField } from '../../utils/validation';
+import { CountryCode } from '../common/CountryCode';
+import { getCountryCallingCode } from 'react-phone-number-input';
+import { ToastMsgModal } from '../common/ToastMsgModal';
 
 interface Props {
     phase: string;
@@ -10,13 +16,30 @@ interface Props {
 }
 
 export function ContactSec({ phase, contactIn, mob, agreed, setAgreed }: Props) {
+    const [submitting, setSubmitting] = useState(false);
+    const [successModal, setSuccessModal] = useState(false);
+    const [country, setCountry] = useState('GB');
     const globeCanvasRef = useRef<HTMLCanvasElement>(null);
-    const [agreedLocal, setAgreedLocal] = useState(agreed);
+    const [form, setForm] = useState({
+        name: '',
+        surname: '',
+        email: '',
+        phone: `+${getCountryCallingCode(country as any)} `,
+        agreed: false,
+    });
 
-    const handleAgree = () => {
-        const v = !agreedLocal;
-        setAgreedLocal(v);
-        setAgreed(v);
+    const [errors, setErrors] = useState<any>({});
+
+    const updateField = (field: string, value: string) => {
+        setForm((prev) => ({
+            ...prev,
+            [field]: value,
+        }));
+
+        setErrors((prev) => ({
+            ...prev,
+            [field]: '',
+        }));
     };
 
     // 🌐 Globe Canvas
@@ -106,9 +129,71 @@ export function ContactSec({ phase, contactIn, mob, agreed, setAgreed }: Props) 
         return () => cancelAnimationFrame(raf);
     }, [contactIn, mob]);
 
+    const handleSubmit = async () => {
+        const newErrors: any = {};
+
+        const rules = {
+            name: { min: 2, max: 30 },
+            surname: { min: 2, max: 30 },
+            email: { min: 5, max: 50 },
+            phone: { min: 8, max: 15 },
+            agreed: {
+                required: true,
+            },
+        };
+
+        newErrors.name = validateField('Name', form.name, rules.name);
+
+        newErrors.surname = validateField('Surname', form.surname, rules.surname);
+
+        newErrors.email = validateField('E-mail', form.email, rules.email);
+
+        newErrors.phone = validateField('Phone', form.phone, rules.phone);
+
+        newErrors.agreed = validateField('Privacy Policy', form.agreed);
+
+        Object.keys(newErrors).forEach((key) => {
+            if (!newErrors[key]) delete newErrors[key];
+        });
+
+        setErrors(newErrors);
+
+        if (Object.keys(newErrors).length > 0) return;
+
+        try {
+            setSubmitting(true);
+
+            // API CALL
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+
+            setSuccessModal(true);
+
+            // optional reset
+            setForm({
+                name: '',
+                surname: '',
+                email: '',
+                phone: `+${getCountryCallingCode(country as any)} `,
+                agreed: false,
+            });
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     return (
         <>
             <style>{`
+            @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
             @keyframes contactGlobeDrop {
                 from {
                     opacity: 0;
@@ -236,7 +321,7 @@ export function ContactSec({ phase, contactIn, mob, agreed, setAgreed }: Props) 
                             Reliable Legal Support for Your Business
                         </h2>
 
-                        {/* ─── Form fields (drop from top) ─── */}
+                        {/* ─── Form InputFields (drop from top) ─── */}
                         <div
                             style={{
                                 display: 'flex',
@@ -256,8 +341,23 @@ export function ContactSec({ phase, contactIn, mob, agreed, setAgreed }: Props) 
                                         : 'none',
                                 }}
                             >
-                                <Field label="Name" placeholder="Your name" mob={mob} />
-                                <Field label="Surname" placeholder="Your surname" mob={mob} />
+                                <InputField
+                                    label="Name"
+                                    placeholder="Your name"
+                                    mob={mob}
+                                    value={form.name}
+                                    error={errors.name}
+                                    onChange={(v) => updateField('name', v)}
+                                />
+
+                                <InputField
+                                    label="Surname"
+                                    placeholder="Your surname"
+                                    mob={mob}
+                                    value={form.surname}
+                                    error={errors.surname}
+                                    onChange={(v) => updateField('surname', v)}
+                                />
                             </div>
 
                             {/* Row 2 */}
@@ -272,11 +372,14 @@ export function ContactSec({ phase, contactIn, mob, agreed, setAgreed }: Props) 
                                         : 'none',
                                 }}
                             >
-                                <Field
+                                <InputField
                                     label="E-mail"
                                     placeholder="hello@example.com"
                                     type="email"
                                     mob={mob}
+                                    value={form.email}
+                                    error={errors.email}
+                                    onChange={(v) => updateField('email', v)}
                                 />
 
                                 <div>
@@ -285,9 +388,7 @@ export function ContactSec({ phase, contactIn, mob, agreed, setAgreed }: Props) 
                                         style={{
                                             fontSize: mob ? '12px' : '13px',
                                             fontWeight: 500,
-                                            color: 'rgba(255,255,255,0.55)',
-                                            marginBottom: '6px',
-                                            display: 'block',
+                                            color: 'rgba(255,255,255,.55)',
                                         }}
                                     >
                                         Phone
@@ -299,56 +400,99 @@ export function ContactSec({ phase, contactIn, mob, agreed, setAgreed }: Props) 
                                             gap: '8px',
                                         }}
                                     >
+                                        <CountryCode
+                                            value={country}
+                                            mob={mob}
+                                            onChange={(newCountry) => {
+                                                setCountry(newCountry);
+
+                                                const code = `+${getCountryCallingCode(newCountry as any)} `;
+
+                                                setForm((prev) => ({
+                                                    ...prev,
+                                                    phone: code,
+                                                }));
+                                            }}
+                                        />
+
                                         <div
                                             style={{
-                                                background: 'rgba(255,255,255,0.04)',
-                                                border: '1px solid rgba(255,255,255,0.10)',
-                                                borderRadius: '8px',
-                                                padding: mob ? '7px 8px' : '9px 10px',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '3px',
-                                                cursor: 'pointer',
-                                                flexShrink: 0,
+                                                position: 'relative',
+                                                flex: 1,
                                             }}
                                         >
-                                            <span style={{ fontSize: mob ? '11px' : '13px' }}>
-                                                🇺🇦
-                                            </span>
-                                            <span
-                                                style={{
-                                                    color: 'rgba(255,255,255,0.28)',
-                                                    fontSize: '8px',
-                                                }}
-                                            >
-                                                ▾
-                                            </span>
-                                        </div>
+                                            <input
+                                                type="tel"
+                                                value={form.phone}
+                                                onChange={(e) => {
+                                                    const code = `+${getCountryCallingCode(country as any)} `;
 
-                                        <input
-                                            type="tel"
-                                            placeholder="+380"
-                                            style={{
-                                                flex: 1,
-                                                background: 'rgba(255,255,255,0.04)',
-                                                border: '1px solid rgba(255,255,255,0.10)',
-                                                borderRadius: '8px',
-                                                padding: mob ? '7px 10px' : '9px 12px',
-                                                color: '#fff',
-                                                fontSize: mob ? '11px' : '12px',
-                                                outline: 'none',
-                                                transition: 'border-color 0.2s',
-                                            }}
-                                            onFocus={(e) =>
-                                                (e.target.style.borderColor =
-                                                    'rgba(110,65,220,0.80)')
-                                            }
-                                            onBlur={(e) =>
-                                                (e.target.style.borderColor =
-                                                    'rgba(255,255,255,0.10)')
-                                            }
-                                        />
+                                                    let value = e.target.value;
+
+                                                    if (!value.startsWith(code)) {
+                                                        value = code;
+                                                    }
+
+                                                    const number = value
+                                                        .slice(code.length)
+                                                        .replace(/\D/g, '');
+
+                                                    setForm((prev) => ({
+                                                        ...prev,
+                                                        phone: code + number,
+                                                    }));
+
+                                                    setErrors((prev) => ({
+                                                        ...prev,
+                                                        phone: '',
+                                                    }));
+                                                }}
+                                                style={{
+                                                    width: '100%',
+                                                    background: 'rgba(255,255,255,.04)',
+                                                    border: `1px solid ${
+                                                        errors.phone
+                                                            ? '#ff4d4d'
+                                                            : 'rgba(255,255,255,.10)'
+                                                    }`,
+                                                    borderRadius: '8px',
+                                                    padding: mob
+                                                        ? '7px 35px 7px 10px'
+                                                        : '9px 40px 9px 12px',
+                                                    color: '#fff',
+                                                    outline: 'none',
+                                                }}
+                                            />
+
+                                            {errors.phone && (
+                                                <span
+                                                    style={{
+                                                        position: 'absolute',
+                                                        right: mob ? '10px' : '12px',
+                                                        top: '50%',
+                                                        transform: 'translateY(-50%)',
+                                                        color: '#ff4d4d',
+                                                        fontSize: mob ? '13px' : '15px',
+                                                        pointerEvents: 'none',
+                                                    }}
+                                                >
+                                                    ⚠
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
+
+                                    {errors.phone && (
+                                        <p
+                                            style={{
+                                                color: '#ff4d4d',
+                                                fontSize: '11px',
+                                                marginTop: '5px',
+                                            }}
+                                        >
+                                            {errors.phone}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
 
@@ -359,161 +503,117 @@ export function ContactSec({ phase, contactIn, mob, agreed, setAgreed }: Props) 
                                     alignItems: 'center',
                                     gap: '10px',
                                     cursor: 'pointer',
-                                    opacity: contactIn ? 1 : 0,
-                                    animation: contactIn
-                                        ? 'dropDown 0.8s cubic-bezier(.16,1,.3,1) 0.92s both'
-                                        : 'none',
                                 }}
-                                onClick={handleAgree}
+                                onClick={() => {
+                                    const value = !form.agreed;
+
+                                    setForm((prev) => ({
+                                        ...prev,
+                                        agreed: value,
+                                    }));
+
+                                    setErrors((prev) => ({
+                                        ...prev,
+                                        agreed: '',
+                                    }));
+                                }}
                             >
                                 <div
                                     style={{
-                                        width: mob ? '14px' : '15px',
-                                        height: mob ? '14px' : '15px',
+                                        width: '15px',
+                                        height: '15px',
                                         borderRadius: '4px',
-                                        flexShrink: 0,
-                                        border: agreedLocal
-                                            ? '1px solid rgba(110,65,220,0.80)'
-                                            : '1px solid rgba(255,255,255,0.28)',
-                                        background: agreedLocal
-                                            ? 'rgba(90,40,210,0.85)'
+
+                                        border: errors.agreed
+                                            ? '1px solid #ff4d4d'
+                                            : form.agreed
+                                              ? '1px solid rgba(110,65,220,.8)'
+                                              : '1px solid rgba(255,255,255,.28)',
+
+                                        background: form.agreed
+                                            ? 'rgba(90,40,210,.85)'
                                             : 'transparent',
+
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        transition: 'all 0.18s',
                                     }}
                                 >
-                                    {agreedLocal && (
-                                        <span
-                                            style={{
-                                                color: '#fff',
-                                                fontSize: mob ? '8px' : '9px',
-                                                lineHeight: 1,
-                                            }}
-                                        >
-                                            ✓
-                                        </span>
-                                    )}
+                                    {form.agreed && '✓'}
                                 </div>
 
-                                <span
+                                <span>I agree to the Privacy Policy</span>
+                            </div>
+
+                            {errors.agreed && (
+                                <p
                                     style={{
-                                        fontSize: mob ? '11px' : '12px',
-                                        color: 'rgba(255,255,255,0.42)',
-                                        lineHeight: 1.4,
+                                        color: '#ff4d4d',
+                                        fontSize: '11px',
+                                        marginTop: '5px',
                                     }}
                                 >
-                                    I agree to the{' '}
-                                    <span
-                                        style={{
-                                            color: 'rgba(140,100,250,0.95)',
-                                            cursor: 'pointer',
-                                        }}
-                                    >
-                                        Privacy Policy
-                                    </span>
-                                </span>
-                            </div>
+                                    {errors.agreed}
+                                </p>
+                            )}
 
                             {/* Button (rises up) */}
                             <button
+                                disabled={submitting}
+                                onClick={handleSubmit}
                                 style={{
                                     width: '100%',
                                     padding: mob ? '12px' : '13px',
-                                    background: 'linear-gradient(135deg, #5a28b8 0%, #3e18a0 100%)',
-                                    border: '1px solid rgba(120,70,240,0.40)',
+                                    background: 'linear-gradient(135deg, #732aeb, #5a1ec8)',
+                                    border: '1px solid rgba(180,120,255,.4)',
                                     borderRadius: '9px',
                                     color: '#fff',
                                     fontSize: mob ? '12px' : '13px',
                                     fontWeight: 500,
-                                    cursor: 'pointer',
-                                    letterSpacing: '0.03em',
-                                    fontFamily: 'inherit',
-                                    marginTop: mob ? '6px' : '10px',
-                                    opacity: contactIn ? 1 : 0,
-                                    animation: contactIn
-                                        ? 'riseUp 0.9s cubic-bezier(.16,1,.3,1) 1.05s both'
-                                        : 'none',
-                                    transition: 'transform 0.25s ease, box-shadow 0.25s ease',
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(-2px)';
-                                    e.currentTarget.style.boxShadow =
-                                        '0 8px 24px rgba(90,40,184,0.45)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.boxShadow = 'none';
+                                    cursor: submitting ? 'not-allowed' : 'pointer',
+                                    opacity: submitting ? 0.7 : 1,
+                                    transition: '.3s',
                                 }}
                             >
-                                Send Request
+                                {submitting ? (
+                                    <span
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            gap: '8px',
+                                        }}
+                                    >
+                                        <span
+                                            style={{
+                                                width: '14px',
+                                                height: '14px',
+                                                border: '2px solid rgba(255,255,255,.4)',
+                                                borderTop: '2px solid #fff',
+                                                borderRadius: '50%',
+                                                animation: 'spin .8s linear infinite',
+                                            }}
+                                        />
+                                        Sending...
+                                    </span>
+                                ) : (
+                                    'Send Request'
+                                )}
                             </button>
                         </div>
                     </div>
                 </div>
+                {successModal && (
+                    <ToastMsgModal
+                        open={successModal}
+                        mob={mob}
+                        type="success"
+                        title="Request Sent Successfully"
+                        message="Thank you for contacting us. Our legal team will contact you shortly."
+                        onClose={() => setSuccessModal(false)}
+                    />
+                )}
             </div>
         </>
-    );
-}
-
-function Lbl({
-    children,
-    mob,
-    style,
-}: {
-    children: React.ReactNode;
-    mob: boolean;
-    style?: React.CSSProperties;
-}) {
-    return (
-        <label
-            style={{
-                display: 'block',
-                fontSize: mob ? '9.5px' : '11px',
-                color: 'rgba(255,255,255,0.40)',
-                marginBottom: mob ? '4px' : '6px',
-                letterSpacing: '0.03em',
-                ...style,
-            }}
-        >
-            {children}
-        </label>
-    );
-}
-
-function Field({
-    label,
-    placeholder,
-    type = 'text',
-    mob,
-}: {
-    label: string;
-    placeholder: string;
-    type?: string;
-    mob: boolean;
-}) {
-    return (
-        <div>
-            <Lbl mob={mob}>{label}</Lbl>
-            <input
-                type={type}
-                placeholder={placeholder}
-                style={{
-                    width: '100%',
-                    background: 'rgba(255,255,255,0.04)',
-                    border: '1px solid rgba(255,255,255,0.10)',
-                    borderRadius: '8px',
-                    padding: mob ? '6px 10px' : '9px 13px',
-                    color: '#fff',
-                    fontSize: mob ? '11px' : '12px',
-                    outline: 'none',
-                    transition: 'border-color 0.2s',
-                    fontFamily: 'inherit',
-                }}
-                onFocus={(e) => (e.target.style.borderColor = 'rgba(110,65,220,0.80)')}
-                onBlur={(e) => (e.target.style.borderColor = 'rgba(255,255,255,0.10)')}
-            />
-        </div>
     );
 }
