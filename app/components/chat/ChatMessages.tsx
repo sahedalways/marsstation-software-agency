@@ -17,6 +17,7 @@ interface ChatMessagesProps {
     agentName: string;
     agentGender: 'male' | 'female';
     isTyping: boolean;
+    agentAvatar: string;
 }
 
 // ── Message Status Icons ──
@@ -106,6 +107,7 @@ export const ChatMessages = ({
     agentName,
     agentGender,
     isTyping,
+    agentAvatar,
 }: ChatMessagesProps) => {
     const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -141,7 +143,7 @@ export const ChatMessages = ({
                         gap: 10,
                     }}
                 >
-                    <SupportAvatar gender={agentGender} size={52} />
+                    <SupportAvatar avatar={agentAvatar} size={38} showOnline />
                     <p
                         style={{
                             color: 'rgba(255,255,255,0.6)',
@@ -172,7 +174,7 @@ export const ChatMessages = ({
                     >
                         {!isUser && (
                             <div style={{ marginRight: 8, marginTop: 2 }}>
-                                <SupportAvatar gender={agentGender} size={28} />
+                                <SupportAvatar avatar={agentAvatar} size={38} showOnline />
                             </div>
                         )}
 
@@ -239,7 +241,7 @@ export const ChatMessages = ({
                         animation: 'chatMsgIn 0.3s ease forwards',
                     }}
                 >
-                    <SupportAvatar gender={agentGender} size={28} />
+                    <SupportAvatar avatar={agentAvatar} size={38} showOnline />
                     <div
                         style={{
                             padding: '12px 18px',

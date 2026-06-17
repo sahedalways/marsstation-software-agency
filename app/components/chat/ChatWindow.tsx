@@ -4,62 +4,261 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { ChatUserForm } from './ChatUserForm';
 import { ChatMessages, Message } from './ChatMessages';
 import { ChatInput } from './ChatInput';
+import { isLead, submitLead } from '../../utils/lead';
 
 interface SupportAgent {
     name: string;
     gender: 'male' | 'female';
+    avatar: string;
 }
 
 const SUPPORT_AGENTS: SupportAgent[] = [
-    { name: 'Sarah Mitchell', gender: 'female' },
-    { name: 'Emma Johnson', gender: 'female' },
-    { name: 'Priya Sharma', gender: 'female' },
-    { name: 'Sophia Chen', gender: 'female' },
-    { name: 'Fatima Al-Hassan', gender: 'female' },
-    { name: 'Isabella Garcia', gender: 'female' },
-    { name: 'Aisha Rahman', gender: 'female' },
-    { name: 'Olivia Taylor', gender: 'female' },
-    { name: 'James Wilson', gender: 'male' },
-    { name: 'David Park', gender: 'male' },
-    { name: 'Alex Thompson', gender: 'male' },
-    { name: 'Ryan Cooper', gender: 'male' },
-    { name: 'Ahmed Khan', gender: 'male' },
-    { name: 'Daniel Rivera', gender: 'male' },
-    { name: 'Marcus Brown', gender: 'male' },
-    { name: 'Chris Anderson', gender: 'male' },
+    {
+        name: 'Sarah Mitchell',
+        gender: 'female',
+        avatar: 'https://randomuser.me/api/portraits/women/1.jpg',
+    },
+    {
+        name: 'Emma Johnson',
+        gender: 'female',
+        avatar: 'https://randomuser.me/api/portraits/women/2.jpg',
+    },
+    {
+        name: 'Priya Sharma',
+        gender: 'female',
+        avatar: 'https://randomuser.me/api/portraits/women/3.jpg',
+    },
+    {
+        name: 'Sophia Chen',
+        gender: 'female',
+        avatar: 'https://randomuser.me/api/portraits/women/4.jpg',
+    },
+    {
+        name: 'Fatima Al-Hassan',
+        gender: 'female',
+        avatar: 'https://randomuser.me/api/portraits/women/5.jpg',
+    },
+    {
+        name: 'Isabella Garcia',
+        gender: 'female',
+        avatar: 'https://randomuser.me/api/portraits/women/6.jpg',
+    },
+    {
+        name: 'Aisha Rahman',
+        gender: 'female',
+        avatar: 'https://randomuser.me/api/portraits/women/7.jpg',
+    },
+    {
+        name: 'Olivia Taylor',
+        gender: 'female',
+        avatar: 'https://randomuser.me/api/portraits/women/8.jpg',
+    },
+    {
+        name: 'James Wilson',
+        gender: 'male',
+        avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+    },
+    {
+        name: 'David Park',
+        gender: 'male',
+        avatar: 'https://randomuser.me/api/portraits/men/2.jpg',
+    },
+    {
+        name: 'Alex Thompson',
+        gender: 'male',
+        avatar: 'https://randomuser.me/api/portraits/men/3.jpg',
+    },
+    {
+        name: 'Ryan Cooper',
+        gender: 'male',
+        avatar: 'https://randomuser.me/api/portraits/men/4.jpg',
+    },
+    {
+        name: 'Ahmed Khan',
+        gender: 'male',
+        avatar: 'https://randomuser.me/api/portraits/men/5.jpg',
+    },
+    {
+        name: 'Daniel Rivera',
+        gender: 'male',
+        avatar: 'https://randomuser.me/api/portraits/men/6.jpg',
+    },
+    {
+        name: 'Marcus Brown',
+        gender: 'male',
+        avatar: 'https://randomuser.me/api/portraits/men/7.jpg',
+    },
+    {
+        name: 'Chris Anderson',
+        gender: 'male',
+        avatar: 'https://randomuser.me/api/portraits/men/8.jpg',
+    },
 ];
 
 const getRandomAgent = (): SupportAgent =>
     SUPPORT_AGENTS[Math.floor(Math.random() * SUPPORT_AGENTS.length)];
 
-// ── Human-like delay calculator ──
-const calculateHumanDelay = (
-    userMsgLength: number,
-    replyLength: number
-): {
-    seenDelay: number;
-    typingDelay: number;
-} => {
-    const baseSeenDelay =
-        userMsgLength < 30
-            ? 800 + Math.random() * 1200
-            : userMsgLength < 100
-              ? 1500 + Math.random() * 2500
-              : 3000 + Math.random() * 4000;
+// ══════════════════════════════════════════════
+//  HUMAN BEHAVIOR ENGINE
+// ══════════════════════════════════════════════
 
-    // Add random "human distraction" factor (sometimes people take longer)
-    const distractionChance = Math.random();
-    const seenDelay =
-        distractionChance > 0.85 ? baseSeenDelay + 2000 + Math.random() * 3000 : baseSeenDelay;
-
-    const charsPerSecond = 4 + Math.random() * 3;
-    const baseTypingDelay = (replyLength / charsPerSecond) * 1000;
-
-    // Minimum typing: 1.5s, Maximum: 12s (even for long replies)
-    const typingDelay = Math.max(1500, Math.min(12000, baseTypingDelay));
-
-    return { seenDelay, typingDelay };
+// Count meaningful lines in a message
+const countLines = (text: string): number => {
+    const lines = text.split(/\n/).filter((l) => l.trim().length > 0);
+    // Also count long sentences as separate "lines" to read
+    let extraLines = 0;
+    lines.forEach((line) => {
+        // Every ~80 chars counts as an extra reading line
+        if (line.length > 80) extraLines += Math.floor(line.length / 80);
+    });
+    return lines.length + extraLines;
 };
+
+// Human reading speed: 200-300 WPM = ~4-5 words/sec
+// But on chat, people skim: ~6-8 words/sec for short msgs
+const calculateReadingTime = (text: string): number => {
+    const lines = countLines(text);
+    const wordCount = text.split(/\s+/).length;
+
+    // Base: per-line reading (humans read line by line)
+    const perLineTime = lines * (400 + Math.random() * 300); // 400-700ms per line
+
+    // Word-based component (longer words = slower)
+    const avgWordLength = text.length / Math.max(wordCount, 1);
+    const wordFactor = avgWordLength > 5 ? 1.3 : 1.0; // complex words slow reading
+
+    // Short msg (< 5 words): quick glance
+    if (wordCount <= 5) {
+        return 600 + Math.random() * 800; // 0.6-1.4s
+    }
+
+    // Medium msg (5-20 words): normal read
+    if (wordCount <= 20) {
+        return perLineTime * wordFactor;
+    }
+
+    // Long msg (20+ words): line-by-line reading
+    return perLineTime * wordFactor * (0.9 + Math.random() * 0.3);
+};
+
+// Human mood/behavior randomizer
+// Sometimes people are quick, sometimes distracted
+const getHumanMood = (): 'focused' | 'normal' | 'distracted' | 'busy' => {
+    const r = Math.random();
+    if (r < 0.15) return 'focused'; // 15% - super quick responses
+    if (r < 0.55) return 'normal'; // 40% - normal pace
+    if (r < 0.85) return 'distracted'; // 30% - slightly slow
+    return 'busy'; // 15% - noticeably delayed
+};
+
+const getMoodMultiplier = (mood: ReturnType<typeof getHumanMood>): number => {
+    switch (mood) {
+        case 'focused':
+            return 0.5 + Math.random() * 0.3; // 0.5-0.8x
+        case 'normal':
+            return 0.9 + Math.random() * 0.3; // 0.9-1.2x
+        case 'distracted':
+            return 1.3 + Math.random() * 0.7; // 1.3-2.0x
+        case 'busy':
+            return 2.0 + Math.random() * 2.0; // 2.0-4.0x
+    }
+};
+
+// Typing speed simulation
+// Real human: 40-70 WPM = 3.3-5.8 chars/sec
+// Support agent (practiced): 50-80 WPM = 4.2-6.7 chars/sec
+const calculateTypingTime = (replyText: string, mood: ReturnType<typeof getHumanMood>): number => {
+    const lines = replyText.split(/\n/).filter((l) => l.trim().length > 0);
+    const totalChars = replyText.length;
+
+    // Base typing speed (chars per second)
+    const baseSpeed = 4.5 + Math.random() * 2.5; // 4.5-7 chars/sec
+
+    // Per-line pause: humans pause between lines/thoughts
+    // Short pause between related lines, longer for new thoughts
+    let totalPauseTime = 0;
+    lines.forEach((line, i) => {
+        if (i === 0) return;
+        // Pause between lines: 300-1200ms
+        totalPauseTime += 300 + Math.random() * 900;
+
+        // Extra pause if line starts with emoji or new topic indicator
+        if (/^[•\-\d📌✅❌🔹]/.test(line.trim())) {
+            totalPauseTime += 200 + Math.random() * 400;
+        }
+    });
+
+    // Base typing time
+    const rawTypingTime = (totalChars / baseSpeed) * 1000;
+
+    // Apply mood
+    const moodMultiplier = getMoodMultiplier(mood);
+
+    // Sometimes agent types, deletes, retypes (5% chance adds 1-3s)
+    const retypeDelay = Math.random() < 0.05 ? 1000 + Math.random() * 2000 : 0;
+
+    const total = (rawTypingTime + totalPauseTime + retypeDelay) * moodMultiplier;
+
+    // Clamp: min 1.2s (even for "ok"), max 15s (even for essays)
+    return Math.max(1200, Math.min(15000, total));
+};
+
+// Gap between "seen" and "start typing"
+// Sometimes instant, sometimes they read then think
+const calculateThinkingGap = (
+    userMsgLength: number,
+    mood: ReturnType<typeof getHumanMood>
+): number => {
+    const wordCount = userMsgLength; // approximate
+
+    // Simple greeting/thanks: minimal thinking
+    if (wordCount < 20) {
+        const base = 300 + Math.random() * 600;
+        return base * getMoodMultiplier(mood);
+    }
+
+    // Question: need to think about answer
+    if (wordCount < 80) {
+        const base = 600 + Math.random() * 1500;
+        return base * getMoodMultiplier(mood);
+    }
+
+    // Complex/long message: read carefully, think, then type
+    const base = 1000 + Math.random() * 2500;
+    return base * getMoodMultiplier(mood);
+};
+
+// "Seen" delay: when does agent notice the message?
+const calculateSeenDelay = (mood: ReturnType<typeof getHumanMood>): number => {
+    switch (mood) {
+        case 'focused':
+            // Already looking at chat
+            return 400 + Math.random() * 600; // 0.4-1.0s
+        case 'normal':
+            // Switches to chat tab
+            return 800 + Math.random() * 1500; // 0.8-2.3s
+        case 'distracted':
+            // Doing something else, comes back
+            return 2000 + Math.random() * 3000; // 2-5s
+        case 'busy':
+            // Really occupied, takes a while
+            return 4000 + Math.random() * 6000; // 4-10s
+    }
+};
+
+// Delivered delay: network simulation
+const calculateDeliveredDelay = (): number => {
+    // Most of the time instant-ish
+    if (Math.random() < 0.7) return 200 + Math.random() * 400; // 0.2-0.6s
+    // Sometimes slight network lag
+    return 500 + Math.random() * 1000; // 0.5-1.5s
+};
+
+// Sometimes agent goes "seen" then comes back later to type (realistic!)
+// 10% chance of "double seen" — seen, pause, then type
+const shouldDoubleSeen = (): boolean => Math.random() < 0.1;
+
+// ══════════════════════════════════════════════
 
 const fetchAIReply = async (
     message: string,
@@ -211,11 +410,11 @@ const MaleAvatar = ({ size = 34 }: { size?: number }) => (
 
 // ── Support Avatar ──
 export const SupportAvatar = ({
-    gender,
+    avatar,
     size = 34,
     showOnline = false,
 }: {
-    gender: 'male' | 'female';
+    avatar: string;
     size?: number;
     showOnline?: boolean;
 }) => (
@@ -224,31 +423,32 @@ export const SupportAvatar = ({
             width: size,
             height: size,
             borderRadius: '50%',
-            background:
-                gender === 'female'
-                    ? 'linear-gradient(135deg, rgba(180,120,220,0.25), rgba(120,60,180,0.15))'
-                    : 'linear-gradient(135deg, rgba(74,111,165,0.25), rgba(40,70,130,0.15))',
-            border: `1px solid ${gender === 'female' ? 'rgba(180,120,220,0.3)' : 'rgba(74,111,165,0.3)'}`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
             position: 'relative',
             overflow: 'hidden',
             flexShrink: 0,
         }}
     >
-        {gender === 'female' ? <FemaleAvatar size={size} /> : <MaleAvatar size={size} />}
+        <img
+            src={avatar}
+            alt="Support Agent"
+            style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+            }}
+        />
+
         {showOnline && (
             <div
                 style={{
                     position: 'absolute',
-                    bottom: -1,
-                    right: -1,
-                    width: Math.max(8, size * 0.26),
-                    height: Math.max(8, size * 0.26),
+                    bottom: 0,
+                    right: 0,
+                    width: 10,
+                    height: 10,
                     borderRadius: '50%',
                     background: '#22c55e',
-                    border: '2px solid rgba(8,4,24,0.95)',
+                    border: '2px solid #080418',
                 }}
             />
         )}
@@ -263,8 +463,8 @@ export const ChatWindow = ({ isOpen, onClose }: ChatWindowProps) => {
     const [inputDisabled, setInputDisabled] = useState(false);
     const conversationRef = useRef<{ role: string; content: string }[]>([]);
     const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
+    const msgCountRef = useRef(0); // Track message count for mood shifts
 
-    // Clean up timeouts on unmount
     useEffect(() => {
         return () => {
             timeoutsRef.current.forEach(clearTimeout);
@@ -285,45 +485,70 @@ export const ChatWindow = ({ isOpen, onClose }: ChatWindowProps) => {
 
     const handleUserSubmit = useCallback(
         (name: string, email: string) => {
+            if (isLead(msgCountRef.current)) {
+                const existingLead = localStorage.getItem(`ms_lead_${email}`);
+
+                if (!existingLead) {
+                    submitLead({
+                        name,
+                        email,
+                    });
+
+                    localStorage.setItem(`ms_lead_${email}`, 'true');
+                }
+            }
+
             setUser({ name, email });
             setInputDisabled(true);
+            msgCountRef.current = 0;
 
-            // Step 1: "seen" after a small delay (agent notices new user)
+            const mood = getHumanMood();
+            const welcomeMsg = `Hi ${name}! 👋 I'm ${agent.name}. Welcome! How can I help you today?`;
+
+            // Agent notices new chat
+            const noticeDelay = calculateSeenDelay(mood);
             addTimeout(() => {
                 setStatusText('seen');
-            }, 600);
+            }, noticeDelay);
 
-            // Step 2: Start "typing"
+            // Gap before typing
+            const thinkGap = 400 + Math.random() * 800;
             addTimeout(() => {
                 setStatusText('typing');
-            }, 1500);
+            }, noticeDelay + thinkGap);
 
-            // Step 3: Send welcome message
-            const welcomeMsg = `Hi ${name}! 👋 I'm ${agent.name}. Welcome! How can I help you today?`;
-            const typingTime = 1800 + Math.random() * 1200;
-
-            addTimeout(() => {
-                setMessages([
-                    {
-                        id: 'welcome-1',
-                        text: welcomeMsg,
-                        sender: 'support',
-                        timestamp: new Date(),
-                        status: 'delivered',
-                    },
-                ]);
-                setStatusText('online');
-                setInputDisabled(false);
-                conversationRef.current.push({ role: 'assistant', content: welcomeMsg });
-            }, 1500 + typingTime);
+            // Send welcome
+            const typingTime = calculateTypingTime(welcomeMsg, mood);
+            addTimeout(
+                () => {
+                    setMessages([
+                        {
+                            id: 'welcome-1',
+                            text: welcomeMsg,
+                            sender: 'support',
+                            timestamp: new Date(),
+                            status: 'delivered',
+                        },
+                    ]);
+                    setStatusText('online');
+                    setInputDisabled(false);
+                    conversationRef.current.push({ role: 'assistant', content: welcomeMsg });
+                },
+                noticeDelay + thinkGap + typingTime
+            );
         },
         [agent]
     );
 
     const handleSend = useCallback(async (text: string) => {
-        // Add user message
+        msgCountRef.current++;
+
+        // Each message gets a fresh mood (humans aren't consistent!)
+        const mood = getHumanMood();
+
+        // ── 1. Add user message (sent) ──
         const userMsg: Message = {
-            id: `user-${Date.now()}`,
+            id: `user-${Date.now()}-${msgCountRef.current}`,
             text,
             sender: 'user',
             timestamp: new Date(),
@@ -332,37 +557,24 @@ export const ChatWindow = ({ isOpen, onClose }: ChatWindowProps) => {
         setMessages((prev) => [...prev, userMsg]);
         setInputDisabled(true);
 
-        // Update conversation history
         conversationRef.current.push({ role: 'user', content: text });
 
-        // Mark as "delivered" after small delay
-        addTimeout(
-            () => {
-                setMessages((prev) =>
-                    prev.map((m) => (m.id === userMsg.id ? { ...m, status: 'delivered' } : m))
-                );
-            },
-            300 + Math.random() * 500
-        );
+        // ── 2. Delivered tick ──
+        const deliveredDelay = calculateDeliveredDelay();
+        addTimeout(() => {
+            setMessages((prev) =>
+                prev.map((m) => (m.id === userMsg.id ? { ...m, status: 'delivered' } : m))
+            );
+        }, deliveredDelay);
 
-        // Fetch AI reply in background while simulating human behavior
+        // ── 3. Fetch AI reply (happens in parallel) ──
         const aiReplyPromise = fetchAIReply(text, conversationRef.current);
 
-        // Step 1: "Seen" delay — depends on user message length
-        const userMsgLength = text.length;
+        // ── 4. Seen delay (based on mood + user msg reading time) ──
+        const baseSeenDelay = calculateSeenDelay(mood);
+        const readingTime = calculateReadingTime(text);
+        const seenDelay = baseSeenDelay + readingTime;
 
-        // Preliminary delay estimates (we'll adjust typing after we get the reply)
-        const seenBase =
-            userMsgLength < 30
-                ? 800 + Math.random() * 1200
-                : userMsgLength < 100
-                  ? 1500 + Math.random() * 2500
-                  : 2500 + Math.random() * 4000;
-
-        // Random distraction (15% chance of extra delay)
-        const seenDelay = Math.random() > 0.85 ? seenBase + 1500 + Math.random() * 3000 : seenBase;
-
-        // Mark as "seen"
         addTimeout(() => {
             setMessages((prev) =>
                 prev.map((m) => (m.id === userMsg.id ? { ...m, status: 'seen' } : m))
@@ -370,36 +582,86 @@ export const ChatWindow = ({ isOpen, onClose }: ChatWindowProps) => {
             setStatusText('seen');
         }, seenDelay);
 
-        // Wait for AI reply
+        // ── 5. Wait for AI reply ──
         const aiReply = await aiReplyPromise;
-        const replyLength = aiReply.length;
 
-        // Calculate typing delay based on reply length
-        const charsPerSecond = 4 + Math.random() * 3;
-        const typingBase = (replyLength / charsPerSecond) * 1000;
-        const typingDelay = Math.max(1500, Math.min(12000, typingBase));
+        // ── 6. Double-seen behavior (sometimes seen → goes away → comes back) ──
+        const doubleSeen = shouldDoubleSeen();
+        let extraDoubleSeenDelay = 0;
 
-        // Step 2: Start typing (after seen delay completes)
-        const typingStartDelay = seenDelay + 500 + Math.random() * 1000;
+        if (doubleSeen) {
+            // Agent sees it, goes away briefly, comes back
+            extraDoubleSeenDelay = 2000 + Math.random() * 4000;
+            addTimeout(() => {
+                setStatusText('online'); // "went away"
+            }, seenDelay + 500);
+
+            addTimeout(
+                () => {
+                    setStatusText('seen'); // "came back"
+                },
+                seenDelay + 500 + extraDoubleSeenDelay
+            );
+        }
+
+        // ── 7. Thinking gap (seen → typing) ──
+        const thinkingGap = calculateThinkingGap(text.length, mood);
+        const typingStartTime = seenDelay + extraDoubleSeenDelay + thinkingGap;
 
         addTimeout(() => {
             setStatusText('typing');
-        }, typingStartDelay);
+        }, typingStartTime);
 
-        // Step 3: Send the reply
-        addTimeout(() => {
-            const supportMsg: Message = {
-                id: `support-${Date.now()}`,
-                text: aiReply,
-                sender: 'support',
-                timestamp: new Date(),
-                status: 'delivered',
-            };
-            setMessages((prev) => [...prev, supportMsg]);
-            setStatusText('online');
-            setInputDisabled(false);
-            conversationRef.current.push({ role: 'assistant', content: aiReply });
-        }, typingStartDelay + typingDelay);
+        // ── 8. Typing duration (line-based) ──
+        const typingDuration = calculateTypingTime(aiReply, mood);
+
+        // ── 9. Sometimes typing stops briefly then resumes (thinking mid-type) ──
+        // 8% chance
+        if (Math.random() < 0.08 && typingDuration > 3000) {
+            const pauseAt = typingStartTime + typingDuration * (0.3 + Math.random() * 0.3);
+            const pauseDuration = 800 + Math.random() * 1500;
+
+            addTimeout(() => {
+                setStatusText('seen'); // stopped typing
+            }, pauseAt);
+
+            addTimeout(() => {
+                setStatusText('typing'); // resumed typing
+            }, pauseAt + pauseDuration);
+
+            // Adjust final send time
+            addTimeout(
+                () => {
+                    const supportMsg: Message = {
+                        id: `support-${Date.now()}-${msgCountRef.current}`,
+                        text: aiReply,
+                        sender: 'support',
+                        timestamp: new Date(),
+                        status: 'delivered',
+                    };
+                    setMessages((prev) => [...prev, supportMsg]);
+                    setStatusText('online');
+                    setInputDisabled(false);
+                    conversationRef.current.push({ role: 'assistant', content: aiReply });
+                },
+                typingStartTime + typingDuration + pauseDuration
+            );
+        } else {
+            // Normal flow: typing → send
+            addTimeout(() => {
+                const supportMsg: Message = {
+                    id: `support-${Date.now()}-${msgCountRef.current}`,
+                    text: aiReply,
+                    sender: 'support',
+                    timestamp: new Date(),
+                    status: 'delivered',
+                };
+                setMessages((prev) => [...prev, supportMsg]);
+                setStatusText('online');
+                setInputDisabled(false);
+                conversationRef.current.push({ role: 'assistant', content: aiReply });
+            }, typingStartTime + typingDuration);
+        }
     }, []);
 
     const handleClose = () => onClose();
@@ -412,6 +674,7 @@ export const ChatWindow = ({ isOpen, onClose }: ChatWindowProps) => {
         setStatusText('online');
         setInputDisabled(false);
         conversationRef.current = [];
+        msgCountRef.current = 0;
         setAgent(getRandomAgent());
         onClose();
     };
@@ -432,10 +695,6 @@ export const ChatWindow = ({ isOpen, onClose }: ChatWindowProps) => {
                 @keyframes typingBounce {
                     0%, 60%, 100% { transform: translateY(0); }
                     30% { transform: translateY(-4px); }
-                }
-                @keyframes seenPulse {
-                    0%, 100% { opacity: 0.6; }
-                    50% { opacity: 1; }
                 }
                 .chat-window-scrollbar::-webkit-scrollbar { width: 4px; }
                 .chat-window-scrollbar::-webkit-scrollbar-track { background: transparent; }
@@ -478,7 +737,7 @@ export const ChatWindow = ({ isOpen, onClose }: ChatWindowProps) => {
                     }}
                 >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <SupportAvatar gender={agent.gender} size={38} showOnline />
+                        <SupportAvatar avatar={agent.avatar} size={38} showOnline />
                         <div>
                             <p
                                 style={{
@@ -603,6 +862,7 @@ export const ChatWindow = ({ isOpen, onClose }: ChatWindowProps) => {
                                 agentName={agent.name}
                                 agentGender={agent.gender}
                                 isTyping={statusText === 'typing'}
+                                agentAvatar={agent.avatar}
                             />
                         </div>
                         <ChatInput onSend={handleSend} disabled={inputDisabled} />
