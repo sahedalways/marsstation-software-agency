@@ -74,18 +74,18 @@ export function CountryCode({ value, onChange, mob }: Props) {
                 onClick={toggleDropdown}
                 style={{
                     background:
-                        'linear-gradient(135deg, rgba(115,42,235,.95), rgba(90,30,200,.75))',
-                    border: '1px solid rgba(180,120,255,.35)',
+                        'linear-gradient(135deg, rgba(115,42,235,.82), rgba(90,30,200,.60))',
+                    border: '1px solid rgba(180,120,255,.25)',
                     borderRadius: '10px',
-                    padding: mob ? '6px 35px 6px 10px' : '9px 35px 9px 13px',
+                    padding: mob ? '5px 28px 5px 8px' : '7px 28px 7px 10px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '6px',
+                    gap: '5px',
                     cursor: 'pointer',
                     color: '#fff',
                     userSelect: 'none',
-                    minWidth: mob ? '55px' : '65px',
+                    minWidth: mob ? '50px' : '60px',
                 }}
             >
                 <span
