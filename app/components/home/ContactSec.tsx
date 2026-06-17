@@ -555,7 +555,13 @@ export function ContactSec({ phase, contactIn, mob, agreed, setAgreed }: Props) 
                                     {form.agreed && '✓'}
                                 </div>
 
-                                <span>I agree to the Privacy Policy</span>
+                                <span
+                                    style={{
+                                        fontSize: mob ? '11px' : '14px',
+                                    }}
+                                >
+                                    I agree to the Privacy Policy
+                                </span>
                             </div>
 
                             {errors.agreed && (
