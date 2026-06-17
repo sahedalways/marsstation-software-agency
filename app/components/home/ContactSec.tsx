@@ -470,9 +470,11 @@ export function ContactSec({ phase, contactIn, mob, agreed, setAgreed }: Props) 
                                                     }`,
                                                     borderRadius: '8px',
                                                     padding: mob
-                                                        ? '7px 35px 7px 10px'
-                                                        : '9px 40px 9px 12px',
+                                                        ? '6px 35px 6px 10px'
+                                                        : '9px 35px 9px 13px',
                                                     color: '#fff',
+                                                    fontSize: mob ? '11px' : '12px',
+
                                                     outline: 'none',
                                                 }}
                                             />
