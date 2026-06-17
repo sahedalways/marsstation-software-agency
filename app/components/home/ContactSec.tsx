@@ -399,7 +399,7 @@ export function ContactSec({ phase, contactIn, mob, agreed, setAgreed }: Props) 
                                     <Lbl
                                         mob={mob}
                                         style={{
-                                            fontSize: mob ? '12px' : '13px',
+                                            fontSize: mob ? '9.5px' : '11px',
                                             fontWeight: 500,
                                             color: 'rgba(255,255,255,.55)',
                                         }}
