@@ -77,7 +77,7 @@ export function CountryCode({ value, onChange, mob }: Props) {
                         'linear-gradient(135deg, rgba(115,42,235,.95), rgba(90,30,200,.75))',
                     border: '1px solid rgba(180,120,255,.35)',
                     borderRadius: '10px',
-                    padding: mob ? '7px 10px' : '9px 12px',
+                    padding: mob ? '6px 35px 6px 10px' : '9px 35px 9px 13px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
