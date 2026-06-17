@@ -32,41 +32,37 @@ export function Navbar({ mob }: NavbarProps) {
                         justifyContent: 'center',
                         cursor: 'pointer',
 
-                        padding: mob ? '3px 6px' : '4px 8px',
+                        padding: mob ? '2px 5px' : '3px 6px',
 
-                        borderRadius: '8px',
+                        borderRadius: '7px',
 
                         background: 'rgba(255,255,255,0.82)',
 
                         border: '1px solid rgba(255,255,255,0.35)',
 
-                        boxShadow: '0 5px 18px rgba(255,255,255,0.08)',
+                        boxShadow: '0 4px 14px rgba(255,255,255,0.08)',
 
                         transition: 'all .25s ease',
                     }}
                     onMouseEnter={(e) => {
                         e.currentTarget.style.background = 'rgba(255,255,255,0.95)';
-
-                        e.currentTarget.style.boxShadow = '0 0 25px rgba(115,42,235,.35)';
-
+                        e.currentTarget.style.boxShadow = '0 0 20px rgba(115,42,235,.35)';
                         e.currentTarget.style.transform = 'translateY(-2px) scale(1.03)';
                     }}
                     onMouseLeave={(e) => {
                         e.currentTarget.style.background = 'rgba(255,255,255,0.82)';
-
-                        e.currentTarget.style.boxShadow = '0 5px 18px rgba(255,255,255,0.08)';
-
+                        e.currentTarget.style.boxShadow = '0 4px 14px rgba(255,255,255,0.08)';
                         e.currentTarget.style.transform = 'translateY(0) scale(1)';
                     }}
                 >
                     <Image
                         src="/images/logo.png"
                         alt="Logo"
-                        width={mob ? 85 : 120}
-                        height={mob ? 30 : 40}
+                        width={mob ? 70 : 100}
+                        height={mob ? 24 : 34}
                         style={{
                             width: 'auto',
-                            height: mob ? '30px' : '40px',
+                            height: mob ? '24px' : '34px',
                             objectFit: 'contain',
                         }}
                         priority
