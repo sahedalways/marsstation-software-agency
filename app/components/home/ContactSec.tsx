@@ -6,6 +6,7 @@ import { validateField } from '../../utils/validation';
 import { CountryCode } from '../common/CountryCode';
 import { getCountryCallingCode } from 'react-phone-number-input';
 import { ToastMsgModal } from '../common/ToastMsgModal';
+import { SectionHeading } from '../common/SectionHeading';
 
 interface Props {
     phase: string;
@@ -318,45 +319,14 @@ export function ContactSec({ phase, contactIn, mob, agreed, setAgreed }: Props) 
                         }}
                     >
                         {/* ─── Heading texts (rise from bottom) ─── */}
-                        <p
-                            style={{
-                                fontSize: mob ? '9.5px' : '11px',
-                                color: 'rgba(255,255,255,0.36)',
-                                letterSpacing: '0.14em',
-                                textTransform: 'uppercase',
-                                marginBottom: mob ? '8px' : '12px',
-                                textAlign: 'center',
-                                opacity: contactIn ? 1 : 0,
-                                animation: contactIn
-                                    ? 'riseUp 0.9s cubic-bezier(.16,1,.3,1) 0.3s both'
-                                    : 'none',
-                            }}
-                        >
-                            Get in touch
-                        </p>
-
-                        <h2
-                            style={{
-                                fontSize: mob
-                                    ? 'clamp(16px, 4.5vw, 22px)'
-                                    : 'clamp(20px, 2.6vw, 34px)',
-                                fontWeight: 300,
-                                color: '#fff',
-                                lineHeight: 1.28,
-                                letterSpacing: '-0.02em',
-                                marginBottom: mob ? '18px' : '30px',
-                                textAlign: 'center',
-                                opacity: contactIn ? 1 : 0,
-                                animation: contactIn
-                                    ? 'riseUp 1s cubic-bezier(.16,1,.3,1) 0.45s both'
-                                    : 'none',
-                            }}
-                        >
-                            Your Partner in Law:
-                            <br />
-                            Reliable Legal Support for Your Business
-                        </h2>
-
+                        <SectionHeading
+                            badge="GET IN TOUCH"
+                            title="Your Partner in Law: Reliable Legal Support for Your Business"
+                            highlight="Reliable Legal Support"
+                            subtitle="We provide trusted legal guidance and professional support to help businesses stay protected, compliant, and ready for growth."
+                            mob={mob}
+                            cardsIn={contactIn}
+                        />
                         {/* ─── Form InputFields (drop from top) ─── */}
                         <div
                             style={{

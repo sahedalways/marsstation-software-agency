@@ -11,7 +11,7 @@ interface FooterProps {
 export function Footer({ mob }: FooterProps) {
     const appName = process.env.NEXT_PUBLIC_APP_NAME || 'MARSSTATION';
     const parentCompany = process.env.NEXT_PUBLIC_PARENT_COMPANY || 'ATMOSPHERE+ LTD';
-    const foundedYear = process.env.NEXT_PUBLIC_FOUNDED_YEAR || '2017';
+    const currentYear = new Date().getFullYear();
 
     const linkHover = (e: React.MouseEvent<HTMLElement>, hover: boolean) => {
         e.currentTarget.style.color = hover ? '#ffffff' : 'rgba(255,255,255,0.6)';
@@ -84,15 +84,15 @@ export function Footer({ mob }: FooterProps) {
                         alignItems: 'flex-start',
                     }}
                 >
-                    <Link href="/" style={{ textDecoration: 'none', marginLeft: '-8px' }}>
+                    <Link href="/" style={{ textDecoration: 'none', marginLeft: '-12px' }}>
                         <Image
                             src="/images/secondary-logo.png"
                             alt={appName}
-                            width={mob ? 140 : 170}
-                            height={mob ? 38 : 45}
+                            width={mob ? 170 : 210}
+                            height={mob ? 46 : 58}
                             style={{
                                 width: 'auto',
-                                height: mob ? '38px' : '45px',
+                                height: mob ? '46px' : '58px',
                                 objectFit: 'contain',
                             }}
                             priority
@@ -435,7 +435,7 @@ export function Footer({ mob }: FooterProps) {
                         fontWeight: 400,
                     }}
                 >
-                    © {foundedYear} {appName} / We are part of {parentCompany}
+                    © {currentYear} {appName} / We are part of {parentCompany}
                 </p>
             </div>
         </section>

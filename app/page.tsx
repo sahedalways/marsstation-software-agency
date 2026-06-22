@@ -9,9 +9,10 @@ import { Footer } from './components/common/Footer';
 import { BackToTopButton } from './components/common/BackToTopButton';
 import { ChatButton } from './components/common/ChatButton';
 import { ChatWindow } from './components/chat/ChatWindow';
+import { ExperienceSection } from './components/home/sections/ExperienceSection';
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
-type Phase = 'hero' | 'services' | 'contact';
+type Phase = 'hero' | 'experience' | 'services' | 'contact';
 
 export default function IUSPage() {
     const [chatOpen, setChatOpen] = useState(false);
@@ -22,6 +23,7 @@ export default function IUSPage() {
     const rafRef = useRef(0);
 
     const heroRef = useRef<HTMLDivElement>(null);
+    const experienceRef = useRef<HTMLDivElement>(null);
     const servicesRef = useRef<HTMLDivElement>(null);
     const contactRef = useRef<HTMLDivElement>(null);
 
@@ -29,13 +31,22 @@ export default function IUSPage() {
     const [agreed, setAgreed] = useState(false);
     const [mob, setMob] = useState(false);
 
-    // ✅ Once true, never false
+    // ✅ Each section has its own "in view" flag — once true, never false
+    const [experienceIn, setExperienceIn] = useState(false);
     const [cardsIn, setCardsIn] = useState(false);
     const [contactIn, setContactIn] = useState(false);
 
     useEffect(() => {
-        if (phase === 'services') setCardsIn(true);
-        if (phase === 'contact') setContactIn(true);
+        if (phase === 'experience') setExperienceIn(true);
+        if (phase === 'services') {
+            setExperienceIn(true); // ensure earlier section stays in
+            setCardsIn(true);
+        }
+        if (phase === 'contact') {
+            setExperienceIn(true);
+            setCardsIn(true);
+            setContactIn(true);
+        }
     }, [phase]);
 
     useEffect(() => {
@@ -50,12 +61,15 @@ export default function IUSPage() {
             const total = document.documentElement.scrollHeight - window.innerHeight;
             scrollRef.current = clamp(window.scrollY / total, 0, 1);
 
-            const y = window.scrollY + window.innerHeight * 0.3;
+            // Trigger when section's top is within 70% of viewport
+            const y = window.scrollY + window.innerHeight * 0.7;
+            const experienceTop = experienceRef.current?.offsetTop ?? 0;
             const servicesTop = servicesRef.current?.offsetTop ?? 0;
             const contactTop = contactRef.current?.offsetTop ?? 0;
 
             if (y >= contactTop) setPhase('contact');
             else if (y >= servicesTop) setPhase('services');
+            else if (y >= experienceTop) setPhase('experience');
             else setPhase('hero');
         };
         window.addEventListener('scroll', fn, { passive: true });
@@ -258,13 +272,25 @@ export default function IUSPage() {
                             width: '100%',
                             height: '100%',
                             zIndex: 0,
-
                             pointerEvents: 'none',
                         }}
                     />
                     <div style={{ position: 'relative', zIndex: 1, width: '100%' }}>
                         <HeroSec phase={phase} mob={mob} btnRef={btnRef} />
                     </div>
+                </section>
+
+                {/* ─── Experience uses its OWN flag ─── */}
+                <section
+                    ref={experienceRef}
+                    style={{
+                        minHeight: 'auto',
+                        width: '100%',
+                        position: 'relative',
+                        display: 'block',
+                    }}
+                >
+                    <ExperienceSection cardsIn={experienceIn} mob={mob} />
                 </section>
 
                 <section ref={servicesRef} style={{ width: '100%', position: 'relative' }}>
@@ -289,10 +315,8 @@ export default function IUSPage() {
                     />
                 </section>
 
-                {/* ─── Footer ─── */}
                 <Footer mob={mob} />
 
-                {/* ── Chat Button + Window ── */}
                 <ChatButton onClick={() => setChatOpen(true)} isOpen={chatOpen} />
                 <ChatWindow isOpen={chatOpen} onClose={() => setChatOpen(false)} />
 

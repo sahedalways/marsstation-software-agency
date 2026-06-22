@@ -1,414 +1,1079 @@
+// components/home/ServicesSec.tsx
 'use client';
-import { useEffect, useRef } from 'react';
+
+import { useState } from 'react';
+import { SectionHeading } from '../common/SectionHeading';
 
 interface Props {
     cardsIn: boolean;
     mob: boolean;
 }
 
+interface ServiceTab {
+    id: number;
+    title: string;
+    tech: string;
+    techColor: string;
+    icon: React.ReactNode;
+    iconColor: string;
+    description: string;
+    features: string[];
+    projects: { name: string; type: string; img: string }[];
+}
+
 export function ServicesSec({ cardsIn, mob }: Props) {
-    const globeCanvasRef = useRef<HTMLCanvasElement>(null);
+    const [activeTab, setActiveTab] = useState(1); // index of E-Commerce Websites
 
-    useEffect(() => {
-        if (!cardsIn) return;
-        const canvas = globeCanvasRef.current;
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        let raf = 0,
-            rotation = 0;
-        const size = mob ? 280 : 560;
-        canvas.width = Math.floor(size * dpr);
-        canvas.height = Math.floor(size * dpr);
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        const project = (x: number, y: number, z: number, cx: number, cy: number) => {
-            const s = 500 / (500 + z);
-            return { x: cx + x * s, y: cy + y * s };
-        };
-        const drawGlobe = () => {
-            ctx.clearRect(0, 0, size, size);
-            const cx = size / 2,
-                cy = size / 2,
-                radius = size * 0.42,
-                tiltX = -0.35;
-            for (let i = 1; i < 8; i++) {
-                const lat = (i / 8) * Math.PI - Math.PI / 2;
-                const rr = Math.cos(lat) * radius,
-                    ry = Math.sin(lat) * radius;
-                ctx.beginPath();
-                for (let j = 0; j <= 80; j++) {
-                    const a = (j / 80) * Math.PI * 2;
-                    let x = Math.cos(a) * rr,
-                        y = ry,
-                        z = Math.sin(a) * rr;
-                    const y2 = y * Math.cos(tiltX) - z * Math.sin(tiltX);
-                    const z2 = y * Math.sin(tiltX) + z * Math.cos(tiltX);
-                    const p = project(x, y2, z2, cx, cy);
-                    if (j === 0) ctx.moveTo(p.x, p.y);
-                    else ctx.lineTo(p.x, p.y);
-                }
-                ctx.lineWidth = 0.8;
-                ctx.strokeStyle = 'rgba(180,130,255,0.4)';
-                ctx.stroke();
-            }
-            for (let i = 0; i < 12; i++) {
-                const lon = (i / 12) * Math.PI * 2 + rotation;
-                ctx.beginPath();
-                for (let j = 0; j <= 80; j++) {
-                    const lat = (j / 80) * Math.PI - Math.PI / 2;
-                    let x = Math.cos(lat) * Math.cos(lon) * radius,
-                        y = Math.sin(lat) * radius,
-                        z = Math.cos(lat) * Math.sin(lon) * radius;
-                    const y2 = y * Math.cos(tiltX) - z * Math.sin(tiltX);
-                    const z2 = y * Math.sin(tiltX) + z * Math.cos(tiltX);
-                    const p = project(x, y2, z2, cx, cy);
-                    if (j === 0) ctx.moveTo(p.x, p.y);
-                    else ctx.lineTo(p.x, p.y);
-                }
-                ctx.lineWidth = 0.8;
-                ctx.strokeStyle = 'rgba(170,110,255,0.45)';
-                ctx.stroke();
-            }
-            ctx.beginPath();
-            ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-            ctx.strokeStyle = 'rgba(200,150,255,0.65)';
-            ctx.lineWidth = 1.2;
-            ctx.shadowBlur = 18;
-            ctx.shadowColor = 'rgba(140,80,240,0.7)';
-            ctx.stroke();
-            ctx.shadowBlur = 0;
-            rotation += 0.003;
-            raf = requestAnimationFrame(drawGlobe);
-        };
-        drawGlobe();
-        return () => cancelAnimationFrame(raf);
-    }, [cardsIn, mob]);
-
-    const cards = [
+    const services: ServiceTab[] = [
         {
-            label: 'Clear and automated documentation',
-            body: "You don't have to understand terminology and complex formulations—structured documents are ready for you.",
-            btn: 'To learn more',
-            zIdx: 1,
-            accent: false,
-            glowPos: 'right',
+            id: 1,
+            title: 'Business Websites',
+            tech: 'WordPress',
+            techColor: '#3b82f6',
+            iconColor: '#60a5fa',
+            icon: (
+                <svg
+                    width="28"
+                    height="28"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                >
+                    <rect x="2" y="3" width="20" height="14" rx="2" />
+                    <line x1="8" y1="21" x2="16" y2="21" />
+                    <line x1="12" y1="17" x2="12" y2="21" />
+                </svg>
+            ),
+            description:
+                'We craft professional business websites that reflect your brand identity, attract clients and drive growth using modern WordPress technology.',
+            features: [
+                'Custom WordPress Development',
+                'Responsive Design',
+                'SEO Optimized',
+                'Lightning Fast Performance',
+                'Easy Content Management',
+                'Premium Support',
+            ],
+            projects: [
+                {
+                    name: 'BizPro',
+                    type: 'WordPress Site',
+                    img: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop',
+                },
+                {
+                    name: 'AgencyHub',
+                    type: 'Corporate Site',
+                    img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop',
+                },
+                {
+                    name: 'StartUpify',
+                    type: 'Landing Page',
+                    img: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=300&fit=crop',
+                },
+            ],
         },
         {
-            label: 'Guaranteed answer to your question',
-            body: 'There is no need to look for solutions on your own — our clients have already received expert answers.',
-            btn: 'To learn more',
-            zIdx: 3,
-            accent: true,
-            glowPos: 'top-left',
+            id: 2,
+            title: 'E-Commerce Websites',
+            tech: 'WordPress',
+            techColor: '#3b82f6',
+            iconColor: '#c084fc',
+            icon: (
+                <svg
+                    width="28"
+                    height="28"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                >
+                    <circle cx="9" cy="21" r="1" />
+                    <circle cx="20" cy="21" r="1" />
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                </svg>
+            ),
+            description:
+                'We build powerful, secure and user-friendly e-commerce websites using WordPress and WooCommerce that help you sell more and manage everything effortlessly.',
+            features: [
+                'Custom WooCommerce Development',
+                'Payment Gateway Integration',
+                'Product Management System',
+                'Shipping & Tax Configuration',
+                'SEO Optimized & Mobile Friendly',
+                'Speed Optimization',
+            ],
+            projects: [
+                {
+                    name: 'ShopLux',
+                    type: 'WooCommerce Store',
+                    img: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop',
+                },
+                {
+                    name: 'FurniCasa',
+                    type: 'WooCommerce Store',
+                    img: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop',
+                },
+                {
+                    name: 'BookNest',
+                    type: 'WooCommerce Store',
+                    img: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=400&h=300&fit=crop',
+                },
+            ],
         },
         {
-            label: 'Making profitable decisions',
-            body: 'You will never miss an opportunity to save money, get additional benefits and choose the right path.',
-            btn: 'To learn more',
-            zIdx: 2,
-            accent: false,
-            glowPos: 'bottom',
+            id: 3,
+            title: 'SaaS Website',
+            tech: 'Full Stack',
+            techColor: '#22c55e',
+            iconColor: '#4ade80',
+            icon: (
+                <svg
+                    width="28"
+                    height="28"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                >
+                    <path d="M17.5 19a4.5 4.5 0 1 0-1.36-8.79A6 6 0 0 0 6 12.5a4.5 4.5 0 0 0 0 9h11.5z" />
+                </svg>
+            ),
+            description:
+                'Modern SaaS platforms built with cutting-edge full-stack technologies for scalability, performance, and growth.',
+            features: [
+                'Multi-tenant Architecture',
+                'Subscription Management',
+                'Real-time Analytics',
+                'API Integration',
+                'Cloud Deployment',
+                'Enterprise Security',
+            ],
+            projects: [
+                {
+                    name: 'CloudFlow',
+                    type: 'SaaS Platform',
+                    img: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
+                },
+                {
+                    name: 'TaskHive',
+                    type: 'SaaS Platform',
+                    img: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop',
+                },
+                {
+                    name: 'DataNest',
+                    type: 'SaaS Platform',
+                    img: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=300&fit=crop',
+                },
+            ],
+        },
+        {
+            id: 4,
+            title: 'Custom Website',
+            tech: 'Full Stack',
+            techColor: '#f97316',
+            iconColor: '#fb923c',
+            icon: (
+                <svg
+                    width="28"
+                    height="28"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                >
+                    <polyline points="16 18 22 12 16 6" />
+                    <polyline points="8 6 2 12 8 18" />
+                </svg>
+            ),
+            description:
+                'Tailor-made custom web applications built from the ground up with the latest technologies to fit your unique requirements.',
+            features: [
+                'Custom UI/UX Design',
+                'Modern Tech Stack (React/Next.js)',
+                'Scalable Backend',
+                'Database Architecture',
+                'Third-party Integrations',
+                'Continuous Support',
+            ],
+            projects: [
+                {
+                    name: 'CodeCraft',
+                    type: 'Custom App',
+                    img: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop',
+                },
+                {
+                    name: 'BuildLab',
+                    type: 'Custom App',
+                    img: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&h=300&fit=crop',
+                },
+                {
+                    name: 'DevDeck',
+                    type: 'Custom App',
+                    img: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop',
+                },
+            ],
+        },
+        {
+            id: 5,
+            title: 'E-Commerce Solutions',
+            tech: 'Full Stack',
+            techColor: '#f97316',
+            iconColor: '#fbbf24',
+            icon: (
+                <svg
+                    width="28"
+                    height="28"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                >
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <path d="M16 10a4 4 0 0 1-8 0" />
+                </svg>
+            ),
+            description:
+                'Enterprise-grade custom e-commerce solutions with complete control over features, integrations, and user experience.',
+            features: [
+                'Headless Commerce',
+                'Multi-channel Selling',
+                'Inventory Management',
+                'Advanced Analytics',
+                'Multiple Payment Methods',
+                'Global Shipping Support',
+            ],
+            projects: [
+                {
+                    name: 'MegaCart',
+                    type: 'Custom Store',
+                    img: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=400&h=300&fit=crop',
+                },
+                {
+                    name: 'ShopWave',
+                    type: 'Custom Store',
+                    img: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400&h=300&fit=crop',
+                },
+                {
+                    name: 'TrendBox',
+                    type: 'Custom Store',
+                    img: 'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=400&h=300&fit=crop',
+                },
+            ],
+        },
+        {
+            id: 6,
+            title: 'Android App',
+            tech: 'Android',
+            techColor: '#22c55e',
+            iconColor: '#4ade80',
+            icon: (
+                <svg
+                    width="28"
+                    height="28"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                >
+                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+                    <line x1="12" y1="18" x2="12.01" y2="18" />
+                </svg>
+            ),
+            description:
+                'Native Android applications built with Kotlin/Java that deliver smooth, fast and engaging user experiences.',
+            features: [
+                'Native Kotlin/Java Development',
+                'Material Design UI',
+                'Play Store Deployment',
+                'Push Notifications',
+                'Offline Support',
+                'Performance Optimization',
+            ],
+            projects: [
+                {
+                    name: 'FitTrack',
+                    type: 'Android App',
+                    img: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=300&fit=crop',
+                },
+                {
+                    name: 'FoodieGo',
+                    type: 'Android App',
+                    img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop',
+                },
+                {
+                    name: 'TaskZen',
+                    type: 'Android App',
+                    img: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&h=300&fit=crop',
+                },
+            ],
+        },
+        {
+            id: 7,
+            title: 'iPhone (iOS) App',
+            tech: 'iOS',
+            techColor: '#94a3b8',
+            iconColor: '#cbd5e1',
+            icon: (
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.05 20.28c-.98.95-2.05.86-3.08.41-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.41C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
+                </svg>
+            ),
+            description:
+                'Premium iOS applications built with Swift/SwiftUI for iPhone and iPad with native performance and Apple guidelines compliance.',
+            features: [
+                'Native Swift/SwiftUI',
+                'Human Interface Design',
+                'App Store Deployment',
+                'iCloud Integration',
+                'Apple Pay Support',
+                'iPad Optimization',
+            ],
+            projects: [
+                {
+                    name: 'MindfulMe',
+                    type: 'iOS App',
+                    img: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=300&fit=crop',
+                },
+                {
+                    name: 'TravelLog',
+                    type: 'iOS App',
+                    img: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=300&fit=crop',
+                },
+                {
+                    name: 'MusicVibe',
+                    type: 'iOS App',
+                    img: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&h=300&fit=crop',
+                },
+            ],
+        },
+        {
+            id: 8,
+            title: 'Cross-Platform App',
+            tech: 'Android + iPhone',
+            techColor: '#3b82f6',
+            iconColor: '#60a5fa',
+            icon: (
+                <svg
+                    width="28"
+                    height="28"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                >
+                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                    <path d="M2 17l10 5 10-5" />
+                    <path d="M2 12l10 5 10-5" />
+                </svg>
+            ),
+            description:
+                'Cross-platform mobile applications using Flutter & React Native that work seamlessly on both iOS and Android.',
+            features: [
+                'Single Codebase',
+                'Flutter / React Native',
+                'Native Performance',
+                'Faster Time to Market',
+                'Cost Effective',
+                'Easy Maintenance',
+            ],
+            projects: [
+                {
+                    name: 'FlowChat',
+                    type: 'Flutter App',
+                    img: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&h=300&fit=crop',
+                },
+                {
+                    name: 'ShopHub',
+                    type: 'React Native',
+                    img: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=400&h=300&fit=crop',
+                },
+                {
+                    name: 'EduLearn',
+                    type: 'Flutter App',
+                    img: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop',
+                },
+            ],
+        },
+    ];
+
+    const active = services[activeTab];
+
+    const bottomFeatures = [
+        {
+            title: 'Secure & Reliable',
+            desc: 'Security is our top priority for every e-commerce website.',
+            color: '#a855f7',
+            icon: (
+                <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                >
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+            ),
+        },
+        {
+            title: 'High Performance',
+            desc: 'Optimized for speed to ensure better user experience.',
+            color: '#3b82f6',
+            icon: (
+                <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                >
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                </svg>
+            ),
+        },
+        {
+            title: 'Boost Sales',
+            desc: 'Conversion-focused design that helps you sell more.',
+            color: '#22c55e',
+            icon: (
+                <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                >
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+            ),
+        },
+        {
+            title: 'Dedicated Support',
+            desc: 'We are always here to support you at every step.',
+            color: '#a855f7',
+            icon: (
+                <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                >
+                    <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
+                    <path d="M21 19a2 2 0 0 1-2 2h-1v-6h3v4zM3 19a2 2 0 0 0 2 2h1v-6H3v4z" />
+                </svg>
+            ),
         },
     ];
 
     return (
         <>
             <style>{`
-                @keyframes fadeUp { from { opacity:0; transform:translateY(40px); } to { opacity:1; transform:translateY(0); } }
-                @keyframes flyLeft { from { opacity:0; translate:-80px 0; } to { opacity:1; translate:0 0; } }
-                @keyframes flyBottom { from { opacity:0; translate:0 80px; } to { opacity:1; translate:0 0; } }
-                @keyframes flyRight { from { opacity:0; translate:80px 0; } to { opacity:1; translate:0 0; } }
-                @keyframes globeDrop { from { opacity:0; transform:translateY(-180px) scale(0.7); } to { opacity:1; transform:translateY(0) scale(1); } }
-                .svc-card-0 { transform: rotate(8deg) translateY(40px); }
-                .svc-card-1 { transform: rotate(-6deg) translateY(0px); }
-                .svc-card-2 { transform: rotate(8deg) translateY(40px); }
+                @keyframes svcFadeUp { from { opacity:0; transform:translateY(40px); } to { opacity:1; transform:translateY(0); } }
+                @keyframes svcFlyLeft { from { opacity:0; transform:translateX(-60px); } to { opacity:1; transform:translateX(0); } }
+                @keyframes svcFlyRight { from { opacity:0; transform:translateX(60px); } to { opacity:1; transform:translateX(0); } }
+                @keyframes svcTabPop { from { opacity:0; transform:translateY(20px) scale(0.9); } to { opacity:1; transform:translateY(0) scale(1); } }
+
+                .svc-tab {
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                }
+                .svc-tab:hover {
+                    transform: translateY(-3px);
+                    border-color: rgba(168,85,247,0.5) !important;
+                }
+                .svc-project-card {
+                    transition: transform 0.4s cubic-bezier(.16,1,.3,1);
+                }
+                .svc-project-card:hover {
+                    transform: translateY(-6px);
+                }
+                .svc-cta-btn {
+                    transition: all 0.3s ease;
+                }
+                .svc-cta-btn:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 12px 30px rgba(168,85,247,0.4) !important;
+                }
+                .svc-bottom-feat {
+                    transition: transform 0.3s ease;
+                }
+                .svc-bottom-feat:hover {
+                    transform: translateY(-2px);
+                }
+                .svc-arrow-link {
+                    transition: gap 0.3s ease, color 0.3s ease;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                }
+                .svc-arrow-link:hover {
+                    gap: 12px;
+                    color: #c084fc !important;
+                }
             `}</style>
-            <div
+
+            <section
                 style={{
-                    position: 'relative',
                     width: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
+                    position: 'relative',
                     padding: mob ? '40px 16px' : '60px 48px',
-                    overflow: 'hidden',
                     opacity: cardsIn ? 1 : 0,
                     transition: 'opacity 0.01s',
                 }}
             >
-                {/* Globe */}
-                {/* <div
-                    style={{
-                        position: 'absolute',
-                        top: mob ? '-50px' : '-100px',
-                        right: mob ? '-110px' : '-100px',
-                        width: mob ? '280px' : '560px',
-                        height: mob ? '280px' : '560px',
-                        pointerEvents: 'none',
-                        zIndex: 1,
-                        opacity: cardsIn ? 1 : 0,
-                        animation: cardsIn
-                            ? 'globeDrop 1.2s cubic-bezier(.22,.68,0,1.2) both'
-                            : 'none',
-                    }}
-                >
-                    <canvas
-                        ref={globeCanvasRef}
-                        style={{ width: '100%', height: '100%', display: 'block' }}
-                    />
-                </div> */}
-                {/* Heading */}
                 <div
                     style={{
-                        width: '100%',
-                        maxWidth: '900px',
-                        textAlign: 'center',
-                        marginBottom: mob ? '14px' : '20px',
-                        marginTop: mob ? '24px' : '40px',
-                        zIndex: 2,
+                        maxWidth: '1280px',
+                        margin: '0 auto',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: mob ? '24px' : '36px',
                     }}
                 >
-                    <h2
-                        style={{
-                            fontSize: mob ? 'clamp(16px, 4.5vw, 22px)' : 'clamp(20px, 2.6vw, 34px)',
-                            fontWeight: 300,
-                            lineHeight: 1.25,
-                            color: '#fff',
-                            letterSpacing: '-0.02em',
-                            marginBottom: mob ? '10px' : '16px',
-                            opacity: cardsIn ? 1 : 0,
-                            animation: cardsIn ? 'fadeUp 0.75s ease-out 0.15s both' : 'none',
-                        }}
-                    >
-                        Legal support for IT: protecting your
-                        <br />
-                        business in the digital sphere
-                    </h2>
-                    <p
-                        style={{
-                            fontSize: mob ? '12px' : '14px',
-                            color: 'rgba(255,255,255,0.45)',
-                            lineHeight: 1.7,
-                            maxWidth: mob ? '320px' : '480px',
-                            margin: '0 auto',
-                            fontWeight: 300,
-                            opacity: cardsIn ? 1 : 0,
-                            animation: cardsIn ? 'fadeUp 0.75s ease-out 0.3s both' : 'none',
-                        }}
-                    >
-                        We take into account the specifics of the activities of IT companies and
-                        help our clients minimize risks and protect them from possible legal
-                        problems.
-                    </p>
-                </div>
-                {/* Cards */}
-                <>
-                    <style>{`
-        .svc-card-wrap {
-            transition: transform 0.5s cubic-bezier(.16,1,.3,1);
-            will-change: transform;
-        }
-        .svc-card-wrap:hover {
-            transform: translateY(-8px);
-        }
-        .svc-card-inner {
-            transition: border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
-        }
-        .svc-card-wrap:hover .svc-card-inner {
-            border-color: rgba(170,115,255,0.85) !important;
-            box-shadow:
-                0 0 30px rgba(140,75,250,0.3),
-                0 18px 50px rgba(0,0,0,0.95),
-                inset 0 0 22px rgba(120,55,235,0.08) !important;
-            background: rgb(10,5,22) !important;
-        }
-        .svc-glow {
-            transition: opacity 0.5s ease, filter 0.5s ease, transform 0.5s ease;
-        }
-        .svc-card-wrap:hover .svc-glow {
-            filter: blur(55px);
-            transform: scale(1.1);
-        }
-        .svc-card-btn {
-            transition: background 0.3s ease, border-color 0.3s ease;
-        }
-        .svc-card-wrap:hover .svc-card-btn {
-            background: rgba(140,75,250,0.18) !important;
-            border-color: rgba(170,115,255,0.55) !important;
-        }
-        .svc-card-title {
-            transition: transform 0.4s cubic-bezier(.16,1,.3,1);
-        }
-        .svc-card-wrap:hover .svc-card-title {
-            transform: translateY(-2px);
-        }
-    `}</style>
+                    {/* ─── Heading ─── */}
+                    <SectionHeading
+                        badge="OUR SERVICES"
+                        title="Powerful Digital Solutions Built For Your Success"
+                        highlight="Your Success"
+                        subtitle="We build high-performance websites and mobile apps that help businesses grow, engage and scale effortlessly."
+                        mob={mob}
+                        cardsIn={cardsIn}
+                    />
 
+                    {/* ─── Service Tabs (8 cards row) ─── */}
                     <div
                         style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'flex-start',
-                            gap: mob ? '8px' : '24px',
-                            width: '100%',
-                            maxWidth: '1150px',
-                            flexWrap: 'nowrap',
-                            zIndex: 2,
-                            paddingBottom: mob ? '40px' : '60px',
-                            paddingTop: mob ? '12px' : '20px',
-                            paddingLeft: mob ? '10px' : '0',
-                            paddingRight: mob ? '10px' : '0',
-                            boxSizing: 'border-box',
+                            display: 'grid',
+                            gridTemplateColumns: mob ? 'repeat(4, 1fr)' : 'repeat(8, 1fr)',
+                            gap: mob ? '8px' : '12px',
+                            position: 'relative',
                         }}
                     >
-                        {cards.map((c, i) => (
+                        {services.map((svc, idx) => {
+                            const isActive = idx === activeTab;
+                            return (
+                                <div
+                                    key={svc.id}
+                                    className="svc-tab"
+                                    onClick={() => setActiveTab(idx)}
+                                    style={{
+                                        padding: mob ? '10px 6px' : '16px 10px',
+                                        borderRadius: '14px',
+                                        background: isActive
+                                            ? 'linear-gradient(180deg, rgba(88,28,135,0.6), rgba(40,15,80,0.4))'
+                                            : 'rgba(20,15,40,0.5)',
+                                        border: isActive
+                                            ? '1.5px solid rgba(168,85,247,0.8)'
+                                            : '1px solid rgba(105,62,205,0.2)',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                        textAlign: 'center',
+                                        position: 'relative',
+                                        boxShadow: isActive
+                                            ? '0 0 25px rgba(168,85,247,0.35), inset 0 0 20px rgba(168,85,247,0.1)'
+                                            : 'none',
+                                        opacity: cardsIn ? 1 : 0,
+                                        animation: cardsIn
+                                            ? `svcTabPop 0.5s cubic-bezier(.16,1,.3,1) ${0.4 + idx * 0.06}s both`
+                                            : 'none',
+                                    }}
+                                >
+                                    {/* Number Circle */}
+                                    <div
+                                        style={{
+                                            width: mob ? '20px' : '26px',
+                                            height: mob ? '20px' : '26px',
+                                            borderRadius: '50%',
+                                            background: 'rgba(10,5,22,0.8)',
+                                            border: `1px solid ${svc.iconColor}`,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            fontSize: mob ? '10px' : '12px',
+                                            color: svc.iconColor,
+                                            fontWeight: 600,
+                                        }}
+                                    >
+                                        {svc.id}
+                                    </div>
+                                    {/* Icon */}
+                                    <div
+                                        style={{
+                                            color: svc.iconColor,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginTop: '4px',
+                                        }}
+                                    >
+                                        {svc.icon}
+                                    </div>
+                                    {/* Title */}
+                                    <div
+                                        style={{
+                                            fontSize: mob ? '9px' : '12px',
+                                            color: '#fff',
+                                            fontWeight: 500,
+                                            lineHeight: 1.2,
+                                            marginTop: '4px',
+                                        }}
+                                    >
+                                        {svc.title}
+                                    </div>
+                                    {/* Tech label */}
+                                    <div
+                                        style={{
+                                            fontSize: mob ? '8px' : '11px',
+                                            color: svc.techColor,
+                                            fontWeight: 500,
+                                        }}
+                                    >
+                                        {svc.tech}
+                                    </div>
+
+                                    {/* Active arrow caret */}
+                                    {isActive && (
+                                        <div
+                                            style={{
+                                                position: 'absolute',
+                                                bottom: '-9px',
+                                                left: '50%',
+                                                transform: 'translateX(-50%) rotate(45deg)',
+                                                width: '14px',
+                                                height: '14px',
+                                                background: 'rgba(88,28,135,0.6)',
+                                                borderRight: '1.5px solid rgba(168,85,247,0.8)',
+                                                borderBottom: '1.5px solid rgba(168,85,247,0.8)',
+                                            }}
+                                        />
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {/* ─── Active Service Detail Panel ─── */}
+                    <div
+                        key={activeTab}
+                        style={{
+                            background:
+                                'linear-gradient(180deg, rgba(15,10,35,0.7) 0%, rgba(10,5,22,0.8) 100%)',
+                            border: '1px solid rgba(105,62,205,0.3)',
+                            borderRadius: '24px',
+                            padding: mob ? '20px' : '36px',
+                            display: 'grid',
+                            gridTemplateColumns: mob ? '1fr' : '1fr 1.4fr',
+                            gap: mob ? '24px' : '40px',
+                            boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+                            animation: 'svcFadeUp 0.6s cubic-bezier(.16,1,.3,1) both',
+                        }}
+                    >
+                        {/* LEFT: Info */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                            {/* Number badge */}
                             <div
-                                key={i}
-                                className={`svc-card-wrap svc-card-${i}`}
                                 style={{
-                                    width: mob ? '33.33%' : '350px',
-                                    height: mob ? '200px' : '370px',
-                                    zIndex: c.zIdx,
-                                    flexShrink: 0,
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    width: mob ? '32px' : '40px',
+                                    height: mob ? '32px' : '40px',
+                                    borderRadius: '10px',
+                                    background: 'rgba(168,85,247,0.18)',
+                                    border: '1px solid rgba(168,85,247,0.4)',
+                                    color: '#c084fc',
+                                    fontWeight: 600,
+                                    fontSize: mob ? '13px' : '15px',
+                                }}
+                            >
+                                {String(active.id).padStart(2, '0')}
+                            </div>
+
+                            {/* Title */}
+                            <div>
+                                <h3
+                                    style={{
+                                        fontSize: mob ? '24px' : '32px',
+                                        fontWeight: 700,
+                                        color: '#fff',
+                                        margin: 0,
+                                        lineHeight: 1.2,
+                                    }}
+                                >
+                                    {active.title}
+                                </h3>
+                                <div
+                                    style={{
+                                        fontSize: mob ? '18px' : '24px',
+                                        fontWeight: 600,
+                                        color: active.techColor,
+                                        marginTop: '4px',
+                                    }}
+                                >
+                                    {active.tech}
+                                </div>
+                            </div>
+
+                            {/* Description */}
+                            <p
+                                style={{
+                                    fontSize: mob ? '13px' : '14px',
+                                    color: 'rgba(255,255,255,0.6)',
+                                    lineHeight: 1.7,
+                                    margin: 0,
+                                }}
+                            >
+                                {active.description}
+                            </p>
+
+                            {/* Feature bullets */}
+                            <ul
+                                style={{
+                                    listStyle: 'none',
+                                    padding: 0,
+                                    margin: 0,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '10px',
+                                }}
+                            >
+                                {active.features.map((f, i) => (
+                                    <li
+                                        key={i}
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '10px',
+                                            fontSize: mob ? '12px' : '14px',
+                                            color: 'rgba(255,255,255,0.8)',
+                                        }}
+                                    >
+                                        <span
+                                            style={{
+                                                width: '18px',
+                                                height: '18px',
+                                                borderRadius: '50%',
+                                                background: 'rgba(168,85,247,0.2)',
+                                                border: '1px solid rgba(168,85,247,0.5)',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                flexShrink: 0,
+                                            }}
+                                        >
+                                            <svg
+                                                width="10"
+                                                height="10"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="#c084fc"
+                                                strokeWidth="3"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            >
+                                                <polyline points="20 6 9 17 4 12" />
+                                            </svg>
+                                        </span>
+                                        {f}
+                                    </li>
+                                ))}
+                            </ul>
+
+                            {/* CTA Row */}
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '20px',
+                                    marginTop: '12px',
+                                    flexWrap: 'wrap',
+                                }}
+                            >
+                                <button
+                                    className="svc-cta-btn"
+                                    style={{
+                                        padding: mob ? '10px 20px' : '12px 26px',
+                                        borderRadius: '999px',
+                                        background: 'linear-gradient(90deg, #8b5cf6, #a855f7)',
+                                        border: 'none',
+                                        color: '#fff',
+                                        fontSize: mob ? '12px' : '14px',
+                                        fontWeight: 600,
+                                        cursor: 'pointer',
+                                        boxShadow: '0 8px 20px rgba(168,85,247,0.25)',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                    }}
+                                >
+                                    Get Started
+                                    <svg
+                                        width="14"
+                                        height="14"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                        <polyline points="12 5 19 12 12 19" />
+                                    </svg>
+                                </button>
+                                <a
+                                    href="#"
+                                    className="svc-arrow-link"
+                                    style={{
+                                        color: 'rgba(255,255,255,0.8)',
+                                        fontSize: mob ? '12px' : '14px',
+                                        fontWeight: 500,
+                                        textDecoration: 'none',
+                                    }}
+                                >
+                                    Learn More
+                                    <svg
+                                        width="14"
+                                        height="14"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                        <polyline points="12 5 19 12 12 19" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+
+                        {/* RIGHT: Recent Work */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                            {/* Header */}
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                }}
+                            >
+                                <h4
+                                    style={{
+                                        fontSize: mob ? '15px' : '17px',
+                                        fontWeight: 600,
+                                        color: '#fff',
+                                        margin: 0,
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                    }}
+                                >
+                                    <span
+                                        style={{
+                                            width: '8px',
+                                            height: '8px',
+                                            borderRadius: '50%',
+                                            background: '#c084fc',
+                                            boxShadow: '0 0 8px #a855f7',
+                                        }}
+                                    />
+                                    Our Recent Work
+                                </h4>
+                            </div>
+
+                            {/* Project Cards Grid */}
+                            <div
+                                style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: mob ? '1fr' : 'repeat(3, 1fr)',
+                                    gap: mob ? '12px' : '14px',
+                                }}
+                            >
+                                {active.projects.map((proj, i) => (
+                                    <div
+                                        key={i}
+                                        className="svc-project-card"
+                                        style={{
+                                            borderRadius: '14px',
+                                            background: 'rgba(10,5,22,0.6)',
+                                            border: '1px solid rgba(105,62,205,0.25)',
+                                            overflow: 'hidden',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                        }}
+                                    >
+                                        <div
+                                            style={{
+                                                width: '100%',
+                                                aspectRatio: '4 / 3',
+                                                background: `url(${proj.img}) center/cover`,
+                                                borderBottom: '1px solid rgba(105,62,205,0.25)',
+                                            }}
+                                        />
+                                        <div
+                                            style={{
+                                                padding: mob ? '10px' : '12px 14px',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                gap: '4px',
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    fontSize: mob ? '13px' : '14px',
+                                                    color: '#fff',
+                                                    fontWeight: 600,
+                                                }}
+                                            >
+                                                {proj.name}
+                                            </div>
+                                            <div
+                                                style={{
+                                                    fontSize: mob ? '10px' : '11px',
+                                                    color: 'rgba(255,255,255,0.5)',
+                                                }}
+                                            >
+                                                {proj.type}
+                                            </div>
+                                            <a
+                                                href="#"
+                                                className="svc-arrow-link"
+                                                style={{
+                                                    fontSize: mob ? '10px' : '11px',
+                                                    color: '#c084fc',
+                                                    textDecoration: 'none',
+                                                    marginTop: '6px',
+                                                    fontWeight: 500,
+                                                }}
+                                            >
+                                                View Project
+                                                <svg
+                                                    width="10"
+                                                    height="10"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    strokeWidth="2"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                >
+                                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                                    <polyline points="12 5 19 12 12 19" />
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ─── Bottom Feature Strip ─── */}
+                    <div
+                        style={{
+                            display: 'grid',
+                            gridTemplateColumns: mob ? '1fr 1fr' : 'repeat(4, 1fr)',
+                            gap: mob ? '14px' : '20px',
+                            padding: mob ? '16px' : '24px 28px',
+                            borderRadius: '20px',
+                            background:
+                                'linear-gradient(180deg, rgba(15,10,35,0.6) 0%, rgba(10,5,22,0.7) 100%)',
+                            border: '1px solid rgba(105,62,205,0.25)',
+                        }}
+                    >
+                        {bottomFeatures.map((f, idx) => (
+                            <div
+                                key={idx}
+                                className="svc-bottom-feat"
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'flex-start',
+                                    gap: '12px',
                                     opacity: cardsIn ? 1 : 0,
                                     animation: cardsIn
-                                        ? `${['flyLeft', 'flyBottom', 'flyRight'][i]} 1s cubic-bezier(.16,1,.3,1) ${[0, 0.12, 0.24][i]}s both`
+                                        ? `svcFadeUp 0.7s ease ${1.1 + idx * 0.1}s both`
                                         : 'none',
-                                    cursor: 'pointer',
                                 }}
                             >
                                 <div
-                                    className="svc-card-inner"
                                     style={{
-                                        width: '100%',
-                                        height: '100%',
-                                        borderRadius: mob ? '12px' : '20px',
-                                        padding: mob ? '12px' : '28px',
+                                        width: mob ? '36px' : '44px',
+                                        height: mob ? '36px' : '44px',
+                                        borderRadius: '10px',
+                                        background: `${f.color}1A`,
+                                        border: `1px solid ${f.color}55`,
                                         display: 'flex',
-                                        flexDirection: 'column',
-                                        justifyContent: 'space-between',
-                                        position: 'relative',
-                                        overflow: 'hidden',
-                                        background: 'rgb(6,3,14)',
-                                        border: c.accent
-                                            ? '1px solid rgba(150,95,250,0.75)'
-                                            : '1px solid rgba(105,62,205,0.38)',
-                                        boxShadow: c.accent
-                                            ? '0 0 20px rgba(130,70,250,0.1), 0 12px 40px rgba(0,0,0,0.9)'
-                                            : '0 12px 38px rgba(0,0,0,0.9)',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        color: f.color,
+                                        flexShrink: 0,
                                     }}
                                 >
-                                    {c.glowPos === 'top-left' && (
-                                        <div
-                                            className="svc-glow"
-                                            style={{
-                                                position: 'absolute',
-                                                top: '-18%',
-                                                left: '-18%',
-                                                width: '80%',
-                                                height: '80%',
-                                                background:
-                                                    'radial-gradient(circle at 25% 25%, rgba(120,48,240,0.75) 0%, rgba(75,18,170,0.38) 35%, transparent 65%)',
-                                                filter: 'blur(48px)',
-                                                pointerEvents: 'none',
-                                                zIndex: 0,
-                                            }}
-                                        />
-                                    )}
-                                    {c.glowPos === 'right' && (
-                                        <div
-                                            className="svc-glow"
-                                            style={{
-                                                position: 'absolute',
-                                                top: '10%',
-                                                right: '-18%',
-                                                width: '62%',
-                                                height: '68%',
-                                                background:
-                                                    'radial-gradient(circle at 85% 48%, rgba(105,38,225,0.7) 0%, rgba(58,14,135,0.3) 42%, transparent 70%)',
-                                                filter: 'blur(40px)',
-                                                pointerEvents: 'none',
-                                                zIndex: 0,
-                                            }}
-                                        />
-                                    )}
-                                    {c.glowPos === 'bottom' && (
-                                        <div
-                                            className="svc-glow"
-                                            style={{
-                                                position: 'absolute',
-                                                bottom: '-18%',
-                                                left: '5%',
-                                                width: '88%',
-                                                height: '62%',
-                                                background:
-                                                    'radial-gradient(ellipse at 50% 88%, rgba(115,42,235,0.68) 0%, rgba(62,16,148,0.28) 38%, transparent 68%)',
-                                                filter: 'blur(42px)',
-                                                pointerEvents: 'none',
-                                                zIndex: 0,
-                                            }}
-                                        />
-                                    )}
-                                    <button
-                                        className="svc-card-btn"
+                                    {f.icon}
+                                </div>
+                                <div
+                                    style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}
+                                >
+                                    <h5
                                         style={{
-                                            padding: mob ? '5px 10px' : '8px 18px',
-                                            fontSize: mob ? '8px' : '12px',
-                                            alignSelf: 'flex-start',
-                                            borderRadius: '999px',
-                                            background: 'rgba(255,255,255,0.04)',
-                                            border: '1px solid rgba(255,255,255,0.18)',
+                                            fontSize: mob ? '13px' : '14px',
                                             color: '#fff',
-                                            fontWeight: 400,
-                                            cursor: 'pointer',
-                                            backdropFilter: 'blur(10px)',
-                                            WebkitBackdropFilter: 'blur(10px)',
-                                            letterSpacing: '0.01em',
-                                            position: 'relative',
-                                            zIndex: 2,
-                                            whiteSpace: 'nowrap',
+                                            fontWeight: 600,
+                                            margin: 0,
                                         }}
                                     >
-                                        {c.btn}
-                                    </button>
-                                    <div style={{ position: 'relative', zIndex: 2 }}>
-                                        <h3
-                                            className="svc-card-title"
-                                            style={{
-                                                fontSize: mob ? '11px' : '22px',
-                                                fontWeight: 400,
-                                                color: '#fff',
-                                                lineHeight: 1.25,
-                                                marginBottom: mob ? '6px' : '12px',
-                                                letterSpacing: '-0.01em',
-                                            }}
-                                        >
-                                            {c.label}
-                                        </h3>
-                                        <p
-                                            style={
-                                                {
-                                                    fontSize: mob ? '8px' : '13px',
-                                                    color: 'rgba(255,255,255,0.5)',
-                                                    lineHeight: 1.55,
-                                                    fontWeight: 300,
-                                                    display: '-webkit-box',
-                                                    WebkitLineClamp: mob ? 5 : 4,
-                                                    WebkitBoxOrient: 'vertical',
-                                                    overflow: 'hidden',
-                                                } as React.CSSProperties
-                                            }
-                                        >
-                                            {c.body}
-                                        </p>
-                                    </div>
+                                        {f.title}
+                                    </h5>
+                                    <p
+                                        style={{
+                                            fontSize: mob ? '11px' : '12px',
+                                            color: 'rgba(255,255,255,0.55)',
+                                            margin: 0,
+                                            lineHeight: 1.5,
+                                        }}
+                                    >
+                                        {f.desc}
+                                    </p>
                                 </div>
                             </div>
                         ))}
                     </div>
-                </>
-            </div>
+                </div>
+            </section>
         </>
     );
 }
