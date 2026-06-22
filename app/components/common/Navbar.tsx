@@ -32,38 +32,42 @@ export function Navbar({ mob }: NavbarProps) {
                         justifyContent: 'center',
                         cursor: 'pointer',
 
-                        padding: mob ? '2px 5px' : '3px 6px',
+                        padding: mob ? '4px 8px' : '6px 12px',
 
-                        borderRadius: '7px',
+                        borderRadius: '12px',
 
-                        background: 'rgba(255,255,255,0.82)',
+                        border: '1px solid rgba(255,255,255,0.25)',
 
-                        border: '1px solid rgba(255,255,255,0.35)',
+                        background: 'transparent',
 
-                        boxShadow: '0 4px 14px rgba(255,255,255,0.08)',
+                        backdropFilter: 'blur(8px)',
 
-                        transition: 'all .25s ease',
+                        transition: 'all .35s ease',
                     }}
                     onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'rgba(255,255,255,0.95)';
-                        e.currentTarget.style.boxShadow = '0 0 20px rgba(115,42,235,.35)';
-                        e.currentTarget.style.transform = 'translateY(-2px) scale(1.03)';
+                        e.currentTarget.style.background =
+                            'linear-gradient(135deg, rgba(255,255,255,.15), rgba(255,255,255,.05))';
+                        e.currentTarget.style.boxShadow = '0 10px 30px rgba(115,42,235,.35)';
+                        e.currentTarget.style.transform = 'translateY(-3px) scale(1.05)';
+                        e.currentTarget.style.border = '1px solid rgba(255,255,255,.5)';
                     }}
                     onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'rgba(255,255,255,0.82)';
-                        e.currentTarget.style.boxShadow = '0 4px 14px rgba(255,255,255,0.08)';
+                        e.currentTarget.style.background = 'transparent';
+                        e.currentTarget.style.boxShadow = 'none';
                         e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                        e.currentTarget.style.border = '1px solid rgba(255,255,255,.25)';
                     }}
                 >
                     <Image
                         src="/images/logo.png"
                         alt="Logo"
-                        width={mob ? 70 : 100}
-                        height={mob ? 24 : 34}
+                        width={mob ? 80 : 105}
+                        height={mob ? 26 : 34}
                         style={{
                             width: 'auto',
-                            height: mob ? '24px' : '34px',
+                            height: mob ? '26px' : '34px',
                             objectFit: 'contain',
+                            transition: 'all .35s ease',
                         }}
                         priority
                     />
