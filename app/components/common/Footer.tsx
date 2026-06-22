@@ -3,12 +3,14 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { siteConfig } from '../../config/site';
 
 interface FooterProps {
     mob: boolean;
 }
 
 export function Footer({ mob }: FooterProps) {
+    const supportEmail = siteConfig?.supportEmail;
     const appName = process.env.NEXT_PUBLIC_APP_NAME || 'MARSSTATION';
     const parentCompany = process.env.NEXT_PUBLIC_PARENT_COMPANY || 'ATMOSPHERE+ LTD';
     const currentYear = new Date().getFullYear();
@@ -157,7 +159,7 @@ export function Footer({ mob }: FooterProps) {
                     </div>
 
                     <a
-                        href="mailto:support@marsstation.dev"
+                        href={`mailto:${supportEmail}`}
                         style={{
                             display: 'flex',
                             alignItems: 'center',
@@ -184,7 +186,7 @@ export function Footer({ mob }: FooterProps) {
                             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                             <polyline points="22,6 12,13 2,6" />
                         </svg>
-                        support@marsstation.dev
+                        {supportEmail}
                     </a>
                 </div>
 

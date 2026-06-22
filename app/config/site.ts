@@ -10,6 +10,7 @@ export const siteConfig = {
     ogImage: '/public/images/logo.png',
 
     email: 'info@marsstation.co.uk',
+    supportEmail: 'support@marsstation.dev',
     phone: '+44 20 1234 5678',
 
     foundingYear: '2024',
