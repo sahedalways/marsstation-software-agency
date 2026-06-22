@@ -7,10 +7,11 @@ import { GlobalButton } from '../../common/GlobalButton';
 interface HeroSecProps {
     phase: string;
     mob: boolean;
+    onGetServices: () => void;
     btnRef: RefObject<HTMLButtonElement | null>;
 }
 
-export function HeroSec({ phase, mob, btnRef }: HeroSecProps) {
+export function HeroSec({ phase, mob, btnRef, onGetServices }: HeroSecProps) {
     const isActive = phase === 'hero';
 
     return (
@@ -175,9 +176,13 @@ export function HeroSec({ phase, mob, btnRef }: HeroSecProps) {
                     businesses, startups, and entrepreneurs.
                 </p>
 
-                {/* CTA Button */}
-                <GlobalButton title="Get Services" phase={phase} mob={mob} btnRef={btnRef} />
-
+                <GlobalButton
+                    title="Get Services"
+                    phase={phase}
+                    mob={mob}
+                    btnRef={btnRef}
+                    onGetServices={onGetServices}
+                />
                 {/* Feature Cards */}
                 <div
                     style={{

@@ -4,12 +4,12 @@ export const siteConfig = {
     description:
         'Obtaining IT benefits, business support, program registration, development of complex contracts',
 
-    url: 'https://marsstation.co.uk',
+    url: 'https:www.marsstation.dev',
 
     logo: '/public/images/logo.png',
     ogImage: '/public/images/logo.png',
 
-    email: 'info@marsstation.co.uk',
+    email: 'support@marsstation.dev',
     supportEmail: 'support@marsstation.dev',
     phone: '+44 20 1234 5678',
 

@@ -11,11 +11,13 @@ import { ChatButton } from './components/common/ChatButton';
 import { ChatWindow } from './components/chat/ChatWindow';
 import { ExperienceSection } from './components/home/sections/ExperienceSection';
 import { TestimonialSection } from './components/home/sections/TestimonialSection';
+import { ServiceRequirementModal } from './components/modals/ServiceRequirementModal';
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 type Phase = 'hero' | 'experience' | 'services' | 'contact' | 'testimonal';
 
 export default function IUSPage() {
+    const [reqModalOpen, setReqModalOpen] = useState(false);
     const [chatOpen, setChatOpen] = useState(false);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const btnRef = useRef<HTMLButtonElement>(null);
@@ -284,7 +286,12 @@ export default function IUSPage() {
                         }}
                     />
                     <div style={{ position: 'relative', zIndex: 1, width: '100%' }}>
-                        <HeroSec phase={phase} mob={mob} btnRef={btnRef} />
+                        <HeroSec
+                            phase={phase}
+                            mob={mob}
+                            btnRef={btnRef}
+                            onGetServices={() => setReqModalOpen(true)}
+                        />
                     </div>
                 </section>
 
@@ -333,6 +340,12 @@ export default function IUSPage() {
                 <ChatWindow isOpen={chatOpen} onClose={() => setChatOpen(false)} />
 
                 <BackToTopButton />
+
+                <ServiceRequirementModal
+                    open={reqModalOpen}
+                    onClose={() => setReqModalOpen(false)}
+                    mob={mob}
+                />
             </main>
         </>
     );

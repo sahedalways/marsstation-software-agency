@@ -6,10 +6,19 @@ interface GlobalButtonProps {
     title: string;
     phase?: string;
     mob?: boolean;
+    disabled?: boolean;
     btnRef?: RefObject<HTMLButtonElement | null>;
+    onGetServices?: () => void;
 }
 
-export function GlobalButton({ title, phase = 'hero', mob = false, btnRef }: GlobalButtonProps) {
+export function GlobalButton({
+    title,
+    phase = 'hero',
+    mob = false,
+    btnRef,
+    disabled,
+    onGetServices,
+}: GlobalButtonProps) {
     return (
         <>
             <style>{`
@@ -49,6 +58,8 @@ export function GlobalButton({ title, phase = 'hero', mob = false, btnRef }: Glo
             `}</style>
 
             <button
+                onClick={onGetServices}
+                disabled={disabled}
                 ref={btnRef}
                 className="hero-cta-btn"
                 style={{
