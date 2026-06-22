@@ -205,28 +205,33 @@ export const ChatUserForm = ({ onSubmit }: ChatUserFormProps) => {
                     style={{
                         width: '100%',
                         padding: '12px',
-                        border: 'none',
+                        border: '1px solid rgba(180,120,255,.4)',
                         borderRadius: 10,
-                        background:
-                            'linear-gradient(135deg, rgba(110,65,220,0.8), rgba(80,40,180,0.9))',
+                        background: 'linear-gradient(90deg, #a855f7 0%, #6366f1 50%, #3b82f6 100%)',
+                        backgroundSize: '200% 200%',
                         color: '#fff',
                         fontSize: 14,
                         fontWeight: 600,
                         fontFamily: 'inherit',
                         cursor: 'pointer',
                         letterSpacing: '0.02em',
-                        transition: 'all 0.25s ease',
+                        transition: 'background .3s ease, box-shadow .3s ease',
                         marginTop: 4,
+                        boxShadow: '0 10px 30px rgba(99,102,241,.35), 0 0 50px rgba(168,85,247,.2)',
                     }}
                     onMouseEnter={(e) => {
                         e.currentTarget.style.background =
-                            'linear-gradient(135deg, rgba(130,80,240,0.9), rgba(100,55,200,1))';
-                        e.currentTarget.style.boxShadow = '0 4px 20px rgba(110,65,220,0.4)';
+                            'linear-gradient(90deg, #b565ff 0%, #7c7cff 50%, #4f9cff 100%)';
+
+                        e.currentTarget.style.boxShadow =
+                            '0 14px 40px rgba(99,102,241,.45), 0 0 70px rgba(168,85,247,.3)';
                     }}
                     onMouseLeave={(e) => {
                         e.currentTarget.style.background =
-                            'linear-gradient(135deg, rgba(110,65,220,0.8), rgba(80,40,180,0.9))';
-                        e.currentTarget.style.boxShadow = 'none';
+                            'linear-gradient(90deg, #a855f7 0%, #6366f1 50%, #3b82f6 100%)';
+
+                        e.currentTarget.style.boxShadow =
+                            '0 10px 30px rgba(99,102,241,.35), 0 0 50px rgba(168,85,247,.2)';
                     }}
                 >
                     Start Chatting

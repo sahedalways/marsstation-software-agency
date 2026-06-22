@@ -138,7 +138,7 @@ export function ServicesSec({ cardsIn, mob }: Props) {
                 }}
             >
                 {/* Globe */}
-                <div
+                {/* <div
                     style={{
                         position: 'absolute',
                         top: mob ? '-50px' : '-100px',
@@ -157,7 +157,7 @@ export function ServicesSec({ cardsIn, mob }: Props) {
                         ref={globeCanvasRef}
                         style={{ width: '100%', height: '100%', display: 'block' }}
                     />
-                </div>
+                </div> */}
                 {/* Heading */}
                 <div
                     style={{

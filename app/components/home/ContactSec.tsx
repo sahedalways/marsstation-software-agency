@@ -244,6 +244,29 @@ export function ContactSec({ phase, contactIn, mob, agreed, setAgreed }: Props) 
                 from { opacity: 0; }
                 to { opacity: 1; }
             }
+
+        .submit-btn {
+            background: linear-gradient(
+                90deg,
+                #a855f7 0%,
+                #6366f1 50%,
+                #3b82f6 100%
+            );
+            transition: background .3s ease, box-shadow .3s ease;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(
+                90deg,
+                #b565ff 0%,
+                #7c7cff 50%,
+                #4f9cff 100%
+            );
+
+            box-shadow:
+                0 14px 40px rgba(99,102,241,.45),
+                0 0 70px rgba(168,85,247,.3);
+        }
         `}</style>
 
             <div
@@ -582,18 +605,20 @@ export function ContactSec({ phase, contactIn, mob, agreed, setAgreed }: Props) 
                             <button
                                 disabled={submitting}
                                 onClick={handleSubmit}
+                                className="submit-btn"
                                 style={{
                                     width: '100%',
                                     padding: mob ? '12px' : '13px',
-                                    background: 'linear-gradient(135deg, #732aeb, #5a1ec8)',
                                     border: '1px solid rgba(180,120,255,.4)',
                                     borderRadius: '9px',
                                     color: '#fff',
                                     fontSize: mob ? '12px' : '13px',
-                                    fontWeight: 500,
+                                    fontWeight: 600,
                                     cursor: submitting ? 'not-allowed' : 'pointer',
                                     opacity: submitting ? 0.7 : 1,
                                     transition: '.3s',
+                                    boxShadow:
+                                        '0 10px 30px rgba(99,102,241,.35), 0 0 50px rgba(168,85,247,.2)',
                                 }}
                             >
                                 {submitting ? (

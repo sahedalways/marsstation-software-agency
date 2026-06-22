@@ -619,7 +619,7 @@ export function useCanvasAnimation({
 
             const baseR = isMob ? Math.min(W, H) * 0.3 : Math.min(W, H) * 0.43;
             const hcx = W * 0.5,
-                hcy = isMob ? H * 0.92 : H - baseR * 0.2,
+                hcy = isMob ? H * 0.95 : H - baseR * 0.2,
                 hgr = baseR;
             const scx = isMob ? W * 0.72 : W * 0.77,
                 scy = isMob ? H * 0.22 : H * 0.33,

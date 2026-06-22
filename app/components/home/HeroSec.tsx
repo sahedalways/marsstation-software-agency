@@ -2,6 +2,7 @@
 'use client';
 
 import { RefObject } from 'react';
+import { GlobalButton } from '../common/GlobalButton';
 
 interface HeroSecProps {
     phase: string;
@@ -32,37 +33,17 @@ export function HeroSec({ phase, mob, btnRef }: HeroSecProps) {
 }
 
 .hero-gradient-text {
-    background: linear-gradient(90deg, #a855f7 0%, #6366f1 50%, #3b82f6 100%);
-    background-size: 200% 200%;
+    background: linear-gradient(
+        90deg,
+        #a855f7 0%,
+        #6366f1 50%,
+        #3b82f6 100%
+    );
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: gradientShift 4s ease infinite;
 }
 
-.hero-cta-btn {
-    background: linear-gradient(90deg, #a855f7 0%, #6366f1 50%, #3b82f6 100%);
-    background-size: 200% 200%;
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4),
-                0 0 60px rgba(168, 85, 247, 0.25);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    animation: gradientShift 4s ease infinite;
-}
-
-.hero-cta-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 14px 40px rgba(99, 102, 241, 0.55),
-                0 0 80px rgba(168, 85, 247, 0.35);
-}
 
 .hero-pill {
     display: inline-flex;
@@ -195,23 +176,7 @@ export function HeroSec({ phase, mob, btnRef }: HeroSecProps) {
                 </p>
 
                 {/* CTA Button */}
-                <button
-                    ref={btnRef}
-                    className="hero-cta-btn"
-                    style={{
-                        padding: mob ? '12px 32px' : '14px 44px',
-                        fontSize: mob ? '13px' : '15px',
-                        marginBottom: mob ? '28px' : '44px',
-                        opacity: phase === 'hero' ? 1 : 0,
-                        animation:
-                            phase === 'hero'
-                                ? 'dropFromTop 1.6s cubic-bezier(.16,1,.3,1) 0.35s both, gradientShift 4s ease infinite'
-                                : 'gradientShift 4s ease infinite',
-                    }}
-                >
-                    Get Services
-                    <span style={{ fontSize: mob ? '14px' : '16px' }}>→</span>
-                </button>
+                <GlobalButton title="Get Services" phase={phase} mob={mob} btnRef={btnRef} />
 
                 {/* Feature Cards */}
                 <div
@@ -220,7 +185,8 @@ export function HeroSec({ phase, mob, btnRef }: HeroSecProps) {
                         gridTemplateColumns: mob ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
                         gap: mob ? '8px' : '12px',
                         maxWidth: mob ? '340px' : '780px',
-                        margin: '0 auto',
+
+                        margin: mob ? '20px auto 0' : '30px auto 0',
                         opacity: phase === 'hero' ? 1 : 0,
                         animation:
                             phase === 'hero'
