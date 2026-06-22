@@ -240,7 +240,7 @@ export default function IUSPage() {
                 <section
                     ref={heroRef}
                     style={{
-                        minHeight: mob ? '60vh' : '100vh',
+                        minHeight: mob ? '87vh' : '148vh',
                         width: '100%',
                         position: 'relative',
                         display: 'flex',

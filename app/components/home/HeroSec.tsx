@@ -25,11 +25,68 @@ export function HeroSec({ phase, mob, btnRef }: HeroSecProps) {
         transform: translateY(0);
     }
 }
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.hero-gradient-text {
+    background: linear-gradient(90deg, #a855f7 0%, #6366f1 50%, #3b82f6 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientShift 4s ease infinite;
+}
+
+.hero-cta-btn {
+    background: linear-gradient(90deg, #a855f7 0%, #6366f1 50%, #3b82f6 100%);
+    background-size: 200% 200%;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4),
+                0 0 60px rgba(168, 85, 247, 0.25);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: gradientShift 4s ease infinite;
+}
+
+.hero-cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 40px rgba(99, 102, 241, 0.55),
+                0 0 80px rgba(168, 85, 247, 0.35);
+}
+
+.hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(8px);
+}
+
+.hero-divider {
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: rgba(255,255,255,0.30);
+    vertical-align: middle;
+}
 `}</style>
             <div
                 style={{
                     position: 'absolute',
-                    top: mob ? '6%' : '16%',
+                    top: mob ? '6%' : '10%',
                     left: 0,
                     right: 0,
                     textAlign: 'center',
@@ -42,13 +99,11 @@ export function HeroSec({ phase, mob, btnRef }: HeroSecProps) {
                             : 'none',
                 }}
             >
-                <p
+                {/* Top pill badge */}
+                <div
+                    className="hero-pill"
                     style={{
-                        fontSize: mob ? '10px' : '11px',
-                        color: 'rgba(255,255,255,0.40)',
-                        letterSpacing: '0.14em',
-                        textTransform: 'uppercase',
-                        marginBottom: mob ? '10px' : '30px',
+                        marginBottom: mob ? '18px' : '26px',
                         opacity: phase === 'hero' ? 1 : 0,
                         animation:
                             phase === 'hero'
@@ -56,17 +111,29 @@ export function HeroSec({ phase, mob, btnRef }: HeroSecProps) {
                                 : 'none',
                     }}
                 >
-                    Digital Legal Services
-                </p>
+                    <span style={{ color: '#6366f1', fontSize: mob ? '10px' : '12px' }}>✦</span>
+                    <span
+                        style={{
+                            fontSize: mob ? '9px' : '11px',
+                            color: 'rgba(255,255,255,0.65)',
+                            letterSpacing: '0.18em',
+                            textTransform: 'uppercase',
+                            fontWeight: 500,
+                        }}
+                    >
+                        Digital Solutions That Drive Growth
+                    </span>
+                </div>
 
+                {/* Main Heading */}
                 <h1
                     style={{
-                        fontSize: mob ? 'clamp(22px, 7vw, 32px)' : 'clamp(32px, 5vw, 62px)',
-                        fontWeight: 300,
+                        fontSize: mob ? 'clamp(28px, 9vw, 42px)' : 'clamp(44px, 6vw, 78px)',
+                        fontWeight: 700,
                         letterSpacing: '-0.03em',
-                        lineHeight: 1.08,
+                        lineHeight: 1.05,
                         color: '#fff',
-                        marginBottom: mob ? '10px' : '18px',
+                        marginBottom: mob ? '14px' : '20px',
                         opacity: phase === 'hero' ? 1 : 0,
                         animation:
                             phase === 'hero'
@@ -74,17 +141,47 @@ export function HeroSec({ phase, mob, btnRef }: HeroSecProps) {
                                 : 'none',
                     }}
                 >
-                    Digital Law on your side
+                    Turn Your Vision
+                    <br />
+                    <span className="hero-gradient-text">Into Digital Reality</span>
                 </h1>
 
+                {/* Starting From */}
+                <div
+                    style={{
+                        marginBottom: mob ? '14px' : '20px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '14px',
+                        opacity: phase === 'hero' ? 1 : 0,
+                        animation:
+                            phase === 'hero'
+                                ? 'dropFromTop 1.6s cubic-bezier(.16,1,.3,1) 0.35s both'
+                                : 'none',
+                    }}
+                >
+                    <span className="hero-divider" />
+                    <span
+                        style={{
+                            fontSize: mob ? '14px' : '18px',
+                            color: 'rgba(255,255,255,0.85)',
+                            fontWeight: 400,
+                        }}
+                    >
+                        Starting From <span style={{ color: '#fff', fontWeight: 700 }}>£190</span>
+                    </span>
+                    <span className="hero-divider" />
+                </div>
+
+                {/* Description */}
                 <p
                     style={{
-                        fontSize: mob ? '11px' : '14px',
-                        color: 'rgba(255,255,255,0.44)',
-                        lineHeight: 1.8,
-                        marginBottom: mob ? '16px' : '30px',
-                        maxWidth: mob ? '260px' : '440px',
-                        margin: `0 auto ${mob ? '22px' : '30px'}`,
+                        fontSize: mob ? '12px' : '15px',
+                        color: 'rgba(255,255,255,0.55)',
+                        lineHeight: 1.7,
+                        maxWidth: mob ? '300px' : '480px',
+                        margin: `0 auto ${mob ? '24px' : '34px'}`,
                         opacity: phase === 'hero' ? 1 : 0,
                         animation:
                             phase === 'hero'
@@ -92,26 +189,98 @@ export function HeroSec({ phase, mob, btnRef }: HeroSecProps) {
                                 : 'none',
                     }}
                 >
-                    Obtaining IT benefits, business support,
+                    Professional websites and mobile apps designed for
                     <br />
-                    program registration, development of complex contracts
+                    businesses, startups, and entrepreneurs.
                 </p>
 
+                {/* CTA Button */}
                 <button
                     ref={btnRef}
-                    className="ius-btn"
+                    className="hero-cta-btn"
                     style={{
-                        padding: mob ? '9px 24px' : '10px 28px',
-                        fontSize: mob ? '12px' : '13px',
+                        padding: mob ? '12px 32px' : '14px 44px',
+                        fontSize: mob ? '13px' : '15px',
+                        marginBottom: mob ? '28px' : '44px',
                         opacity: phase === 'hero' ? 1 : 0,
                         animation:
                             phase === 'hero'
-                                ? 'dropFromTop 1.6s cubic-bezier(.16,1,.3,1) 0.35s both'
+                                ? 'dropFromTop 1.6s cubic-bezier(.16,1,.3,1) 0.35s both, gradientShift 4s ease infinite'
+                                : 'gradientShift 4s ease infinite',
+                    }}
+                >
+                    Get Services
+                    <span style={{ fontSize: mob ? '14px' : '16px' }}>→</span>
+                </button>
+
+                {/* Feature Cards */}
+                <div
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns: mob ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
+                        gap: mob ? '8px' : '12px',
+                        maxWidth: mob ? '340px' : '780px',
+                        margin: '0 auto',
+                        opacity: phase === 'hero' ? 1 : 0,
+                        animation:
+                            phase === 'hero'
+                                ? 'dropFromTop 1.6s cubic-bezier(.16,1,.3,1) 0.5s both'
                                 : 'none',
                     }}
                 >
-                    Get services
-                </button>
+                    {[
+                        { icon: '🛡️', title: 'Modern & Secure', desc: 'Built with best practices' },
+                        { icon: '⚡', title: 'Fast & Optimized', desc: 'Speed that converts' },
+                        { icon: '📱', title: 'Responsive Design', desc: 'Perfect on every device' },
+                        { icon: '🎧', title: 'Expert Support', desc: "We're here for you" },
+                    ].map((item, i) => (
+                        <div
+                            key={i}
+                            style={{
+                                padding: mob ? '10px 8px' : '14px 12px',
+                                borderRadius: '12px',
+                                border: '1px solid rgba(255,255,255,0.06)',
+                                background: 'rgba(255,255,255,0.02)',
+                                backdropFilter: 'blur(8px)',
+                                textAlign: 'left',
+                                display: 'flex',
+                                alignItems: 'flex-start',
+                                gap: mob ? '8px' : '10px',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    fontSize: mob ? '14px' : '16px',
+                                    color: '#a855f7',
+                                    flexShrink: 0,
+                                }}
+                            >
+                                {item.icon}
+                            </div>
+                            <div>
+                                <div
+                                    style={{
+                                        fontSize: mob ? '10px' : '12px',
+                                        fontWeight: 600,
+                                        color: '#fff',
+                                        marginBottom: '2px',
+                                    }}
+                                >
+                                    {item.title}
+                                </div>
+                                <div
+                                    style={{
+                                        fontSize: mob ? '8px' : '10px',
+                                        color: 'rgba(255,255,255,0.45)',
+                                        lineHeight: 1.4,
+                                    }}
+                                >
+                                    {item.desc}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
         </>
     );
