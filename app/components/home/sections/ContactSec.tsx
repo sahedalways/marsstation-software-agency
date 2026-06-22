@@ -1,12 +1,12 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { InputField } from '../common/InputField';
-import { Lbl } from '../common/Lbl';
-import { validateField } from '../../utils/validation';
-import { CountryCode } from '../common/CountryCode';
+import { InputField } from '../../common/InputField';
+import { Lbl } from '../../common/Lbl';
+import { validateField } from '../../../utils/validation';
+import { CountryCode } from '../../common/CountryCode';
 import { getCountryCallingCode } from 'react-phone-number-input';
-import { ToastMsgModal } from '../common/ToastMsgModal';
-import { SectionHeading } from '../common/SectionHeading';
+import { ToastMsgModal } from '../../common/ToastMsgModal';
+import { SectionHeading } from '../../common/SectionHeading';
 
 interface Props {
     phase: string;

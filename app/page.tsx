@@ -1,18 +1,19 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { Navbar } from './components/common/Navbar';
-import { HeroSec } from './components/home/HeroSec';
-import { ServicesSec } from './components/home/ServicesSec';
-import { ContactSec } from './components/home/ContactSec';
+import { HeroSec } from './components/home/sections/HeroSec';
+import { ServicesSec } from './components/home/sections/ServicesSec';
+import { ContactSec } from './components/home/sections/ContactSec';
 import { useCanvasAnimation } from './hooks/useCanvasAnimation';
 import { Footer } from './components/common/Footer';
 import { BackToTopButton } from './components/common/BackToTopButton';
 import { ChatButton } from './components/common/ChatButton';
 import { ChatWindow } from './components/chat/ChatWindow';
 import { ExperienceSection } from './components/home/sections/ExperienceSection';
+import { TestimonialSection } from './components/home/sections/TestimonialSection';
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
-type Phase = 'hero' | 'experience' | 'services' | 'contact';
+type Phase = 'hero' | 'experience' | 'services' | 'contact' | 'testimonal';
 
 export default function IUSPage() {
     const [chatOpen, setChatOpen] = useState(false);
@@ -26,6 +27,7 @@ export default function IUSPage() {
     const experienceRef = useRef<HTMLDivElement>(null);
     const servicesRef = useRef<HTMLDivElement>(null);
     const contactRef = useRef<HTMLDivElement>(null);
+    const testimonialRef = useRef<HTMLDivElement>(null);
 
     const [phase, setPhase] = useState<Phase>('hero');
     const [agreed, setAgreed] = useState(false);
@@ -43,6 +45,12 @@ export default function IUSPage() {
             setCardsIn(true);
         }
         if (phase === 'contact') {
+            setExperienceIn(true);
+            setCardsIn(true);
+            setContactIn(true);
+        }
+
+        if (phase === 'testimonal') {
             setExperienceIn(true);
             setCardsIn(true);
             setContactIn(true);
@@ -295,6 +303,10 @@ export default function IUSPage() {
 
                 <section ref={servicesRef} style={{ width: '100%', position: 'relative' }}>
                     <ServicesSec cardsIn={cardsIn} mob={mob} />
+                </section>
+
+                <section ref={testimonialRef} style={{ width: '100%', position: 'relative' }}>
+                    <TestimonialSection cardsIn={cardsIn} mob={mob} />
                 </section>
 
                 <section

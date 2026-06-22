@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { SectionHeading } from '../common/SectionHeading';
+import { SectionHeading } from '../../common/SectionHeading';
 
 interface Props {
     cardsIn: boolean;

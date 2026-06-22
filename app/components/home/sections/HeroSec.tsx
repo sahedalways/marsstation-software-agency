@@ -2,7 +2,7 @@
 'use client';
 
 import { RefObject } from 'react';
-import { GlobalButton } from '../common/GlobalButton';
+import { GlobalButton } from '../../common/GlobalButton';
 
 interface HeroSecProps {
     phase: string;
