@@ -22,7 +22,7 @@ interface ServiceTab {
 }
 
 export function ServicesSec({ cardsIn, mob }: Props) {
-    const [activeTab, setActiveTab] = useState(1); // index of E-Commerce Websites
+    const [activeTab, setActiveTab] = useState(1);
 
     const services: ServiceTab[] = [
         {
@@ -127,6 +127,60 @@ export function ServicesSec({ cardsIn, mob }: Props) {
         },
         {
             id: 3,
+            title: 'AI Automation',
+            tech: 'AI / ML',
+            techColor: '#f43f5e',
+            iconColor: '#fb7185',
+            icon: (
+                <svg
+                    width="28"
+                    height="28"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                >
+                    <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z" />
+                    <path d="M16 14h.01" />
+                    <path d="M8 14h.01" />
+                    <path d="M12 16v2" />
+                    <path d="M6 10H4a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h1" />
+                    <path d="M18 10h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-1" />
+                    <rect x="5" y="10" width="14" height="10" rx="3" />
+                </svg>
+            ),
+            description:
+                'We build intelligent AI-powered automation solutions that streamline your business workflows, reduce manual tasks and boost productivity with cutting-edge machine learning technology.',
+            features: [
+                'AI Chatbot Development',
+                'Workflow Automation',
+                'Predictive Analytics',
+                'Natural Language Processing',
+                'Custom AI Model Training',
+                'API & System Integration',
+            ],
+            projects: [
+                {
+                    name: 'AutoFlow',
+                    type: 'AI Automation',
+                    img: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=300&fit=crop',
+                },
+                {
+                    name: 'SmartBot',
+                    type: 'AI Chatbot',
+                    img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=300&fit=crop',
+                },
+                {
+                    name: 'DataMind',
+                    type: 'ML Platform',
+                    img: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400&h=300&fit=crop',
+                },
+            ],
+        },
+        {
+            id: 4,
             title: 'SaaS Website',
             tech: 'Full Stack',
             techColor: '#22c55e',
@@ -174,7 +228,7 @@ export function ServicesSec({ cardsIn, mob }: Props) {
             ],
         },
         {
-            id: 4,
+            id: 5,
             title: 'Custom Website',
             tech: 'Full Stack',
             techColor: '#f97316',
@@ -223,7 +277,7 @@ export function ServicesSec({ cardsIn, mob }: Props) {
             ],
         },
         {
-            id: 5,
+            id: 6,
             title: 'E-Commerce Solutions',
             tech: 'Full Stack',
             techColor: '#f97316',
@@ -273,7 +327,7 @@ export function ServicesSec({ cardsIn, mob }: Props) {
             ],
         },
         {
-            id: 6,
+            id: 7,
             title: 'Android App',
             tech: 'Android',
             techColor: '#22c55e',
@@ -322,7 +376,7 @@ export function ServicesSec({ cardsIn, mob }: Props) {
             ],
         },
         {
-            id: 7,
+            id: 8,
             title: 'iPhone (iOS) App',
             tech: 'iOS',
             techColor: '#94a3b8',
@@ -361,7 +415,7 @@ export function ServicesSec({ cardsIn, mob }: Props) {
             ],
         },
         {
-            id: 8,
+            id: 9,
             title: 'Cross-Platform App',
             tech: 'Android + iPhone',
             techColor: '#3b82f6',
@@ -570,11 +624,11 @@ export function ServicesSec({ cardsIn, mob }: Props) {
                         cardsIn={cardsIn}
                     />
 
-                    {/* ─── Service Tabs (8 cards row) ─── */}
+                    {/* ─── Service Tabs (9 cards row) ─── */}
                     <div
                         style={{
                             display: 'grid',
-                            gridTemplateColumns: mob ? 'repeat(4, 1fr)' : 'repeat(8, 1fr)',
+                            gridTemplateColumns: mob ? 'repeat(4, 1fr)' : 'repeat(9, 1fr)',
                             gap: mob ? '8px' : '12px',
                             position: 'relative',
                         }}

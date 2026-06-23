@@ -377,45 +377,6 @@ function buildEmailHtml(data: {
         ${buildServiceRows(serviceLines)}
     </table>
 
-    <!-- ESTIMATE -->
-    <table cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
-    <tr>
-        <td style="width:4px;background:linear-gradient(180deg,#6366f1,#4f46e5);border-radius:2px;">&nbsp;</td>
-        <td style="padding-left:12px;">
-            <p style="color:#a78bfa;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin:0;">
-                AI Estimate
-            </p>
-        </td>
-    </tr></table>
-
-    <table width="100%" cellpadding="0" cellspacing="0" style="
-        background:linear-gradient(135deg,rgba(139,92,246,0.18),rgba(99,102,241,0.12));
-        border:1px solid rgba(139,92,246,0.4);
-        border-radius:14px;
-        padding:24px;
-        margin-bottom:24px;
-        text-align:center;
-    ">
-        <tr><td>
-            <div style="color:rgba(255,255,255,0.5);font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">
-                Estimated Price Range
-            </div>
-            <div style="
-                font-size:28px;font-weight:800;letter-spacing:-0.5px;
-                background:linear-gradient(90deg,#e9d5ff,#a78bfa,#818cf8);
-                -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-                background-clip:text;
-            ">
-                £${escapeHtml(minPrice)} — £${escapeHtml(maxPrice)}
-            </div>
-            <div style="color:rgba(255,255,255,0.7);font-size:12px;margin-top:10px;">
-                ⏱ Timeline: <strong style="color:#fff;">~${escapeHtml(timeline)} weeks</strong>
-            </div>
-            <div style="margin-top:16px;">
-                ${buildTechPills(techStack)}
-            </div>
-        </td></tr>
-    </table>
 
     ${
         notes && notes !== 'None'
