@@ -697,22 +697,28 @@ ${contact.notes || 'None'}
                     from { opacity:0; transform: translateY(12px); }
                     to { opacity:1; transform: translateY(0); }
                 }
-           .srm-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(5, 5, 15, 0.78);
-    backdrop-filter: blur(10px);
-    z-index: 9999;
+                    .srm-overlay {
+                        position: fixed;
+                        inset: 0;
+                        background: rgba(5, 5, 15, 0.78);
+                        backdrop-filter: blur(10px);
 
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
+                        z-index: 999999999 !important;
 
-    padding: 6px;
+                        display: flex;
+                    align-items: center;
+                    justify-content: center;
 
-    animation: srmOverlayIn 0.3s ease both;
-}
-                .srm-modal {
+                        padding: 6px;
+
+                        isolation: isolate;
+
+                        animation: srmOverlayIn 0.3s ease both;
+                    }
+                                    .srm-modal {
+                                        position:relative;
+    z-index:1000000000;
+    pointer-events:auto;
                     width: 100%;
                     max-width: 580px;
                     max-height: 92vh;
@@ -1539,10 +1545,12 @@ function CalculatingScreen({ mob }: { mob: boolean }) {
     return (
         <div
             style={{
-                padding: mob ? '60px 24px' : '90px 32px',
+                minHeight: mob ? '70vh' : '65vh',
+                width: '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
+                justifyContent: 'center',
                 gap: '20px',
                 textAlign: 'center',
             }}
@@ -1570,9 +1578,11 @@ function CalculatingScreen({ mob }: { mob: boolean }) {
                     <path d="M12 2L9.5 9 2 12l7.5 3L12 22l2.5-7L22 12l-7.5-3L12 2z" />
                 </svg>
             </div>
+
             <h3 style={{ color: '#fff', margin: 0, fontSize: '20px' }}>
                 Preparing your estimate...
             </h3>
+
             <p
                 style={{
                     color: 'rgba(255,255,255,0.6)',

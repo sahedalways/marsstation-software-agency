@@ -256,7 +256,7 @@ export default function IUSPage() {
                 }}
             />
 
-            <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 10 }}>
+            <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 5 }}>
                 <Navbar mob={mob} />
             </div>
 
@@ -340,13 +340,13 @@ export default function IUSPage() {
                 <ChatWindow isOpen={chatOpen} onClose={() => setChatOpen(false)} />
 
                 <BackToTopButton />
-
-                <ServiceRequirementModal
-                    open={reqModalOpen}
-                    onClose={() => setReqModalOpen(false)}
-                    mob={mob}
-                />
             </main>
+
+            <ServiceRequirementModal
+                open={reqModalOpen}
+                onClose={() => setReqModalOpen(false)}
+                mob={mob}
+            />
         </>
     );
 }
