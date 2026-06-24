@@ -187,6 +187,7 @@ const AboutHero = ({ mob, show }: AboutHeroProps) => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    paddingTop: mob ? '80px' : '0',
                     overflow: 'hidden',
                     // Stronger background gradients so it's visible
                     background: `
