@@ -183,7 +183,7 @@ const AboutHero = ({ mob, show }: AboutHeroProps) => {
                 style={{
                     position: 'relative',
                     width: '100%',
-                    minHeight: mob ? 'calc(100vh - 60px)' : 'calc(100vh - 72px)', // Subtract navbar height
+                    minHeight: mob ? '70vh' : 'calc(100vh - 72px)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',

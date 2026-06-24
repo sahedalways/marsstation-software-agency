@@ -260,7 +260,7 @@ export default function IUSPage() {
                 <Navbar mob={mob} setChatOpen={setChatOpen} />
             </div>
 
-            <main style={{ position: 'relative', zIndex: 1, background: 'transparent' }}>
+            <main style={{ position: 'relative', zIndex: 1, background: 'transparent', width: '100%', overflowX: 'hidden' }}>
                 <section
                     ref={heroRef}
                     style={{

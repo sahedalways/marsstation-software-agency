@@ -373,8 +373,8 @@ const PandRHero = ({ mob }: PandRHeroProps) => {
                     overflow: 'hidden',
                     display: 'flex',
                     flexDirection: 'column',
-                    minHeight: mob ? 'calc(100vh - 80px)' : 'calc(100vh - 100px)',
-                    padding: mob ? '70px 0 0' : '80px 0 0',
+                    minHeight: mob ? '60vh' : 'calc(100vh - 100px)',
+                    padding: mob ? '60px 0 0' : '80px 0 0',
                     zIndex: 1,
                     background: `
                         radial-gradient(ellipse 100% 70% at 50% 20%, rgba(88,28,135,0.5) 0%, transparent 70%),
