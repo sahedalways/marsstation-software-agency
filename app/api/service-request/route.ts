@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { siteConfig } from '../../config/site';
+import { supabase } from '../../lib/supabase';
 
 export async function POST(req: Request) {
     try {
@@ -26,7 +27,7 @@ export async function POST(req: Request) {
 
         const minPrice = priceMatch?.[1] || '—';
         const maxPrice = priceMatch?.[2] || '—';
-        const timeline = timelineMatch?.[1] || '—';
+        const timeline = timelineMatch?.[1] ? `${timelineMatch[1]} weeks` : '—';
         const techStack = techMatch?.[1] ? techMatch[1].split(',').map((t) => t.trim()) : [];
 
         // Parse service selections from projectReqs
@@ -37,6 +38,29 @@ export async function POST(req: Request) {
 
         const siteName = siteConfig?.name || 'Your Company';
         const contactMethodLabel = contactMethod.charAt(0).toUpperCase() + contactMethod.slice(1);
+
+        const { error: dbError } = await supabase.from('service_requests').insert([
+            {
+                full_name: fullName,
+                email,
+                phone,
+                company,
+                contact_method: contactMethod,
+                description,
+
+                estimated_min_price: minPrice,
+                estimated_max_price: maxPrice,
+                estimated_timeline: timeline,
+
+                services: serviceLines,
+                tech_stack: techStack,
+                additional_notes: notes,
+            },
+        ]);
+
+        if (dbError) {
+            console.error('Supabase Service Request Error:', dbError);
+        }
 
         const transporter = nodemailer.createTransport({
             host: process.env.MAIL_HOST,
@@ -377,6 +401,56 @@ function buildEmailHtml(data: {
         ${buildServiceRows(serviceLines)}
     </table>
 
+    <!-- ESTIMATE -->
+    <table cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
+    <tr>
+        <td style="width:4px;background:linear-gradient(180deg,#f59e0b,#d97706);border-radius:2px;">&nbsp;</td>
+        <td style="padding-left:12px;">
+            <p style="color:#fbbf24;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin:0;">
+                Project Estimate
+            </p>
+        </td>
+    </tr></table>
+
+    <table width="100%" cellpadding="0" cellspacing="0" style="
+        background:linear-gradient(135deg,rgba(139,92,246,0.15),rgba(99,102,241,0.1));
+        border:1px solid rgba(139,92,246,0.35);
+        border-left:4px solid #f59e0b;
+        border-radius:14px;
+        padding:6px 20px;
+        margin-bottom:24px;
+    ">
+        <tr>
+            <td style="padding:14px 0;border-bottom:1px solid rgba(139,92,246,0.15);">
+                <table width="100%" cellpadding="0" cellspacing="0"><tr>
+                    <td style="color:#a78bfa;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:150px;">Estimated Cost</td>
+                    <td style="color:#e9d5ff;font-size:15px;font-weight:700;">
+                        £${escapeHtml(minPrice)} — £${escapeHtml(maxPrice)}
+                    </td>
+                </tr></table>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:14px 0;border-bottom:1px solid rgba(139,92,246,0.15);">
+                <table width="100%" cellpadding="0" cellspacing="0"><tr>
+                    <td style="color:#a78bfa;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:150px;">Timeline</td>
+                    <td style="color:#fff;font-size:14px;font-weight:600;">
+                        ~${escapeHtml(timeline)}
+                    </td>
+                </tr></table>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding:14px 0;">
+                <table width="100%" cellpadding="0" cellspacing="0"><tr>
+                    <td style="color:#a78bfa;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:150px;vertical-align:top;padding-top:2px;">Tech Stack</td>
+                    <td style="color:#fff;font-size:13px;font-weight:500;">
+                        ${buildTechPills(techStack)}
+                    </td>
+                </tr></table>
+            </td>
+        </tr>
+    </table>
 
     ${
         notes && notes !== 'None'

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { siteConfig } from '../../config/site';
+import { supabase } from '../../lib/supabase';
 
 export async function POST(req: Request) {
     try {
@@ -9,6 +10,18 @@ export async function POST(req: Request) {
         const { name, email, agent } = body;
 
         const siteName = siteConfig?.name || 'Your Company';
+
+        const { error: dbError } = await supabase.from('chat_leads').insert([
+            {
+                name: name,
+                email: email,
+                agent: agent || null,
+            },
+        ]);
+
+        if (dbError) {
+            console.error('Supabase DB Insert Error:', dbError);
+        }
 
         const transporter = nodemailer.createTransport({
             host: process.env.MAIL_HOST,

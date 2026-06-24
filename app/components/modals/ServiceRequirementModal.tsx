@@ -491,7 +491,7 @@ export function ServiceRequirementModal({ open, onClose, mob }: Props) {
     };
 
     /* ─── Call AI ─── */
-    const fetchEstimate = async () => {
+    const fetchEstimate = async (): Promise<ProjectEstimate> => {
         const userSummary = buildAIPrompt();
         const promptMessage = `Based on these client requirements for a software project:
 
@@ -527,7 +527,7 @@ Add 20-30% for urgent timelines. Be realistic.`;
             if (!jsonMatch) throw new Error('No JSON in reply');
 
             const parsed = JSON.parse(jsonMatch[0]);
-            setEstimate({
+            const est: ProjectEstimate = {
                 minPrice: Number(parsed.minPrice) || 1000,
                 maxPrice: Number(parsed.maxPrice) || 5000,
                 weeks: Number(parsed.weeks) || 6,
@@ -537,10 +537,14 @@ Add 20-30% for urgent timelines. Be realistic.`;
                 techStack: Array.isArray(parsed.techStack)
                     ? parsed.techStack
                     : ['Next.js', 'Node.js', 'mySQL', 'TailwindCSS', 'Laravel'],
-            });
+            };
+            setEstimate(est);
+            return est;
         } catch (err) {
             console.error('Estimate failed:', err);
-            setEstimate(computeFallbackEstimate(services, answers));
+            const fallback = computeFallbackEstimate(services, answers);
+            setEstimate(fallback);
+            return fallback;
         } finally {
             setCalculating(false);
             setShowEstimate(true);
@@ -558,10 +562,11 @@ Add 20-30% for urgent timelines. Be realistic.`;
 
             const selectionsSummary = buildAIPrompt();
 
-            const minPrice = estimate?.minPrice ?? 0;
-            const maxPrice = estimate?.maxPrice ?? 0;
-            const weeks = estimate?.weeks ?? 'N/A';
-            const techStack = estimate?.techStack?.join(', ') || 'N/A';
+            const computedEstimate = await fetchEstimate();
+            const minPrice = computedEstimate.minPrice;
+            const maxPrice = computedEstimate.maxPrice;
+            const weeks = computedEstimate.weeks;
+            const techStack = computedEstimate.techStack.join(', ');
 
             const fd = new FormData();
 
@@ -570,7 +575,7 @@ Add 20-30% for urgent timelines. Be realistic.`;
             fd.append('phone', contact.phone || '');
             fd.append('orderNumber', contact.company || 'N/A');
 
-            fd.append('estimate', estimate ? `£${minPrice} - £${maxPrice}` : 'N/A');
+            fd.append('estimate', `£${minPrice} - £${maxPrice}`);
 
             fd.append('requestType', 'query');
 
@@ -607,9 +612,6 @@ ${contact.notes || 'None'}
             }
 
             setSubmitted(true);
-
-            // Refresh estimate only if needed
-            await fetchEstimate();
         } catch (err) {
             console.error('Service request error:', err);
 
