@@ -256,7 +256,7 @@ export default function IUSPage() {
                 }}
             />
 
-            <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 5 }}>
+            <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100 }}>
                 <Navbar mob={mob} />
             </div>
 

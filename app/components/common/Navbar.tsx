@@ -38,6 +38,20 @@ export function Navbar({ mob }: NavbarProps) {
                         -webkit-backdrop-filter: blur(20px);
                     }
                 }
+                .ius-btn {
+                    border: 1px solid rgba(255,255,255,0.26);
+                    border-radius: 9999px;
+                    background: rgba(255,255,255,0.05);
+                    color: rgba(255,255,255,0.90);
+                    cursor: pointer;
+                    font-family: inherit;
+                    letter-spacing: 0.02em;
+                    transition: background 0.22s, border-color 0.22s;
+                }
+                .ius-btn:hover {
+                    background: rgba(255,255,255,0.10);
+                    border-color: rgba(255,255,255,0.44);
+                }
             `}</style>
 
             <nav

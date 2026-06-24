@@ -123,7 +123,7 @@ export function HeroSec({ phase, mob, btnRef, onGetServices }: HeroSecProps) {
                                 : 'none',
                     }}
                 >
-                    Turn Your Vision
+                    Turning Vision
                     <br />
                     <span className="hero-gradient-text">Into Digital Reality</span>
                 </h1>
