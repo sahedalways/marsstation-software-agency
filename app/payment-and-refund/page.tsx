@@ -103,7 +103,7 @@ export default function PandRPage() {
                 }}
             />
             <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100 }}>
-                <Navbar mob={mob} />
+                <Navbar mob={mob} setChatOpen={setChatOpen} />
             </div>
             <main
                 style={{

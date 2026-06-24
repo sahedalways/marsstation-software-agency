@@ -6,9 +6,10 @@ import Link from 'next/link';
 
 interface NavbarProps {
     mob: boolean;
+    setChatOpen: (open: boolean) => void;
 }
 
-export function Navbar({ mob }: NavbarProps) {
+export function Navbar({ mob, setChatOpen }: NavbarProps) {
     const [scrolled, setScrolled] = useState(false);
 
     useEffect(() => {
@@ -133,6 +134,7 @@ export function Navbar({ mob }: NavbarProps) {
                         transition:
                             'background 0.22s, border-color 0.22s, box-shadow 0.3s, transform 0.3s',
                     }}
+                    onClick={() => setChatOpen(true)}
                     onMouseEnter={(e) => {
                         e.currentTarget.style.boxShadow = '0 4px 20px rgba(130, 60, 255, 0.35)';
                         e.currentTarget.style.transform = 'translateY(-1px)';
