@@ -321,9 +321,9 @@ const AboutHero = ({ mob, show }: AboutHeroProps) => {
                             textShadow: '0 4px 20px rgba(0,0,0,0.5)',
                         }}
                     >
-                        Turning Vision
+                        Discover
                         <br />
-                        <span className="about-gradient-text">Into Digital Reality</span>
+                        <span className="about-gradient-text">Who We Are</span>
                     </motion.h1>
 
                     {/* Subtitle */}

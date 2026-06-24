@@ -4,10 +4,10 @@ export const siteConfig = {
     description:
         'Obtaining IT benefits, business support, program registration, development of complex contracts',
 
-    url: 'https:www.marsstation.dev',
+    url: 'https://www.marsstation.dev',
 
-    logo: '/public/images/logo.png',
-    ogImage: '/public/images/logo.png',
+    logo: '/images/logo.png',
+    ogImage: '/images/logo.png',
 
     email: 'support@marsstation.dev',
     supportEmail: 'support@marsstation.dev',

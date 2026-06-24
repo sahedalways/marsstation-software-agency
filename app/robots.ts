@@ -1,4 +1,3 @@
-
 import type { MetadataRoute } from 'next';
 import { siteConfig } from './config/site';
 

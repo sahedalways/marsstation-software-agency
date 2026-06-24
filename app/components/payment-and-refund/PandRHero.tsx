@@ -333,12 +333,13 @@ const PandRHero = ({ mob }: PandRHeroProps) => {
                     0%, 100% { text-shadow: 0 0 20px rgba(168,85,247,0.4), 0 0 40px rgba(99,102,241,0.2), 0 0 80px rgba(245,158,11,0.15); }
                     50% { text-shadow: 0 0 30px rgba(168,85,247,0.6), 0 0 60px rgba(99,102,241,0.35), 0 0 100px rgba(245,158,11,0.25); }
                 }
-              .pandp-gradient-text {
-                    background: linear-gradient(135deg, #a855f7 0%, #6366f1 50%, #3b82f6 100%);
-                    -webkit-background-clip: text;
-                    background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                }
+            .pandp-gradient-text {
+    background: linear-gradient(135deg, #a855f7 0%, #6366f1 50%, #3b82f6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline;
+}
                 .pandp-pill {
                     display: inline-flex;
                     align-items: center;
@@ -608,9 +609,8 @@ const PandRHero = ({ mob }: PandRHeroProps) => {
                                 textShadow: '0 4px 30px rgba(0,0,0,0.45)',
                             }}
                         >
-                            Payment &{' '}
-                            <br />
-                            <span className="pandp-gradient-text">Refund Policy</span>
+                            Transparent{' '}
+                            <span className="pandp-gradient-text">Transaction Experience</span>
                         </motion.h1>
 
                         {/* Divider line text */}
@@ -649,8 +649,8 @@ const PandRHero = ({ mob }: PandRHeroProps) => {
                                 margin: '0 auto 24px',
                             }}
                         >
-                            Understand our payment terms, pricing structure, and refund policy before
-                            engaging our services.
+                            Understand our payment terms, pricing structure, and refund policy
+                            before engaging our services.
                         </motion.p>
                     </motion.div>
                 </div>

@@ -1,6 +1,20 @@
+'use client';
+
+import { usePathname } from 'next/navigation';
 import { siteConfig } from '../../config/site';
 
+const pageNames: Record<string, string> = {
+    '/': 'Home',
+    '/about': 'About Us',
+    '/privacy-policy': 'Privacy Policy',
+    '/terms-conditions': 'Terms & Conditions',
+    '/payment-and-refund': 'Payment & Refund Policy',
+};
+
 export function JsonLd() {
+    const pathname = usePathname();
+    const fullUrl = `${siteConfig.url}${pathname}`;
+
     // Organization Schema
     const organizationSchema = {
         '@context': 'https://schema.org',
@@ -10,11 +24,11 @@ export function JsonLd() {
         url: siteConfig.url,
         logo: {
             '@type': 'ImageObject',
-            url: `${siteConfig.url}/logo.png`,
+            url: `${siteConfig.url}/images/logo.png`,
             width: 512,
             height: 512,
         },
-        image: siteConfig.ogImage,
+        image: `${siteConfig.url}/images/logo.png`,
         description: siteConfig.description,
         email: siteConfig.email,
         telephone: siteConfig.phone,
@@ -43,7 +57,7 @@ export function JsonLd() {
         ],
     };
 
-    // Website Schema (enables Google Sitelinks Search Box)
+    // Website Schema
     const websiteSchema = {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
@@ -64,14 +78,14 @@ export function JsonLd() {
         },
     };
 
-    // ProfessionalService Schema (for local SEO)
+    // ProfessionalService Schema
     const professionalServiceSchema = {
         '@context': 'https://schema.org',
         '@type': 'ProfessionalService',
         '@id': `${siteConfig.url}/#service`,
         name: siteConfig.name,
         url: siteConfig.url,
-        image: siteConfig.ogImage,
+        image: `${siteConfig.url}/images/logo.png`,
         description: siteConfig.description,
         telephone: siteConfig.phone,
         email: siteConfig.email,
@@ -86,8 +100,8 @@ export function JsonLd() {
         },
         geo: {
             '@type': 'GeoCoordinates',
-            latitude: 51.5074,
-            longitude: -0.1278,
+            latitude: siteConfig.geo.latitude,
+            longitude: siteConfig.geo.longitude,
         },
         openingHoursSpecification: [
             {
@@ -111,18 +125,30 @@ export function JsonLd() {
         },
     };
 
-    // BreadcrumbList Schema
+    // Dynamic BreadcrumbList Schema
+    const breadcrumbItems = [
+        {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Home',
+            item: siteConfig.url,
+        },
+    ];
+
+    if (pathname !== '/') {
+        const pageName = pageNames[pathname] || pathname.slice(1).replace(/-/g, ' ');
+        breadcrumbItems.push({
+            '@type': 'ListItem',
+            position: 2,
+            name: pageName,
+            item: fullUrl,
+        });
+    }
+
     const breadcrumbSchema = {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
-        itemListElement: [
-            {
-                '@type': 'ListItem',
-                position: 1,
-                name: 'Home',
-                item: siteConfig.url,
-            },
-        ],
+        itemListElement: breadcrumbItems,
     };
 
     return (
