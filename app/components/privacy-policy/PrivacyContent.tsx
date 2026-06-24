@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { siteConfig } from '../../config/site';
+import { toCamelCase } from '../../utils/textUtils';
 
 interface PrivacyContentProps {
     mob: boolean;
@@ -27,13 +28,15 @@ const sections = [
 ];
 
 export default function PrivacyContent({ mob }: PrivacyContentProps) {
+    const compnayName = siteConfig?.name;
+    const companyUrl = siteConfig?.url;
     const supportEmail = siteConfig?.supportEmail;
+
     const [activeSection, setActiveSection] = useState('');
 
     useEffect(() => {
         const handleScroll = () => {
             const scrollPosition = window.scrollY + 150;
-
             for (const section of sections) {
                 const element = document.getElementById(section.id);
                 if (
@@ -45,17 +48,14 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                 }
             }
         };
-
         window.addEventListener('scroll', handleScroll);
-        handleScroll(); // Set initial active section
+        handleScroll();
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     const scrollToSection = (id: string) => {
         const element = document.getElementById(id);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
-        }
+        if (element) element.scrollIntoView({ behavior: 'smooth' });
     };
 
     return (
@@ -71,7 +71,6 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                 zIndex: 2,
             }}
         >
-            {/* Table of Contents - Sticky Sidebar */}
             {!mob && (
                 <div style={{ width: '260px', flexShrink: 0 }}>
                     <div style={{ position: 'sticky', top: '100px' }}>
@@ -80,7 +79,7 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                                 fontSize: '12px',
                                 textTransform: 'uppercase',
                                 letterSpacing: '0.15em',
-                                color: '#22d3ee',
+                                color: '#a855f7',
                                 marginBottom: '20px',
                                 fontWeight: 700,
                             }}
@@ -97,42 +96,44 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                                 paddingRight: '10px',
                             }}
                         >
-                            {sections.map((section) => (
-                                <button
-                                    key={section.id}
-                                    onClick={() => scrollToSection(section.id)}
-                                    style={{
-                                        textAlign: 'left',
-                                        padding: '10px 16px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        background:
-                                            activeSection === section.id
-                                                ? 'rgba(34,211,238,0.1)'
-                                                : 'transparent',
-                                        color:
-                                            activeSection === section.id
-                                                ? '#22d3ee'
-                                                : 'rgba(255,255,255,0.5)',
-                                        fontSize: '13px',
-                                        cursor: 'pointer',
-                                        transition: 'all 0.2s ease',
-                                        borderLeft:
-                                            activeSection === section.id
-                                                ? '3px solid #22d3ee'
+                            {sections.map((section) => {
+                                const isActive = activeSection === section.id;
+                                return (
+                                    <button
+                                        key={section.id}
+                                        onClick={() => scrollToSection(section.id)}
+                                        style={{
+                                            textAlign: 'left',
+                                            padding: '10px 16px',
+                                            borderRadius: '8px',
+                                            border: isActive
+                                                ? '1.5px solid rgba(168,85,247,0.8)'
+                                                : '1px solid rgba(105,62,205,0.2)',
+                                            background: isActive
+                                                ? 'linear-gradient(180deg, rgba(88,28,135,0.6), rgba(40,15,80,0.4))'
+                                                : 'rgba(20,15,40,0.5)',
+                                            color: isActive ? '#a855f7' : 'rgba(255,255,255,0.5)',
+                                            fontSize: '13px',
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s ease',
+                                            borderLeft: isActive
+                                                ? '3px solid #a855f7'
                                                 : '3px solid transparent',
-                                        fontWeight: activeSection === section.id ? 600 : 400,
-                                    }}
-                                >
-                                    {section.title}
-                                </button>
-                            ))}
+                                            fontWeight: isActive ? 600 : 400,
+                                            boxShadow: isActive
+                                                ? '0 0 25px rgba(168,85,247,0.35), inset 0 0 20px rgba(168,85,247,0.1)'
+                                                : 'none',
+                                        }}
+                                    >
+                                        {section.title}
+                                    </button>
+                                );
+                            })}
                         </nav>
                     </div>
                 </div>
             )}
 
-            {/* Main Content */}
             <div style={{ flex: 1, maxWidth: '800px' }}>
                 {/* Company Info Card */}
                 <motion.div
@@ -142,8 +143,8 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                     transition={{ duration: 0.6 }}
                     style={{
                         background:
-                            'linear-gradient(135deg, rgba(168,85,247,0.1) 0%, rgba(34,211,238,0.05) 100%)',
-                        border: '1px solid rgba(168,85,247,0.2)',
+                            'linear-gradient(135deg, rgba(88,28,135,0.4) 0%, rgba(40,15,80,0.2) 100%)',
+                        border: '1px solid rgba(168,85,247,0.3)',
                         borderRadius: '16px',
                         padding: '28px',
                         marginBottom: '48px',
@@ -170,7 +171,7 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                                 Company Information
                             </h2>
                             <p style={{ margin: '4px 0 0 0', color: '#a855f7', fontSize: '13px' }}>
-                                Registered in England & Wales
+                                ATMOSPHERE+ LTD
                             </p>
                         </div>
                     </div>
@@ -199,7 +200,7 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                                 ATMOSPHERE+ LTD
                                 <br />
                                 <span style={{ color: '#a855f7', fontSize: '12px' }}>
-                                    Trading as MARS STATION
+                                    Trading as {toCamelCase(compnayName)}
                                 </span>
                             </span>
                         </div>
@@ -233,10 +234,11 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                                 justifyContent: 'space-between',
                                 alignItems: 'flex-start',
                                 padding: '12px 0',
+                                borderBottom: '1px solid rgba(255,255,255,0.1)',
                             }}
                         >
                             <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px' }}>
-                                Registered Address
+                                Address
                             </span>
                             <span
                                 style={{
@@ -253,21 +255,44 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                                 United Kingdom
                             </span>
                         </div>
+
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                padding: '12px 0',
+                            }}
+                        >
+                            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px' }}>
+                                Contact
+                            </span>
+                            <a
+                                href={`mailto:${supportEmail}`}
+                                style={{
+                                    color: '#22d3ee',
+                                    textDecoration: 'none',
+                                    fontSize: '14px',
+                                }}
+                            >
+                                {supportEmail}
+                            </a>
+                        </div>
                     </div>
 
                     <div
                         style={{
                             marginTop: '20px',
                             padding: '12px',
-                            background: 'rgba(34,211,238,0.1)',
+                            background: 'rgba(168,85,247,0.1)',
                             borderRadius: '8px',
                             display: 'flex',
                             alignItems: 'center',
                             gap: '8px',
                         }}
                     >
-                        <span style={{ color: '#22d3ee' }}>✓</span>
-                        <span style={{ color: '#22d3ee', fontSize: '13px', fontWeight: 600 }}>
+                        <span style={{ color: '#a855f7' }}>✓</span>
+                        <span style={{ color: '#a855f7', fontSize: '13px', fontWeight: 600 }}>
                             Registered with UK Information Commissioner's Office (ICO)
                         </span>
                     </div>
@@ -275,7 +300,6 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
 
                 {/* Sections */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '60px' }}>
-                    {/* 1. Introduction */}
                     <Section id="intro" title="1. Introduction" icon="📋">
                         <p
                             style={{
@@ -284,10 +308,10 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                                 color: 'rgba(255,255,255,0.8)',
                             }}
                         >
-                            MARS STATION is committed to protecting and respecting your privacy.
-                            This Privacy Policy explains how we collect, use, store, and protect
-                            your personal information when you visit our website, submit service
-                            requests, contact us, or use any of our services.
+                            {toCamelCase(compnayName)} is committed to protecting and respecting
+                            your privacy. This Privacy Policy explains how we collect, use, store,
+                            and protect your personal information when you visit our website, submit
+                            service requests, contact us, or use any of our services.
                         </p>
                         <p style={{ marginTop: '16px' }}>
                             We process personal data in accordance with:
@@ -324,7 +348,6 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                         </div>
                     </Section>
 
-                    {/* 2. Information We Collect */}
                     <Section id="collect" title="2. Information We Collect" icon="📥">
                         <p>We may collect the following categories of information:</p>
 
@@ -401,7 +424,6 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                         />
                     </Section>
 
-                    {/* 3. How We Use */}
                     <Section id="use" title="3. How We Use Your Information" icon="⚙️">
                         <p>We use your information for the following purposes:</p>
                         <ul
@@ -459,7 +481,6 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                         </div>
                     </Section>
 
-                    {/* 4. Legal Basis */}
                     <Section id="legal" title="4. Legal Basis for Processing" icon="⚖️">
                         <p>Under UK GDPR, we rely on one or more of the following lawful bases:</p>
                         <div style={{ display: 'grid', gap: '16px', marginTop: '20px' }}>
@@ -520,7 +541,6 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                         </div>
                     </Section>
 
-                    {/* 5. Cookies */}
                     <Section id="cookies" title="5. Cookies" icon="🍪">
                         <p>
                             Our website uses cookies and similar technologies to improve user
@@ -570,8 +590,8 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                                                 top: '8px',
                                                 right: '8px',
                                                 fontSize: '10px',
-                                                color: '#22d3ee',
-                                                background: 'rgba(34,211,238,0.1)',
+                                                color: '#a855f7',
+                                                background: 'rgba(168,85,247,0.1)',
                                                 padding: '2px 8px',
                                                 borderRadius: '4px',
                                             }}
@@ -612,19 +632,18 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                         </p>
                     </Section>
 
-                    {/* 6. Data Sharing */}
                     <Section id="sharing" title="6. Data Sharing" icon="🤝">
                         <div
                             style={{
                                 padding: '20px',
-                                background: 'rgba(34,211,238,0.1)',
+                                background: 'rgba(168,85,247,0.1)',
                                 borderRadius: '8px',
                                 marginBottom: '20px',
-                                border: '1px solid rgba(34,211,238,0.3)',
+                                border: '1px solid rgba(168,85,247,0.3)',
                                 textAlign: 'center',
                             }}
                         >
-                            <span style={{ color: '#22d3ee', fontSize: '18px', fontWeight: 700 }}>
+                            <span style={{ color: '#a855f7', fontSize: '18px', fontWeight: 700 }}>
                                 🚫 We do not sell, rent, or trade your personal information.
                             </span>
                         </div>
@@ -676,7 +695,6 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                         </p>
                     </Section>
 
-                    {/* 7. International Transfers */}
                     <Section id="international" title="7. International Transfers" icon="🌍">
                         <p>
                             Where personal information is transferred outside the United Kingdom, we
@@ -690,7 +708,6 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                         </ul>
                     </Section>
 
-                    {/* 8. Security */}
                     <Section id="security" title="8. Data Security" icon="🔒">
                         <p>
                             We implement reasonable technical and organisational measures to protect
@@ -749,7 +766,6 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                         </div>
                     </Section>
 
-                    {/* 9. Retention */}
                     <Section id="retention" title="9. Data Retention" icon="⏱️">
                         <p>We retain personal information only for as long as necessary to:</p>
                         <ul style={{ color: 'rgba(255,255,255,0.8)', lineHeight: 1.8 }}>
@@ -764,7 +780,6 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                         </p>
                     </Section>
 
-                    {/* 10. Your Rights */}
                     <Section id="rights" title="10. Your Rights" icon="✋">
                         <p>Under UK GDPR, you have the following rights:</p>
                         <div
@@ -797,9 +812,9 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                                         alignItems: 'center',
                                         gap: '16px',
                                         padding: '14px 16px',
-                                        background: 'rgba(34,211,238,0.05)',
+                                        background: 'rgba(168,85,247,0.05)',
                                         borderRadius: '8px',
-                                        border: '1px solid rgba(34,211,238,0.1)',
+                                        border: '1px solid rgba(168,85,247,0.1)',
                                     }}
                                 >
                                     <div
@@ -807,11 +822,11 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                                             width: '32px',
                                             height: '32px',
                                             borderRadius: '50%',
-                                            background: 'rgba(34,211,238,0.2)',
+                                            background: 'rgba(168,85,247,0.2)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
-                                            color: '#22d3ee',
+                                            color: '#a855f7',
                                             fontSize: '14px',
                                             fontWeight: 700,
                                             flexShrink: 0,
@@ -865,7 +880,6 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                         </div>
                     </Section>
 
-                    {/* 11. Complaints */}
                     <Section id="complaints" title="11. Complaints" icon="📢">
                         <p>
                             If you have concerns about how we handle your personal information,
@@ -875,9 +889,10 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                             style={{
                                 marginTop: '20px',
                                 padding: '20px',
-                                background: 'rgba(255,255,255,0.05)',
+                                background: 'rgba(168,85,247,0.1)',
                                 borderRadius: '12px',
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: '1px solid rgba(168,85,247,0.2)',
+                                textAlign: 'center',
                             }}
                         >
                             <h5 style={{ margin: '0 0 12px 0', color: '#fff' }}>
@@ -886,7 +901,7 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                             <a
                                 href={`mailto:${supportEmail}`}
                                 style={{
-                                    color: '#22d3ee',
+                                    color: '#a855f7',
                                     textDecoration: 'none',
                                     fontSize: '16px',
                                     fontWeight: 600,
@@ -910,11 +925,11 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                                     gap: '8px',
                                     marginTop: '12px',
                                     padding: '12px 20px',
-                                    background: 'rgba(168,85,247,0.1)',
-                                    color: '#a855f7',
+                                    background: 'rgba(34,211,238,0.1)',
+                                    color: '#22d3ee',
                                     textDecoration: 'none',
                                     borderRadius: '8px',
-                                    border: '1px solid rgba(168,85,247,0.3)',
+                                    border: '1px solid rgba(34,211,238,0.3)',
                                     fontWeight: 600,
                                 }}
                             >
@@ -923,7 +938,6 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                         </div>
                     </Section>
 
-                    {/* 12. Third Party Links */}
                     <Section id="third-party" title="12. Third-Party Links" icon="🔗">
                         <p>
                             Our website may contain links to third-party websites. We are not
@@ -933,10 +947,10 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                             style={{
                                 marginTop: '16px',
                                 padding: '16px',
-                                background: 'rgba(251,146,60,0.1)',
+                                background: 'rgba(225,29,72,0.1)',
                                 borderRadius: '8px',
-                                borderLeft: '3px solid #fb923c',
-                                color: '#fdba74',
+                                borderLeft: '3px solid #f472b6',
+                                color: '#fda4af',
                             }}
                         >
                             We encourage users to review the privacy policies of any third-party
@@ -944,7 +958,6 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                         </div>
                     </Section>
 
-                    {/* 13. Children */}
                     <Section id="children" title="13. Children's Privacy" icon="👶">
                         <div
                             style={{
@@ -966,19 +979,26 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                         </div>
                     </Section>
 
-                    {/* 14. Changes */}
                     <Section id="changes" title="14. Changes to This Privacy Policy" icon="📝">
                         <p>
                             We may update this Privacy Policy from time to time to reflect changes
                             in our practices or for legal, operational, or regulatory reasons.
                         </p>
-                        <p style={{ marginTop: '16px' }}>
+                        <div
+                            style={{
+                                marginTop: '16px',
+                                padding: '16px',
+                                background: 'rgba(168,85,247,0.1)',
+                                borderRadius: '8px',
+                                borderLeft: '3px solid #a855f7',
+                                color: '#c084fc',
+                            }}
+                        >
                             Any updates will be published on this page together with the revised
                             effective date. We encourage you to review this page periodically.
-                        </p>
+                        </div>
                     </Section>
 
-                    {/* 15. Contact */}
                     <Section id="contact" title="15. Contact Us" icon="📧">
                         <p>
                             If you have any questions regarding this Privacy Policy or how we
@@ -990,14 +1010,14 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                                 marginTop: '24px',
                                 padding: '32px',
                                 background:
-                                    'linear-gradient(135deg, rgba(168,85,247,0.15) 0%, rgba(34,211,238,0.1) 100%)',
+                                    'linear-gradient(135deg, rgba(88,28,135,0.3) 0%, rgba(40,15,80,0.2) 100%)',
                                 borderRadius: '16px',
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: '1px solid rgba(168,85,247,0.3)',
                                 textAlign: 'center',
                             }}
                         >
                             <h3 style={{ margin: '0 0 8px 0', color: '#fff', fontSize: '24px' }}>
-                                MARS STATION
+                                {toCamelCase(compnayName)}
                             </h3>
                             <p style={{ margin: '0 0 24px 0', color: '#a855f7', fontSize: '14px' }}>
                                 Part of ATMOSPHERE+ LTD
@@ -1007,7 +1027,7 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                                 style={{
                                     display: 'flex',
                                     flexDirection: 'column',
-                                    gap: '16px',
+                                    gap: '12px',
                                     alignItems: 'center',
                                 }}
                             >
@@ -1042,7 +1062,7 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                                         <span>✉️</span> {supportEmail}
                                     </a>
                                     <a
-                                        href="https://www.marsstation.dev"
+                                        href={companyUrl}
                                         style={{
                                             color: '#a855f7',
                                             textDecoration: 'none',
@@ -1052,7 +1072,7 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                                             gap: '8px',
                                         }}
                                     >
-                                        <span>🌐</span> www.marsstation.dev
+                                        <span>🌐</span> {companyUrl}
                                     </a>
                                 </div>
                             </div>
@@ -1060,7 +1080,6 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                     </Section>
                 </div>
 
-                {/* Back to Top */}
                 <motion.button
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
@@ -1069,10 +1088,10 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                     style={{
                         marginTop: '80px',
                         padding: '14px 28px',
-                        background: 'rgba(34,211,238,0.1)',
-                        border: '1px solid rgba(34,211,238,0.3)',
+                        background: 'rgba(168,85,247,0.1)',
+                        border: '1px solid rgba(168,85,247,0.3)',
                         borderRadius: '8px',
-                        color: '#22d3ee',
+                        color: '#a855f7',
                         cursor: 'pointer',
                         fontSize: '14px',
                         fontWeight: 600,
@@ -1084,11 +1103,11 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                         transition: 'all 0.3s ease',
                     }}
                     onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'rgba(34,211,238,0.2)';
+                        e.currentTarget.style.background = 'rgba(168,85,247,0.2)';
                         e.currentTarget.style.transform = 'translateY(-2px)';
                     }}
                     onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'rgba(34,211,238,0.1)';
+                        e.currentTarget.style.background = 'rgba(168,85,247,0.1)';
                         e.currentTarget.style.transform = 'translateY(0)';
                     }}
                 >
@@ -1099,7 +1118,6 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
     );
 }
 
-// Helper Components
 function Section({
     id,
     title,
@@ -1173,7 +1191,7 @@ function GridItems({ items }: { items: string[] }) {
                         gap: '8px',
                     }}
                 >
-                    <span style={{ color: '#22d3ee', fontSize: '10px' }}>●</span>
+                    <span style={{ color: '#a855f7', fontSize: '10px' }}>●</span>
                     {item}
                 </div>
             ))}

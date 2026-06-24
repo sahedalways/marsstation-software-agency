@@ -10,6 +10,8 @@ interface AboutContentProps {
 
 const AboutContent = ({ mob, show, focusAreas }: AboutContentProps) => {
     const compnayName = siteConfig?.name;
+    const companyUrl = siteConfig?.url;
+    const supportEmail = siteConfig?.supportEmail;
     return (
         <section
             style={{

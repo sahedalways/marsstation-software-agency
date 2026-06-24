@@ -4,12 +4,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { siteConfig } from '../../config/site';
+import { usePathname } from 'next/navigation';
 
 interface FooterProps {
     mob: boolean;
 }
 
 export function Footer({ mob }: FooterProps) {
+    const pathname = usePathname();
     const supportEmail = siteConfig?.supportEmail;
     const appName = process.env.NEXT_PUBLIC_APP_NAME || 'MARSSTATION';
     const parentCompany = process.env.NEXT_PUBLIC_PARENT_COMPANY || 'ATMOSPHERE+ LTD';
@@ -208,38 +210,45 @@ export function Footer({ mob }: FooterProps) {
                         { label: 'About Us', href: '/about' },
                         { label: 'Privacy Policy', href: '/privacy-policy' },
                         { label: 'Terms & Conditions', href: '/terms-conditions' },
-                    ].map((link) => (
-                        <Link
-                            key={link.label}
-                            href={link.href}
-                            style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                textDecoration: 'none',
-                                color: 'rgba(255,255,255,0.6)',
-                                fontSize: '13px',
-                                transition: 'color 0.2s',
-                                maxWidth: '180px',
-                            }}
-                            onMouseEnter={(e) => linkHover(e, true)}
-                            onMouseLeave={(e) => linkHover(e, false)}
-                        >
-                            <span>{link.label}</span>
-                            <svg
-                                width="14"
-                                height="14"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
+                        { label: 'Payment & Refund', href: '/payment-and-refund' },
+                    ].map((link) => {
+                        const isActive = pathname === link.href;
+
+                        return (
+                            <Link
+                                key={link.label}
+                                href={link.href}
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    textDecoration: 'none',
+                                    color: isActive ? '#a855f7' : 'rgba(255,255,255,0.6)',
+                                    fontSize: '13px',
+                                    transition: 'color 0.2s',
+                                    maxWidth: '180px',
+                                    fontWeight: isActive ? 600 : 400,
+                                }}
+                                onMouseEnter={(e) => linkHover(e, true)}
+                                onMouseLeave={(e) => linkHover(e, false)}
                             >
-                                <polyline points="9 18 15 12 9 6" />
-                            </svg>
-                        </Link>
-                    ))}
+                                <span>{link.label}</span>
+
+                                <svg
+                                    width="14"
+                                    height="14"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <polyline points="9 18 15 12 9 6" />
+                                </svg>
+                            </Link>
+                        );
+                    })}
                 </div>
 
                 {/* Follow Us Column */}
