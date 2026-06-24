@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { siteConfig } from '../../config/site';
+import { supabase } from '../../lib/supabase';
 
 export async function POST(req: Request) {
     try {
@@ -35,7 +36,23 @@ export async function POST(req: Request) {
             );
         }
 
-        // ─── Process attachments — assign CID for images, plain for others ───
+        const { error: dbError } = await supabase.from('contact_submissions').insert([
+            {
+                full_name: fullName,
+                email: email,
+                phone: phone,
+                order_number: orderNumber || null,
+                description: description,
+                request_type: requestType,
+                contact_method: contactMethod,
+                attachment_count: validFiles.length,
+            },
+        ]);
+
+        if (dbError) {
+            console.error('Supabase DB Insert Error:', dbError);
+        }
+
         const processedFiles = await Promise.all(
             validFiles.map(async (file, idx) => {
                 const buffer = Buffer.from(await file.arrayBuffer());
@@ -54,7 +71,6 @@ export async function POST(req: Request) {
             })
         );
 
-        // Build nodemailer attachments
         const mailAttachments = processedFiles.map((p) => ({
             filename: p.file.name,
             content: p.buffer,
