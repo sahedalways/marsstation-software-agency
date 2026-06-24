@@ -40,6 +40,7 @@ export const metadata: Metadata = {
     authors: [{ name: siteConfig.name, url: siteConfig.url }],
     creator: siteConfig.name,
     publisher: siteConfig.name,
+    classification: siteConfig.category,
 
     // === Favicon & Icons ===
     icons: {
@@ -60,7 +61,7 @@ export const metadata: Metadata = {
     alternates: {
         canonical: '/',
         languages: {
-            'en-US': '/en',
+            'en-US': '/',
         },
     },
 
@@ -80,7 +81,7 @@ export const metadata: Metadata = {
                 type: 'image/jpeg',
             },
             {
-                url: `${siteConfig.url}/og-image-square.jpg`,
+                url: `${siteConfig.url}/images/square-image.jpg`,
                 width: 600,
                 height: 600,
                 alt: `${siteConfig.name} Logo`,
@@ -91,6 +92,7 @@ export const metadata: Metadata = {
 
     twitter: {
         card: 'summary_large_image',
+        site: siteConfig.url,
         title: `${siteConfig.name} — ${siteConfig.tagline}`,
         description: siteConfig.description,
         images: {
@@ -120,11 +122,23 @@ export const metadata: Metadata = {
     verification: {
         google: 'YOUR_GOOGLE_VERIFICATION_CODE',
         yandex: 'YOUR_YANDEX_CODE',
-
         other: {
             'msvalidate.01': 'YOUR_BING_VERIFICATION_CODE',
             'facebook-domain-verification': 'YOUR_FB_DOMAIN_CODE',
         },
+    },
+
+    // === PWA / Apple Web App ===
+    appleWebApp: {
+        capable: true,
+        title: siteConfig.name,
+        statusBarStyle: 'black-translucent',
+    },
+
+    formatDetection: {
+        telephone: true,
+        email: true,
+        address: true,
     },
 
     // === App Info ===
@@ -133,15 +147,10 @@ export const metadata: Metadata = {
     referrer: 'origin-when-cross-origin',
 
     // === Category ===
-    category: 'technology',
+    category: siteConfig.category,
 
     other: {
-        'google-site-verification': 'YOUR_GOOGLE_CODE',
-        'format-detection': 'telephone=no',
         'mobile-web-app-capable': 'yes',
-        'apple-mobile-web-app-capable': 'yes',
-        'apple-mobile-web-app-status-bar-style': 'black-translucent',
-        'apple-mobile-web-app-title': siteConfig.name,
     },
 };
 
