@@ -206,8 +206,8 @@ export function Footer({ mob }: FooterProps) {
 
                     {[
                         { label: 'About Us', href: '/about' },
-                        { label: 'Privacy Policy', href: '/privacy' },
-                        { label: 'Terms & Conditions', href: '/terms' },
+                        { label: 'Privacy Policy', href: '/privacy-policy' },
+                        { label: 'Terms & Conditions', href: '/terms-conditions' },
                     ].map((link) => (
                         <Link
                             key={link.label}
