@@ -221,7 +221,7 @@ export default function PandRContent({ mob }: PaymentContentProps) {
                         >
                             {[
                                 'Project requirements will be reviewed',
-                                'Discussions will take place between        {toCamelCase(compnayName)} and the Client',
+                                `Discussions will take place between ${toCamelCase(compnayName)} and the Client`,
                                 'A quotation and project proposal may be provided',
                                 'Both parties must reach an agreement regarding scope, pricing, timelines, and payment terms',
                             ].map((item, idx) => (

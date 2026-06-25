@@ -555,7 +555,7 @@ export function useCanvasAnimation({
 
             ctx.clearRect(0, 0, W, H);
             t += 0.016;
-            orbitAngle += 0.004;
+            orbitAngle += 0.004 * (isMob ? 2.5 : 1);
 
             ctx.fillStyle = '#07070f';
             ctx.fillRect(0, 0, W, H);
@@ -619,7 +619,7 @@ export function useCanvasAnimation({
 
             const baseR = isMob ? Math.min(W, H) * 0.3 : Math.min(W, H) * 0.43;
             const hcx = W * 0.5,
-                hcy = isMob ? H * 0.95 : H - baseR * 0.2,
+                hcy = isMob ? H * 0.9 : H - baseR * 0.2,
                 hgr = baseR;
             const scx = isMob ? W * 0.72 : W * 0.77,
                 scy = isMob ? H * 0.22 : H * 0.33,
@@ -658,7 +658,7 @@ export function useCanvasAnimation({
 
             const satAlpha = 1 - inv(p, 0.55, 0.75);
             if (satAlpha > 0.01) {
-                const orbitR = gr * 1.15;
+                const orbitR = gr * (isMob ? 1.2 : 1.15);
                 const sx = gcx + Math.cos(orbitAngle) * orbitR;
                 const sy = gcy + Math.sin(orbitAngle) * orbitR;
                 const tangent = orbitAngle + Math.PI / 2;

@@ -113,7 +113,7 @@ export default function IUSPage() {
         }[] = [];
 
         const getW = () => window.innerWidth;
-        const getH = () => document.documentElement.scrollHeight;
+        const getH = () => window.innerHeight;
 
         const createStars = () => {
             stars = [];
@@ -137,7 +137,7 @@ export default function IUSPage() {
         const createShootingStar = () => {
             shootingStars.push({
                 x: Math.random() * getW() * 0.8,
-                y: window.scrollY + Math.random() * window.innerHeight * 0.4,
+                y: Math.random() * window.innerHeight * 0.4,
                 length: Math.random() * 80 + 50,
                 speed: Math.random() * 8 + 12,
                 angle: Math.PI / 4 + (Math.random() * 0.3 - 0.15),

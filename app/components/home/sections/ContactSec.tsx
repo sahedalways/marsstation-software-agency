@@ -965,7 +965,7 @@ export function ContactSec({ contactIn, mob }: Props) {
                                 >
                                     <FieldLabel
                                         n="6"
-                                        label="Complaint Description"
+                                        label={requestType === 'complaint' ? 'Complaint Description' : 'Query Description'}
                                         required
                                         mob={mob}
                                         labelIconColor="#c084fc"
@@ -1004,7 +1004,7 @@ export function ContactSec({ contactIn, mob }: Props) {
                                             onChange={(e) =>
                                                 updateField('description', e.target.value)
                                             }
-                                            placeholder="Please provide detailed information regarding your complaint."
+                                            placeholder={requestType === 'complaint' ? 'Please provide detailed information regarding your complaint.' : 'Please provide detailed information regarding your query.'}
                                             rows={2}
                                             style={{
                                                 flex: 1,

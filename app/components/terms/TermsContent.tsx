@@ -11,8 +11,8 @@ interface TermsContentProps {
 }
 
 const sections = [
-    { id: 'intro', title: 'Introduction', icon: '👋' },
     { id: 'company', title: 'Company Information', icon: '🏢' },
+    { id: 'intro', title: 'Introduction', icon: '👋' },
     { id: 'services', title: 'Our Services', icon: '🛠️' },
     { id: 'requests', title: 'Service Requests', icon: '📝' },
     { id: 'quotations', title: 'Quotations', icon: '💰' },
@@ -141,144 +141,124 @@ export default function TermsContent({ mob }: TermsContentProps) {
             )}
 
             <div style={{ flex: 1, maxWidth: '800px' }}>
-                {/* Company Info Card */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
-                    style={{
-                        background:
-                            'linear-gradient(135deg, rgba(88,28,135,0.4) 0%, rgba(40,15,80,0.2) 100%)',
-                        border: '1px solid rgba(168,85,247,0.3)',
-                        borderRadius: '16px',
-                        padding: '28px',
-                        marginBottom: '48px',
-                    }}
-                >
+                <Section id="company" title="1. Company Information" icon="🏢">
                     <div
                         style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '12px',
-                            marginBottom: '20px',
+                            background:
+                                'linear-gradient(135deg, rgba(88,28,135,0.4) 0%, rgba(40,15,80,0.2) 100%)',
+                            border: '1px solid rgba(168,85,247,0.3)',
+                            borderRadius: '16px',
+                            padding: '28px',
                         }}
                     >
-                        <span style={{ fontSize: '28px' }}>🏢</span>
-                        <div>
-                            <h2
+                        <p style={{ margin: '0 0 8px 0', color: '#a855f7', fontSize: '13px' }}>
+                            ATMOSPHERE+ LTD
+                        </p>
+                        <div style={{ display: 'grid', gap: '12px' }}>
+                            <div
                                 style={{
-                                    fontSize: '20px',
-                                    fontWeight: 700,
-                                    color: '#fff',
-                                    margin: 0,
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    padding: '12px 0',
+                                    borderBottom: '1px solid rgba(255,255,255,0.1)',
                                 }}
                             >
-                                Company Information
-                            </h2>
-                            <p style={{ margin: '4px 0 0 0', color: '#a855f7', fontSize: '13px' }}>
-                                ATMOSPHERE+ LTD
-                            </p>
+                                <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px' }}>
+                                    Legal Entity
+                                </span>
+                                <span style={{ color: '#fff', fontSize: '14px', fontWeight: 600 }}>
+                                    ATMOSPHERE+ LTD
+                                </span>
+                            </div>
+
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    padding: '12px 0',
+                                    borderBottom: '1px solid rgba(255,255,255,0.1)',
+                                }}
+                            >
+                                <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px' }}>
+                                    Company Number
+                                </span>
+                                <span
+                                    style={{
+                                        color: '#22d3ee',
+                                        fontSize: '14px',
+                                        fontFamily: 'monospace',
+                                    }}
+                                >
+                                    16096592
+                                </span>
+                            </div>
+
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'flex-start',
+                                    padding: '12px 0',
+                                    borderBottom: '1px solid rgba(255,255,255,0.1)',
+                                }}
+                            >
+                                <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px' }}>
+                                    Address
+                                </span>
+                                <span
+                                    style={{
+                                        color: '#fff',
+                                        fontSize: '14px',
+                                        textAlign: 'right',
+                                        lineHeight: 1.5,
+                                    }}
+                                >
+                                    13B Vallance Road,
+                                    <br />
+                                    London, E1 5HS,
+                                    <br />
+                                    United Kingdom
+                                </span>
+                            </div>
+
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    padding: '12px 0',
+                                }}
+                            >
+                                <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px' }}>
+                                    Contact
+                                </span>
+                                <a
+                                    href={`mailto:${supportEmail}`}
+                                    style={{
+                                        color: '#22d3ee',
+                                        textDecoration: 'none',
+                                        fontSize: '14px',
+                                    }}
+                                >
+                                    {supportEmail}
+                                </a>
+                            </div>
                         </div>
                     </div>
-
-                    <div style={{ display: 'grid', gap: '12px' }}>
-                        <div
-                            style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                padding: '12px 0',
-                                borderBottom: '1px solid rgba(255,255,255,0.1)',
-                            }}
-                        >
-                            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px' }}>
-                                Legal Entity
-                            </span>
-                            <span style={{ color: '#fff', fontSize: '14px', fontWeight: 600 }}>
-                                ATMOSPHERE+ LTD
-                            </span>
-                        </div>
-
-                        <div
-                            style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                padding: '12px 0',
-                                borderBottom: '1px solid rgba(255,255,255,0.1)',
-                            }}
-                        >
-                            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px' }}>
-                                Company Number
-                            </span>
-                            <span
-                                style={{
-                                    color: '#22d3ee',
-                                    fontSize: '14px',
-                                    fontFamily: 'monospace',
-                                }}
-                            >
-                                16096592
-                            </span>
-                        </div>
-
-                        <div
-                            style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'flex-start',
-                                padding: '12px 0',
-                                borderBottom: '1px solid rgba(255,255,255,0.1)',
-                            }}
-                        >
-                            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px' }}>
-                                Address
-                            </span>
-                            <span
-                                style={{
-                                    color: '#fff',
-                                    fontSize: '14px',
-                                    textAlign: 'right',
-                                    lineHeight: 1.5,
-                                }}
-                            >
-                                13B Vallance Road,
-                                <br />
-                                London, E1 5HS,
-                                <br />
-                                United Kingdom
-                            </span>
-                        </div>
-
-                        <div
-                            style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                padding: '12px 0',
-                            }}
-                        >
-                            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px' }}>
-                                Contact
-                            </span>
-                            <a
-                                href={`mailto:${supportEmail}`}
-                                style={{
-                                    color: '#22d3ee',
-                                    textDecoration: 'none',
-                                    fontSize: '14px',
-                                }}
-                            >
-                                {supportEmail}
-                            </a>
-                        </div>
-                    </div>
-                </motion.div>
+                </Section>
 
                 {/* Sections */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '60px' }}>
-                    <Section id="intro" title="1. Introduction" icon="👋">
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '60px',
+                        marginTop: '40px',
+                    }}
+                >
+                    <Section id="intro" title="2. Introduction" icon="👋">
                         <p>
                             Welcome to <strong>{toCamelCase(compnayName)}</strong>. These Terms and
                             Conditions govern your use of our website and services. By accessing our

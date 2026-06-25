@@ -73,7 +73,7 @@ export function Footer({ mob }: FooterProps) {
                     display: 'grid',
                     gridTemplateColumns: mob
                         ? '1fr'
-                        : 'minmax(200px, 1.2fr) minmax(220px, 1fr) minmax(180px, 1fr) minmax(180px, 1fr) minmax(240px, 1.2fr)',
+                        : 'minmax(200px, 1.2fr) minmax(220px, 1fr) minmax(180px, 1fr) minmax(250px, 1.2fr) minmax(240px, 1.2fr)',
                     gap: mob ? '32px' : '40px',
                     alignItems: 'flex-start',
                 }}
@@ -112,9 +112,9 @@ export function Footer({ mob }: FooterProps) {
                             margin: 0,
                         }}
                     >
-                        Building Digital Solutions
+                        Turning Vision
                         <br />
-                        for a Smarter Future.
+                        Into Digital Reality
                     </p>
                 </div>
 
@@ -362,6 +362,27 @@ export function Footer({ mob }: FooterProps) {
                         >
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
                                 <path d="M20.52 3.48A11.9 11.9 0 0 0 12 0C5.37 0 0 5.37 0 12c0 2.11.55 4.16 1.6 5.97L0 24l6.18-1.62A11.95 11.95 0 0 0 12 24c6.63 0 12-5.37 12-12 0-3.2-1.24-6.2-3.48-8.52z" />
+                            </svg>
+                        </a>
+
+                        {/* YouTube */}
+                        <a
+                            href={siteConfig.social.youtube}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="YouTube"
+                            style={{
+                                width: '38px',
+                                height: '38px',
+                                borderRadius: '8px',
+                                background: '#FF0000',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                             </svg>
                         </a>
                     </div>
