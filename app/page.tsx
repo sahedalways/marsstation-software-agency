@@ -12,6 +12,7 @@ import { ChatWindow } from './components/chat/ChatWindow';
 import { ExperienceSection } from './components/home/sections/ExperienceSection';
 import { TestimonialSection } from './components/home/sections/TestimonialSection';
 import { ServiceRequirementModal } from './components/modals/ServiceRequirementModal';
+import { TestimonialForm } from './components/home/sections/TestimonialFormSec';
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 type Phase = 'hero' | 'experience' | 'services' | 'contact' | 'testimonal';
@@ -260,7 +261,15 @@ export default function IUSPage() {
                 <Navbar mob={mob} setChatOpen={setChatOpen} />
             </div>
 
-            <main style={{ position: 'relative', zIndex: 1, background: 'transparent', width: '100%', overflowX: 'hidden' }}>
+            <main
+                style={{
+                    position: 'relative',
+                    zIndex: 1,
+                    background: 'transparent',
+                    width: '100%',
+                    overflowX: 'hidden',
+                }}
+            >
                 <section
                     ref={heroRef}
                     style={{
@@ -315,6 +324,10 @@ export default function IUSPage() {
                 <section ref={testimonialRef} style={{ width: '100%', position: 'relative' }}>
                     <TestimonialSection cardsIn={cardsIn} mob={mob} />
                 </section>
+
+                {/* <section ref={testimonialRef} style={{ width: '100%', position: 'relative' }}>
+                    <TestimonialForm cardsIn={cardsIn} mob={mob} />
+                </section> */}
 
                 <section
                     ref={contactRef}

@@ -4,6 +4,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { SectionHeading } from '../../common/SectionHeading';
 import { useTestimonials } from '../../../hooks/useTestimonials';
+import { TestimonialFormModal } from '../../modals/TestimonialFormModal';
 
 interface Props {
     cardsIn: boolean;
@@ -75,6 +76,7 @@ export function TestimonialSection({ cardsIn, mob }: Props) {
     const testimonials = supabaseData.length > 0 ? supabaseData : FALLBACK_TESTIMONIALS;
 
     const [activeIdx, setActiveIdx] = useState(2);
+    const [formOpen, setFormOpen] = useState(false);
     const total = testimonials.length;
     const autoRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -669,8 +671,65 @@ export function TestimonialSection({ cardsIn, mob }: Props) {
                                     );
                                 })}
                             </div>
+
+                            {/* Share Your Experience Button */}
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    opacity: cardsIn ? 1 : 0,
+                                    animation: cardsIn
+                                        ? `tstFlyBottom 0.9s cubic-bezier(.16,1,.3,1) 1.3s both`
+                                        : 'none',
+                                }}
+                            >
+                                <button
+                                    onClick={() => setFormOpen(true)}
+                                    style={{
+                                        padding: mob ? '12px 24px' : '14px 32px',
+                                        border: '1px solid rgba(168,85,247,0.4)',
+                                        borderRadius: '999px',
+                                        background: 'rgba(168,85,247,0.08)',
+                                        color: '#c084fc',
+                                        fontSize: mob ? '13px' : '14px',
+                                        fontWeight: 600,
+                                        cursor: 'pointer',
+                                        fontFamily: 'inherit',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '10px',
+                                        transition: 'all 0.3s ease',
+                                        backdropFilter: 'blur(8px)',
+                                        WebkitBackdropFilter: 'blur(8px)',
+                                        boxShadow: '0 0 20px rgba(168,85,247,0.1)',
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.background = 'rgba(168,85,247,0.18)';
+                                        e.currentTarget.style.borderColor = 'rgba(168,85,247,0.7)';
+                                        e.currentTarget.style.boxShadow = '0 0 30px rgba(168,85,247,0.25)';
+                                        e.currentTarget.style.transform = 'translateY(-2px)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.background = 'rgba(168,85,247,0.08)';
+                                        e.currentTarget.style.borderColor = 'rgba(168,85,247,0.4)';
+                                        e.currentTarget.style.boxShadow = '0 0 20px rgba(168,85,247,0.1)';
+                                        e.currentTarget.style.transform = 'translateY(0)';
+                                    }}
+                                >
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                                    </svg>
+                                    Share Your Experience
+                                </button>
+                            </div>
                         </>
                     )}
+
+                    <TestimonialFormModal
+                        open={formOpen}
+                        onClose={() => setFormOpen(false)}
+                        mob={mob}
+                    />
                 </div>
             </section>
         </>
