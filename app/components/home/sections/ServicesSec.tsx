@@ -7,6 +7,7 @@ import { SectionHeading } from '../../common/SectionHeading';
 interface Props {
     cardsIn: boolean;
     mob: boolean;
+    onGetStarted?: () => void;
 }
 
 interface ServiceTab {
@@ -18,10 +19,10 @@ interface ServiceTab {
     iconColor: string;
     description: string;
     features: string[];
-    projects: { name: string; type: string; img: string }[];
+    projects: { name: string; type: string; img: string; link: string }[];
 }
 
-export function ServicesSec({ cardsIn, mob }: Props) {
+export function ServicesSec({ cardsIn, mob, onGetStarted }: Props) {
     const [activeTab, setActiveTab] = useState(1);
 
     const services: ServiceTab[] = [
@@ -59,19 +60,22 @@ export function ServicesSec({ cardsIn, mob }: Props) {
             ],
             projects: [
                 {
-                    name: 'BizPro',
+                    name: 'Sterling and Reeve',
                     type: 'WordPress Site',
-                    img: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop',
+                    img: 'https://vplquwpyhhtvbnzkwhxz.supabase.co/storage/v1/object/public/project-images/Pasted%20image.png',
+                    link: 'https://sterlingandreeve.co.uk/',
                 },
                 {
                     name: 'AgencyHub',
                     type: 'Corporate Site',
                     img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop',
+                    link: 'https://agencyhub.com/',
                 },
                 {
                     name: 'StartUpify',
                     type: 'Landing Page',
                     img: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=300&fit=crop',
+                    link: 'https://startupify.club/',
                 },
             ],
         },
@@ -112,16 +116,19 @@ export function ServicesSec({ cardsIn, mob }: Props) {
                     name: 'ShopLux',
                     type: 'WooCommerce Store',
                     img: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop',
+                    link: 'https://shoplux-ng.netlify.app/',
                 },
                 {
                     name: 'FurniCasa',
                     type: 'WooCommerce Store',
                     img: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop',
+                    link: 'https://furnicasa.store/',
                 },
                 {
                     name: 'BookNest',
                     type: 'WooCommerce Store',
                     img: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=400&h=300&fit=crop',
+                    link: 'https://booknest.app/',
                 },
             ],
         },
@@ -163,19 +170,22 @@ export function ServicesSec({ cardsIn, mob }: Props) {
             ],
             projects: [
                 {
-                    name: 'AutoFlow',
+                    name: 'Clip Forge AI',
                     type: 'AI Automation',
-                    img: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=300&fit=crop',
+                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project40.png',
+                    link: 'https://clip-forge-ai-frontend-91gz97irp-sahed44.vercel.app/',
                 },
                 {
                     name: 'SmartBot',
                     type: 'AI Chatbot',
                     img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=300&fit=crop',
+                    link: 'https://play.google.com/store/apps/details?id=com.yogeshj.chatbot&pcampaignid=web_share',
                 },
                 {
                     name: 'DataMind',
                     type: 'ML Platform',
                     img: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400&h=300&fit=crop',
+                    link: 'https://aidata-mind.com/',
                 },
             ],
         },
@@ -211,19 +221,22 @@ export function ServicesSec({ cardsIn, mob }: Props) {
             ],
             projects: [
                 {
-                    name: 'CloudFlow',
+                    name: 'Sisfarma POS',
                     type: 'SaaS Platform',
-                    img: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
+                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project38.png',
+                    link: 'http://erp.blesslifeltd.com/',
                 },
                 {
-                    name: 'TaskHive',
+                    name: 'BookingXpert',
                     type: 'SaaS Platform',
-                    img: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop',
+                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project42.png',
+                    link: 'https://bookingxpert.org/',
                 },
                 {
-                    name: 'DataNest',
+                    name: 'Crypto Luxor',
                     type: 'SaaS Platform',
-                    img: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=300&fit=crop',
+                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project32.png',
+                    link: 'https://cryptoluxor.com/',
                 },
             ],
         },
@@ -260,19 +273,22 @@ export function ServicesSec({ cardsIn, mob }: Props) {
             ],
             projects: [
                 {
-                    name: 'CodeCraft',
+                    name: 'AmazCart',
                     type: 'Custom App',
-                    img: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop',
+                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project41.png',
+                    link: 'https://amazcart.ischooll.com',
                 },
                 {
-                    name: 'BuildLab',
+                    name: 'Lotus PMC',
                     type: 'Custom App',
-                    img: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&h=300&fit=crop',
+                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project37.png',
+                    link: 'https://lotus-pmc-web-frontend-mw9f8gxv0-sahed44.vercel.app/',
                 },
                 {
-                    name: 'DevDeck',
+                    name: 'Kahad HR',
                     type: 'Custom App',
-                    img: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop',
+                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project43.png',
+                    link: 'https://kahadhr.com',
                 },
             ],
         },
@@ -310,19 +326,22 @@ export function ServicesSec({ cardsIn, mob }: Props) {
             ],
             projects: [
                 {
-                    name: 'MegaCart',
-                    type: 'Custom Store',
-                    img: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=400&h=300&fit=crop',
+                    name: 'AmazCart',
+                    type: 'Custom App',
+                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project41.png',
+                    link: 'https://amazcart.ischooll.com',
                 },
                 {
-                    name: 'ShopWave',
+                    name: 'Saheds Food',
                     type: 'Custom Store',
-                    img: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400&h=300&fit=crop',
+                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project1.png',
+                    link: 'https://saheds-food.netlify.app/',
                 },
                 {
                     name: 'TrendBox',
                     type: 'Custom Store',
                     img: 'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=400&h=300&fit=crop',
+                    link: 'https://trendbox.co.in/',
                 },
             ],
         },
@@ -359,19 +378,22 @@ export function ServicesSec({ cardsIn, mob }: Props) {
             ],
             projects: [
                 {
-                    name: 'FitTrack',
+                    name: 'Kleancor',
                     type: 'Android App',
-                    img: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=300&fit=crop',
+                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project29.png',
+                    link: 'https://play.google.com/store/apps/details?id=com.kleancor.kleancorapp&pcampaignid=web_share',
                 },
                 {
                     name: 'FoodieGo',
                     type: 'Android App',
                     img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop',
+                    link: 'https://play.google.com/store/apps/details?id=com.foodiBd&pcampaignid=web_share',
                 },
                 {
                     name: 'TaskZen',
                     type: 'Android App',
                     img: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&h=300&fit=crop',
+                    link: 'https://play.google.com/store/apps/details?id=taskeenaloula.realtor&pcampaignid=web_share',
                 },
             ],
         },
@@ -398,19 +420,22 @@ export function ServicesSec({ cardsIn, mob }: Props) {
             ],
             projects: [
                 {
-                    name: 'MindfulMe',
+                    name: 'Kleancor',
                     type: 'iOS App',
-                    img: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=400&h=300&fit=crop',
+                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project29.png',
+                    link: 'https://play.google.com/store/apps/details?id=com.kleancor.kleancorapp&pcampaignid=web_share',
                 },
                 {
                     name: 'TravelLog',
                     type: 'iOS App',
                     img: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=300&fit=crop',
+                    link: 'https://play.google.com/store/apps/details?id=com.ahnlee.jidoapp&pcampaignid=web_share',
                 },
                 {
                     name: 'MusicVibe',
                     type: 'iOS App',
                     img: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&h=300&fit=crop',
+                    link: 'https://play.google.com/store/apps/details?id=com.musivibe.player.allmusic&pcampaignid=web_share',
                 },
             ],
         },
@@ -448,19 +473,22 @@ export function ServicesSec({ cardsIn, mob }: Props) {
             ],
             projects: [
                 {
-                    name: 'FlowChat',
-                    type: 'Flutter App',
-                    img: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&h=300&fit=crop',
+                    name: 'Kleancor',
+                    type: 'React Native',
+                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project29.png',
+                    link: 'https://play.google.com/store/apps/details?id=com.kleancor.kleancorapp&pcampaignid=web_share',
                 },
                 {
                     name: 'ShopHub',
                     type: 'React Native',
                     img: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=400&h=300&fit=crop',
+                    link: 'https://play.google.com/store/apps/details?id=com.zpqv.shophub.shopper&pcampaignid=web_share',
                 },
                 {
                     name: 'EduLearn',
-                    type: 'Flutter App',
+                    type: 'React Native',
                     img: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop',
+                    link: 'https://play.google.com/store/apps/details?id=com.edulearn.classes.app&pcampaignid=web_share',
                 },
             ],
         },
@@ -877,6 +905,7 @@ export function ServicesSec({ cardsIn, mob }: Props) {
                             >
                                 <button
                                     className="svc-cta-btn"
+                                    onClick={() => onGetStarted?.()}
                                     style={{
                                         padding: mob ? '10px 20px' : '12px 26px',
                                         borderRadius: '999px',
@@ -907,31 +936,6 @@ export function ServicesSec({ cardsIn, mob }: Props) {
                                         <polyline points="12 5 19 12 12 19" />
                                     </svg>
                                 </button>
-                                <a
-                                    href="#"
-                                    className="svc-arrow-link"
-                                    style={{
-                                        color: 'rgba(255,255,255,0.8)',
-                                        fontSize: mob ? '12px' : '14px',
-                                        fontWeight: 500,
-                                        textDecoration: 'none',
-                                    }}
-                                >
-                                    Learn More
-                                    <svg
-                                        width="14"
-                                        height="14"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    >
-                                        <line x1="5" y1="12" x2="19" y2="12" />
-                                        <polyline points="12 5 19 12 12 19" />
-                                    </svg>
-                                </a>
                             </div>
                         </div>
 
@@ -1024,7 +1028,7 @@ export function ServicesSec({ cardsIn, mob }: Props) {
                                                 {proj.type}
                                             </div>
                                             <a
-                                                href="#"
+                                                href={proj.link}
                                                 className="svc-arrow-link"
                                                 style={{
                                                     fontSize: mob ? '10px' : '11px',
