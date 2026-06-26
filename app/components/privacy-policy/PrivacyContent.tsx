@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { siteConfig } from '../../config/site';
 import { toCamelCase } from '../../utils/textUtils';
+import { useLenis } from '../../contexts/SmoothScrollContext';
 
 interface PrivacyContentProps {
     mob: boolean;
@@ -28,6 +29,7 @@ const sections = [
 ];
 
 export default function PrivacyContent({ mob }: PrivacyContentProps) {
+    const { lenis } = useLenis();
     const compnayName = siteConfig?.name;
     const companyUrl = siteConfig?.url;
     const supportEmail = siteConfig?.supportEmail;
@@ -35,8 +37,10 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
     const [activeSection, setActiveSection] = useState('');
 
     useEffect(() => {
+        if (!lenis) return;
+
         const handleScroll = () => {
-            const scrollPosition = window.scrollY + 150;
+            const scrollPosition = lenis.scroll + 150;
             for (const section of sections) {
                 const element = document.getElementById(section.id);
                 if (
@@ -48,14 +52,14 @@ export default function PrivacyContent({ mob }: PrivacyContentProps) {
                 }
             }
         };
-        window.addEventListener('scroll', handleScroll);
+        lenis.on('scroll', handleScroll);
         handleScroll();
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+        return () => lenis.off('scroll', handleScroll);
+    }, [lenis]);
 
     const scrollToSection = (id: string) => {
         const element = document.getElementById(id);
-        if (element) element.scrollIntoView({ behavior: 'smooth' });
+        if (element) lenis?.scrollTo(element, { duration: 1.2 });
     };
 
     return (

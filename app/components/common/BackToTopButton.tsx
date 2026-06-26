@@ -1,26 +1,27 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useLenis } from '../../contexts/SmoothScrollContext';
 
 export function BackToTopButton() {
+    const { lenis } = useLenis();
     const [show, setShow] = useState(false);
 
     useEffect(() => {
+        if (!lenis) return;
+
         const onScroll = () => {
-            setShow(window.scrollY > 300);
+            setShow(lenis.scroll > 300);
         };
 
-        window.addEventListener('scroll', onScroll);
+        lenis.on('scroll', onScroll);
         onScroll();
 
-        return () => window.removeEventListener('scroll', onScroll);
-    }, []);
+        return () => lenis.off('scroll', onScroll);
+    }, [lenis]);
 
     const scrollToTop = () => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth',
-        });
+        lenis?.scrollTo(0, { duration: 1.5 });
     };
 
     return (

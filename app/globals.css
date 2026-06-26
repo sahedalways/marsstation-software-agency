@@ -15,6 +15,16 @@ html {
     overflow-x: hidden;
 }
 
+html.lenis {
+    height: auto;
+}
+.lenis.lenis-smooth {
+    scroll-behavior: auto;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+}
+
 body {
     background: #07070f;
     color: #ffffff;

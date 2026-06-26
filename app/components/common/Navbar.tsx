@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useLenis } from '../../contexts/SmoothScrollContext';
 
 interface NavbarProps {
     mob: boolean;
@@ -10,18 +11,20 @@ interface NavbarProps {
 }
 
 export function Navbar({ mob, setChatOpen }: NavbarProps) {
+    const { lenis } = useLenis();
     const [scrolled, setScrolled] = useState(false);
 
     useEffect(() => {
+        if (!lenis) return;
+
         const handleScroll = () => {
-            // 50px scroll করলেই background দেখাবে
-            setScrolled(window.scrollY > 50);
+            setScrolled(lenis.scroll > 50);
         };
 
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll(); // initial check
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+        lenis.on('scroll', handleScroll);
+        handleScroll();
+        return () => lenis.off('scroll', handleScroll);
+    }, [lenis]);
 
     return (
         <>

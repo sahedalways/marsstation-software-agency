@@ -13,11 +13,13 @@ import { ExperienceSection } from './components/home/sections/ExperienceSection'
 import { TestimonialSection } from './components/home/sections/TestimonialSection';
 import { ServiceRequirementModal } from './components/modals/ServiceRequirementModal';
 import { TestimonialForm } from './components/home/sections/TestimonialFormSec';
+import { useLenis } from './contexts/SmoothScrollContext';
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 type Phase = 'hero' | 'experience' | 'services' | 'contact' | 'testimonal';
 
 export default function IUSPage() {
+    const { lenis } = useLenis();
     const [reqModalOpen, setReqModalOpen] = useState(false);
     const [chatOpen, setChatOpen] = useState(false);
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -68,12 +70,13 @@ export default function IUSPage() {
     }, []);
 
     useEffect(() => {
-        const fn = () => {
-            const total = document.documentElement.scrollHeight - window.innerHeight;
-            scrollRef.current = clamp(window.scrollY / total, 0, 1);
+        if (!lenis) return;
 
-            // Trigger when section's top is within 70% of viewport
-            const y = window.scrollY + window.innerHeight * 0.7;
+        const fn = () => {
+            const total = lenis.limit;
+            scrollRef.current = clamp(lenis.scroll / total, 0, 1);
+
+            const y = lenis.scroll + window.innerHeight * 0.7;
             const experienceTop = experienceRef.current?.offsetTop ?? 0;
             const servicesTop = servicesRef.current?.offsetTop ?? 0;
             const contactTop = contactRef.current?.offsetTop ?? 0;
@@ -83,10 +86,11 @@ export default function IUSPage() {
             else if (y >= experienceTop) setPhase('experience');
             else setPhase('hero');
         };
-        window.addEventListener('scroll', fn, { passive: true });
+
+        lenis.on('scroll', fn);
         fn();
-        return () => window.removeEventListener('scroll', fn);
-    }, []);
+        return () => lenis.off('scroll', fn);
+    }, [lenis]);
 
     useCanvasAnimation({ canvasRef, btnRef, scrollRef, smoothRef, rafRef });
 

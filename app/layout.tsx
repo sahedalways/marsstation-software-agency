@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { siteConfig } from './config/site';
 import { PreloaderProvider } from './contexts/PreloaderContext';
+import { SmoothScrollProvider } from './contexts/SmoothScrollContext';
 import { Preloader } from './components/common/Preloader';
 import { JsonLd } from './components/seo/JsonLd';
 
@@ -168,9 +169,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </head>
             <body className="antialiased">
                 <PreloaderProvider>
-                    <Preloader />
+                    <SmoothScrollProvider>
+                        <Preloader />
 
-                    <main id="main-content">{children}</main>
+                        <main id="main-content">{children}</main>
+                    </SmoothScrollProvider>
                 </PreloaderProvider>
             </body>
         </html>
