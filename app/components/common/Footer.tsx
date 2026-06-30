@@ -90,32 +90,19 @@ export function Footer({ mob }: FooterProps) {
                 >
                     <Link href="/" style={{ textDecoration: 'none', marginLeft: '-12px' }}>
                         <Image
-                            src="/images/secondary-logo.png"
+                            src="/images/Mars%20Station%20-%20Turning%20Vision%20Into%20Digital%20Reality.png"
                             alt={appName}
-                            width={mob ? 170 : 210}
-                            height={mob ? 46 : 58}
+                            width={mob ? 220 : 280}
+                            height={mob ? 60 : 78}
                             style={{
                                 width: 'auto',
-                                height: mob ? '46px' : '58px',
+                                height: mob ? '60px' : '78px',
                                 objectFit: 'contain',
                             }}
                             priority
                         />
                     </Link>
 
-                    <p
-                        style={{
-                            fontSize: '13px',
-                            color: 'rgba(255,255,255,0.6)',
-                            lineHeight: 1.6,
-                            fontWeight: 400,
-                            margin: 0,
-                        }}
-                    >
-                        Turning Vision
-                        <br />
-                        Into Digital Reality
-                    </p>
                 </div>
 
                 {/* Contact Us Column */}

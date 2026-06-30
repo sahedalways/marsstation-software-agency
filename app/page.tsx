@@ -322,7 +322,7 @@ export default function IUSPage() {
                 </section>
 
                 <section ref={servicesRef} style={{ width: '100%', position: 'relative' }}>
-                    <ServicesSec cardsIn={cardsIn} mob={mob} onGetStarted={() => setChatOpen(true)} />
+                    <ServicesSec cardsIn={cardsIn} mob={mob} onGetStarted={() => setReqModalOpen(true)} />
                 </section>
 
                 <section ref={testimonialRef} style={{ width: '100%', position: 'relative' }}>

@@ -62,13 +62,13 @@ export function ServicesSec({ cardsIn, mob, onGetStarted }: Props) {
                 {
                     name: 'Sterling and Reeve',
                     type: 'WordPress Site',
-                    img: 'https://vplquwpyhhtvbnzkwhxz.supabase.co/storage/v1/object/public/project-images/Pasted%20image.png',
+                    img: '/images/Sterling%20and%20Reeve.png',
                     link: 'https://sterlingandreeve.co.uk/',
                 },
                 {
                     name: 'AgencyHub',
                     type: 'Corporate Site',
-                    img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop',
+                    img: '/images/AgencyHub.png',
                     link: 'https://agencyhub.com/',
                 },
                 {
@@ -115,7 +115,7 @@ export function ServicesSec({ cardsIn, mob, onGetStarted }: Props) {
                 {
                     name: 'ShopLux',
                     type: 'WooCommerce Store',
-                    img: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop',
+                    img: '/images/ShopLux.png',
                     link: 'https://shoplux-ng.netlify.app/',
                 },
                 {
@@ -127,7 +127,7 @@ export function ServicesSec({ cardsIn, mob, onGetStarted }: Props) {
                 {
                     name: 'BookNest',
                     type: 'WooCommerce Store',
-                    img: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=400&h=300&fit=crop',
+                    img: '/images/BookNest.png',
                     link: 'https://booknest.app/',
                 },
             ],
@@ -178,13 +178,13 @@ export function ServicesSec({ cardsIn, mob, onGetStarted }: Props) {
                 {
                     name: 'SmartBot',
                     type: 'AI Chatbot',
-                    img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400&h=300&fit=crop',
+                    img: '/images/SmartBot-AI.png',
                     link: 'https://play.google.com/store/apps/details?id=com.yogeshj.chatbot&pcampaignid=web_share',
                 },
                 {
                     name: 'DataMind',
                     type: 'ML Platform',
-                    img: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400&h=300&fit=crop',
+                    img: '/images/DataMind.png',
                     link: 'https://aidata-mind.com/',
                 },
             ],
@@ -223,19 +223,19 @@ export function ServicesSec({ cardsIn, mob, onGetStarted }: Props) {
                 {
                     name: 'Sisfarma POS',
                     type: 'SaaS Platform',
-                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project38.png',
+                    img: '/images/Sisfarma%20POS.png',
                     link: 'http://erp.blesslifeltd.com/',
                 },
                 {
                     name: 'BookingXpert',
                     type: 'SaaS Platform',
-                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project42.png',
+                    img: '/images/BookingXpert.png',
                     link: 'https://bookingxpert.org/',
                 },
                 {
                     name: 'Crypto Luxor',
                     type: 'SaaS Platform',
-                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project32.png',
+                    img: '/images/Crypto%20Luxor.png',
                     link: 'https://cryptoluxor.com/',
                 },
             ],
@@ -275,7 +275,7 @@ export function ServicesSec({ cardsIn, mob, onGetStarted }: Props) {
                 {
                     name: 'AmazCart',
                     type: 'Custom App',
-                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project41.png',
+                    img: '/images/AmazCart.png',
                     link: 'https://amazcart.ischooll.com',
                 },
                 {
@@ -287,7 +287,7 @@ export function ServicesSec({ cardsIn, mob, onGetStarted }: Props) {
                 {
                     name: 'Kahad HR',
                     type: 'Custom App',
-                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project43.png',
+                    img: '/images/KahadHR.png',
                     link: 'https://kahadhr.com',
                 },
             ],
@@ -328,19 +328,19 @@ export function ServicesSec({ cardsIn, mob, onGetStarted }: Props) {
                 {
                     name: 'AmazCart',
                     type: 'Custom App',
-                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project41.png',
+                    img: '/images/AmazCart.png',
                     link: 'https://amazcart.ischooll.com',
                 },
                 {
                     name: 'Saheds Food',
                     type: 'Custom Store',
-                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project1.png',
+                    img: '/images/Saheds%20Food.png',
                     link: 'https://saheds-food.netlify.app/',
                 },
                 {
                     name: 'TrendBox',
                     type: 'Custom Store',
-                    img: 'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=400&h=300&fit=crop',
+                    img: '/images/TrendBox.png',
                     link: 'https://trendbox.co.in/',
                 },
             ],
@@ -380,19 +380,19 @@ export function ServicesSec({ cardsIn, mob, onGetStarted }: Props) {
                 {
                     name: 'Kleancor',
                     type: 'Android App',
-                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project29.png',
+                    img: '/images/Kleancor.png',
                     link: 'https://play.google.com/store/apps/details?id=com.kleancor.kleancorapp&pcampaignid=web_share',
                 },
                 {
-                    name: 'FoodieGo',
+                    name: 'Foodi - Food Delivery',
                     type: 'Android App',
-                    img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop',
+                    img: '/images/Foodi%20-%20Food%20Delivery.png',
                     link: 'https://play.google.com/store/apps/details?id=com.foodiBd&pcampaignid=web_share',
                 },
                 {
-                    name: 'TaskZen',
+                    name: 'Taskeen',
                     type: 'Android App',
-                    img: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&h=300&fit=crop',
+                    img: '/images/Taskeen.png',
                     link: 'https://play.google.com/store/apps/details?id=taskeenaloula.realtor&pcampaignid=web_share',
                 },
             ],
@@ -422,19 +422,19 @@ export function ServicesSec({ cardsIn, mob, onGetStarted }: Props) {
                 {
                     name: 'Kleancor',
                     type: 'iOS App',
-                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project29.png',
+                    img: '/images/Kleancor.png',
                     link: 'https://play.google.com/store/apps/details?id=com.kleancor.kleancorapp&pcampaignid=web_share',
                 },
                 {
                     name: 'TravelLog',
                     type: 'iOS App',
-                    img: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=300&fit=crop',
+                    img: '/images/Travelog%20-%20Travel%20Map%20Tracker.png',
                     link: 'https://play.google.com/store/apps/details?id=com.ahnlee.jidoapp&pcampaignid=web_share',
                 },
                 {
                     name: 'MusicVibe',
                     type: 'iOS App',
-                    img: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&h=300&fit=crop',
+                    img: '/images/Musivibe%20-%20Enjoy%20Various%20Music.png',
                     link: 'https://play.google.com/store/apps/details?id=com.musivibe.player.allmusic&pcampaignid=web_share',
                 },
             ],
@@ -475,19 +475,19 @@ export function ServicesSec({ cardsIn, mob, onGetStarted }: Props) {
                 {
                     name: 'Kleancor',
                     type: 'React Native',
-                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project29.png',
+                    img: '/images/Kleancor.png',
                     link: 'https://play.google.com/store/apps/details?id=com.kleancor.kleancorapp&pcampaignid=web_share',
                 },
                 {
                     name: 'ShopHub',
                     type: 'React Native',
-                    img: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=400&h=300&fit=crop',
+                    img: '/images/ShopHub.png',
                     link: 'https://play.google.com/store/apps/details?id=com.zpqv.shophub.shopper&pcampaignid=web_share',
                 },
                 {
                     name: 'EduLearn',
                     type: 'React Native',
-                    img: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop',
+                    img: '/images/EduLearn.png',
                     link: 'https://play.google.com/store/apps/details?id=com.edulearn.classes.app&pcampaignid=web_share',
                 },
             ],
