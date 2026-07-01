@@ -998,7 +998,7 @@ export function ServicesSec({ cardsIn, mob, onGetStarted }: Props) {
                                             style={{
                                                 width: '100%',
                                                 aspectRatio: '4 / 3',
-                                                background: `url(${proj.img}) center/cover`,
+                                                background: `rgba(5,2,15,0.5) url(${proj.img}) center/contain no-repeat`,
                                                 borderBottom: '1px solid rgba(105,62,205,0.25)',
                                             }}
                                         />
