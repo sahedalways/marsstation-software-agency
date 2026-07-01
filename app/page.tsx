@@ -354,7 +354,7 @@ export default function IUSPage() {
                 <Footer mob={mob} />
 
                 <ChatButton onClick={() => setChatOpen(true)} isOpen={chatOpen} />
-                <ChatWindow isOpen={chatOpen} onClose={() => setChatOpen(false)} />
+                <ChatWindow isOpen={chatOpen} onClose={() => setChatOpen(false)} onServiceRequest={() => setReqModalOpen(true)} />
 
                 <BackToTopButton />
             </main>

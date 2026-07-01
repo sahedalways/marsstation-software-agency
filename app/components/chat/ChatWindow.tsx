@@ -286,7 +286,11 @@ const fetchAIReply = async (
 interface ChatWindowProps {
     isOpen: boolean;
     onClose: () => void;
+    onServiceRequest?: () => void;
 }
+
+const INACTIVITY_TIMEOUT_MS = 3 * 60 * 1000;
+const MIN_MSGS_FOR_PROMPT = 3;
 
 // ── Female Avatar ──
 const FemaleAvatar = ({ size = 34 }: { size?: number }) => (
@@ -455,7 +459,7 @@ export const SupportAvatar = ({
     </div>
 );
 
-export const ChatWindow = ({ isOpen, onClose }: ChatWindowProps) => {
+export const ChatWindow = ({ isOpen, onClose, onServiceRequest }: ChatWindowProps) => {
     const [user, setUser] = useState<{ name: string; email: string } | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const [agent, setAgent] = useState<SupportAgent>(getRandomAgent);
@@ -463,11 +467,14 @@ export const ChatWindow = ({ isOpen, onClose }: ChatWindowProps) => {
     const [inputDisabled, setInputDisabled] = useState(false);
     const conversationRef = useRef<{ role: string; content: string }[]>([]);
     const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
-    const msgCountRef = useRef(0); // Track message count for mood shifts
+    const msgCountRef = useRef(0);
+    const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const servicePromptShownRef = useRef(false);
 
     useEffect(() => {
         return () => {
             timeoutsRef.current.forEach(clearTimeout);
+            clearInactivityTimer();
         };
     }, []);
 
@@ -476,6 +483,53 @@ export const ChatWindow = ({ isOpen, onClose }: ChatWindowProps) => {
         timeoutsRef.current.push(t);
         return t;
     };
+
+    const clearInactivityTimer = () => {
+        if (inactivityTimerRef.current) {
+            clearTimeout(inactivityTimerRef.current);
+            inactivityTimerRef.current = null;
+        }
+    };
+
+    const showServicePrompt = () => {
+        if (servicePromptShownRef.current) return;
+        servicePromptShownRef.current = true;
+        clearInactivityTimer();
+
+        const promptMsg: Message = {
+            id: `service-prompt-${Date.now()}`,
+            text: "You can get a clear quote based on your project requirements if you'd like.",
+            sender: 'support',
+            timestamp: new Date(),
+            status: 'delivered',
+            buttonLabel: 'Get Services',
+        };
+        setStatusText('typing');
+        addTimeout(() => {
+            setMessages((prev) => [...prev, promptMsg]);
+            setStatusText('online');
+            setInputDisabled(false);
+        }, 1200 + Math.random() * 800);
+    };
+
+    // Inactivity detection: after the agent sends a response and user doesn't reply
+    useEffect(() => {
+        if (!user) return;
+        if (servicePromptShownRef.current) return;
+        if (msgCountRef.current < MIN_MSGS_FOR_PROMPT) return;
+
+        const lastMsg = messages[messages.length - 1];
+        if (!lastMsg || lastMsg.sender === 'user' || lastMsg.buttonLabel) return;
+
+        clearInactivityTimer();
+        inactivityTimerRef.current = setTimeout(() => {
+            showServicePrompt();
+        }, INACTIVITY_TIMEOUT_MS);
+
+        return () => {
+            clearInactivityTimer();
+        };
+    }, [messages, user]);
 
     useEffect(() => {
         if (isOpen && !user) {
@@ -542,8 +596,6 @@ export const ChatWindow = ({ isOpen, onClose }: ChatWindowProps) => {
 
     const handleSend = useCallback(async (text: string) => {
         msgCountRef.current++;
-
-        // Each message gets a fresh mood (humans aren't consistent!)
         const mood = getHumanMood();
 
         // ── 1. Add user message (sent) ──
@@ -669,12 +721,14 @@ export const ChatWindow = ({ isOpen, onClose }: ChatWindowProps) => {
     const handleEndChat = () => {
         timeoutsRef.current.forEach(clearTimeout);
         timeoutsRef.current = [];
+        clearInactivityTimer();
         setUser(null);
         setMessages([]);
         setStatusText('online');
         setInputDisabled(false);
         conversationRef.current = [];
         msgCountRef.current = 0;
+        servicePromptShownRef.current = false;
         setAgent(getRandomAgent());
         onClose();
     };
@@ -863,6 +917,7 @@ export const ChatWindow = ({ isOpen, onClose }: ChatWindowProps) => {
                                 agentGender={agent.gender}
                                 isTyping={statusText === 'typing'}
                                 agentAvatar={agent.avatar}
+                                onServiceClick={onServiceRequest}
                             />
                         </div>
                         <ChatInput onSend={handleSend} disabled={inputDisabled} />

@@ -9,6 +9,7 @@ export interface Message {
     sender: 'user' | 'support';
     timestamp: Date;
     status?: 'sent' | 'delivered' | 'seen';
+    buttonLabel?: string;
 }
 
 interface ChatMessagesProps {
@@ -18,6 +19,7 @@ interface ChatMessagesProps {
     agentGender: 'male' | 'female';
     isTyping: boolean;
     agentAvatar: string;
+    onServiceClick?: () => void;
 }
 
 // ── Message Status Icons ──
@@ -108,6 +110,7 @@ export const ChatMessages = ({
     agentGender,
     isTyping,
     agentAvatar,
+    onServiceClick,
 }: ChatMessagesProps) => {
     const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -208,7 +211,34 @@ export const ChatMessages = ({
                                     wordBreak: 'break-word',
                                 }}
                             >
-                                {msg.text}
+                                <div>{msg.text}</div>
+                                {msg.buttonLabel && !isUser && (
+                                    <button
+                                        onClick={onServiceClick}
+                                        style={{
+                                            marginTop: 10,
+                                            width: '100%',
+                                            padding: '10px 16px',
+                                            border: 'none',
+                                            borderRadius: 10,
+                                            background: 'linear-gradient(90deg, #a855f7 0%, #6366f1 50%, #3b82f6 100%)',
+                                            color: '#fff',
+                                            fontSize: 13,
+                                            fontWeight: 600,
+                                            cursor: 'pointer',
+                                            fontFamily: 'inherit',
+                                            transition: 'opacity 0.2s',
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.opacity = '0.9';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.opacity = '1';
+                                        }}
+                                    >
+                                        {msg.buttonLabel} →
+                                    </button>
+                                )}
                             </div>
 
                             {/* Time + Status */}
