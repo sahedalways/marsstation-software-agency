@@ -507,10 +507,10 @@ Provide a realistic project estimate in JSON format ONLY (no markdown, no explan
 }
 
 Pricing guide (GBP):
-- Simple WordPress: £500-1500
-- Standard website / basic app: £1500-5000
+- Simple WordPress: £1900-3500
+- Standard website / basic app: £1900-5000
 - Full stack web app / e-commerce: £5000-15000
-- SaaS / ERP / large platform: $15000-50000
+- SaaS / ERP / large platform: £15000-50000
 - Enterprise / AI heavy: £50000+
 Add 20-30% for urgent timelines. Be realistic.`;
 
@@ -528,7 +528,7 @@ Add 20-30% for urgent timelines. Be realistic.`;
 
             const parsed = JSON.parse(jsonMatch[0]);
             const est: ProjectEstimate = {
-                minPrice: Number(parsed.minPrice) || 1000,
+                minPrice: Number(parsed.minPrice) || 1900,
                 maxPrice: Number(parsed.maxPrice) || 5000,
                 weeks: Number(parsed.weeks) || 6,
                 summary:
