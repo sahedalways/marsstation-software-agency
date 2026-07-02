@@ -512,6 +512,18 @@ export const ChatWindow = ({ isOpen, onClose, onServiceRequest }: ChatWindowProp
         }, 1200 + Math.random() * 800);
     };
 
+    // Show service prompt immediately after AI replies to the 3rd user message
+    useEffect(() => {
+        if (!user) return;
+        if (servicePromptShownRef.current) return;
+        if (msgCountRef.current < MIN_MSGS_FOR_PROMPT) return;
+
+        const lastMsg = messages[messages.length - 1];
+        if (!lastMsg || lastMsg.sender !== 'support' || lastMsg.buttonLabel) return;
+
+        showServicePrompt();
+    }, [messages, user]);
+
     // Inactivity detection: after the agent sends a response and user doesn't reply
     useEffect(() => {
         if (!user) return;

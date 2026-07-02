@@ -24,6 +24,7 @@ interface ServiceTab {
 
 export function ServicesSec({ cardsIn, mob, onGetStarted }: Props) {
     const [activeTab, setActiveTab] = useState(1);
+    const [selectedImg, setSelectedImg] = useState<string | null>(null);
 
     const services: ServiceTab[] = [
         {
@@ -995,11 +996,13 @@ export function ServicesSec({ cardsIn, mob, onGetStarted }: Props) {
                                         }}
                                     >
                                         <div
+                                            onClick={() => setSelectedImg(proj.img)}
                                             style={{
                                                 width: '100%',
                                                 aspectRatio: '4 / 3',
                                                 background: `rgba(5,2,15,0.5) url(${proj.img}) center/contain no-repeat`,
                                                 borderBottom: '1px solid rgba(105,62,205,0.25)',
+                                                cursor: 'pointer',
                                             }}
                                         />
                                         <div
@@ -1027,9 +1030,11 @@ export function ServicesSec({ cardsIn, mob, onGetStarted }: Props) {
                                             >
                                                 {proj.type}
                                             </div>
-                                            <a
-                                                href={proj.link}
-                                                className="svc-arrow-link"
+<a
+    href={proj.link}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="svc-arrow-link"
                                                 style={{
                                                     fontSize: mob ? '10px' : '11px',
                                                     color: '#c084fc',
@@ -1132,6 +1137,34 @@ export function ServicesSec({ cardsIn, mob, onGetStarted }: Props) {
                     </div>
                 </div>
             </section>
+
+            {selectedImg && (
+                <div
+                    onClick={() => setSelectedImg(null)}
+                    style={{
+                        position: 'fixed',
+                        inset: 0,
+                        zIndex: 9999,
+                        background: 'rgba(0,0,0,0.85)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'zoom-out',
+                        padding: mob ? '20px' : '40px',
+                    }}
+                >
+                    <div
+                        style={{
+                            maxWidth: '90vw',
+                            maxHeight: '90vh',
+                            width: '100%',
+                            height: '100%',
+                            background: `url(${selectedImg}) center/contain no-repeat`,
+                            borderRadius: '12px',
+                        }}
+                    />
+                </div>
+            )}
         </>
     );
 }
