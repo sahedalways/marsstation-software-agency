@@ -943,65 +943,90 @@ export const ChatWindow = ({ isOpen, onClose, onServiceRequest }: ChatWindowProp
                 style={{
                     position: 'fixed',
                     inset: 0,
-                    background: 'rgba(0,0,0,0.6)',
-                    backdropFilter: 'blur(4px)',
+                    background: 'rgba(0,0,0,.65)',
+                    backdropFilter: 'blur(8px)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    zIndex: 9999,
+                    zIndex: 99999,
+                    padding: '20px',
                 }}
                 onClick={() => setShowEndConfirm(false)}
             >
                 <div
                     onClick={(e) => e.stopPropagation()}
                     style={{
-                        background: 'linear-gradient(135deg, #1a1040, #0f0a2e)',
-                        border: '1px solid rgba(168,85,247,0.3)',
-                        borderRadius: 16,
-                        padding: '28px 32px',
-                        maxWidth: 360,
                         width: '90%',
+                        maxWidth: '380px',
+                        padding: '35px 30px',
+                        borderRadius: '20px',
                         textAlign: 'center',
+                        background: 'linear-gradient(145deg,#ffffff,#eef0ff)',
+                        boxShadow: '0 30px 80px rgba(90,40,200,.35)',
+                        animation: 'chatEndConfirmScale .35s ease',
                     }}
                 >
                     <div
                         style={{
-                            width: 48,
-                            height: 48,
+                            width: '65px',
+                            height: '65px',
+                            margin: '0 auto 20px',
                             borderRadius: '50%',
-                            background: 'rgba(255,100,100,0.15)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            margin: '0 auto 16px',
+                            fontSize: '28px',
+                            color: '#fff',
+                            background: 'linear-gradient(135deg, #732aeb, #5a1ec8)',
+                            boxShadow: '0 10px 30px rgba(115,42,235,.35)',
                         }}
                     >
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff6464" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="12" cy="12" r="10"/>
-                            <line x1="12" y1="8" x2="12" y2="12"/>
-                            <line x1="12" y1="16" x2="12.01" y2="16"/>
-                        </svg>
+                        ?
                     </div>
-                    <h3 style={{ margin: '0 0 8px', color: '#fff', fontSize: 17, fontWeight: 700 }}>
+
+                    <h3
+                        style={{
+                            color: '#10162f',
+                            fontSize: '22px',
+                            marginBottom: '10px',
+                            fontWeight: 600,
+                        }}
+                    >
                         End Chat?
                     </h3>
-                    <p style={{ margin: '0 0 24px', color: 'rgba(255,255,255,0.6)', fontSize: 13, lineHeight: 1.5 }}>
+
+                    <p
+                        style={{
+                            color: '#4b5563',
+                            fontSize: '14px',
+                            lineHeight: 1.6,
+                            marginBottom: '25px',
+                        }}
+                    >
                         Are you sure you want to end this conversation? This will clear all messages.
                     </p>
+
                     <div style={{ display: 'flex', gap: 10 }}>
                         <button
                             onClick={() => setShowEndConfirm(false)}
                             style={{
                                 flex: 1,
                                 padding: '11px 0',
-                                borderRadius: 10,
-                                border: '1px solid rgba(255,255,255,0.15)',
-                                background: 'rgba(255,255,255,0.06)',
-                                color: 'rgba(255,255,255,0.8)',
-                                fontSize: 13,
+                                borderRadius: '10px',
+                                border: '1px solid #d1d5db',
+                                background: '#fff',
+                                color: '#374151',
+                                fontSize: '14px',
                                 fontWeight: 600,
                                 cursor: 'pointer',
                                 fontFamily: 'inherit',
+                                transition: '.25s',
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.background = '#f9fafb';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.background = '#fff';
                             }}
                         >
                             Cancel
@@ -1011,20 +1036,34 @@ export const ChatWindow = ({ isOpen, onClose, onServiceRequest }: ChatWindowProp
                             style={{
                                 flex: 1,
                                 padding: '11px 0',
-                                borderRadius: 10,
+                                borderRadius: '10px',
                                 border: 'none',
-                                background: '#dc2626',
                                 color: '#fff',
-                                fontSize: 13,
-                                fontWeight: 600,
                                 cursor: 'pointer',
+                                background: 'linear-gradient(135deg, #732aeb, #5a1ec8)',
+                                fontSize: '14px',
+                                fontWeight: 600,
                                 fontFamily: 'inherit',
+                                transition: '.25s',
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'translateY(0)';
                             }}
                         >
                             Yes, End Chat
                         </button>
                     </div>
                 </div>
+
+                <style>{`
+                    @keyframes chatEndConfirmScale {
+                        from { opacity:0; transform:scale(.85); }
+                        to { opacity:1; transform:scale(1); }
+                    }
+                `}</style>
             </div>
         )}
         </>
