@@ -465,6 +465,7 @@ export const ChatWindow = ({ isOpen, onClose, onServiceRequest }: ChatWindowProp
     const [agent, setAgent] = useState<SupportAgent>(getRandomAgent);
     const [statusText, setStatusText] = useState<'online' | 'seen' | 'typing'>('online');
     const [inputDisabled, setInputDisabled] = useState(false);
+    const [showEndConfirm, setShowEndConfirm] = useState(false);
     const conversationRef = useRef<{ role: string; content: string }[]>([]);
     const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
     const msgCountRef = useRef(0);
@@ -730,7 +731,7 @@ export const ChatWindow = ({ isOpen, onClose, onServiceRequest }: ChatWindowProp
 
     const handleClose = () => onClose();
 
-    const handleEndChat = () => {
+    const confirmEndChat = () => {
         timeoutsRef.current.forEach(clearTimeout);
         timeoutsRef.current = [];
         clearInactivityTimer();
@@ -742,6 +743,7 @@ export const ChatWindow = ({ isOpen, onClose, onServiceRequest }: ChatWindowProp
         msgCountRef.current = 0;
         servicePromptShownRef.current = false;
         setAgent(getRandomAgent());
+        setShowEndConfirm(false);
         onClose();
     };
 
@@ -842,7 +844,7 @@ export const ChatWindow = ({ isOpen, onClose, onServiceRequest }: ChatWindowProp
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                         {user && (
                             <button
-                                onClick={handleEndChat}
+                                onClick={() => setShowEndConfirm(true)}
                                 title="End chat"
                                 style={{
                                     background: 'rgba(255,255,255,0.06)',
@@ -936,6 +938,95 @@ export const ChatWindow = ({ isOpen, onClose, onServiceRequest }: ChatWindowProp
                     </>
                 )}
             </div>
+        {showEndConfirm && (
+            <div
+                style={{
+                    position: 'fixed',
+                    inset: 0,
+                    background: 'rgba(0,0,0,0.6)',
+                    backdropFilter: 'blur(4px)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 9999,
+                }}
+                onClick={() => setShowEndConfirm(false)}
+            >
+                <div
+                    onClick={(e) => e.stopPropagation()}
+                    style={{
+                        background: 'linear-gradient(135deg, #1a1040, #0f0a2e)',
+                        border: '1px solid rgba(168,85,247,0.3)',
+                        borderRadius: 16,
+                        padding: '28px 32px',
+                        maxWidth: 360,
+                        width: '90%',
+                        textAlign: 'center',
+                    }}
+                >
+                    <div
+                        style={{
+                            width: 48,
+                            height: 48,
+                            borderRadius: '50%',
+                            background: 'rgba(255,100,100,0.15)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            margin: '0 auto 16px',
+                        }}
+                    >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff6464" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                    </div>
+                    <h3 style={{ margin: '0 0 8px', color: '#fff', fontSize: 17, fontWeight: 700 }}>
+                        End Chat?
+                    </h3>
+                    <p style={{ margin: '0 0 24px', color: 'rgba(255,255,255,0.6)', fontSize: 13, lineHeight: 1.5 }}>
+                        Are you sure you want to end this conversation? This will clear all messages.
+                    </p>
+                    <div style={{ display: 'flex', gap: 10 }}>
+                        <button
+                            onClick={() => setShowEndConfirm(false)}
+                            style={{
+                                flex: 1,
+                                padding: '11px 0',
+                                borderRadius: 10,
+                                border: '1px solid rgba(255,255,255,0.15)',
+                                background: 'rgba(255,255,255,0.06)',
+                                color: 'rgba(255,255,255,0.8)',
+                                fontSize: 13,
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                fontFamily: 'inherit',
+                            }}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            onClick={confirmEndChat}
+                            style={{
+                                flex: 1,
+                                padding: '11px 0',
+                                borderRadius: 10,
+                                border: 'none',
+                                background: '#dc2626',
+                                color: '#fff',
+                                fontSize: 13,
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                fontFamily: 'inherit',
+                            }}
+                        >
+                            Yes, End Chat
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )}
         </>
     );
 };
