@@ -257,6 +257,16 @@ export function ContactSec({ contactIn, mob }: Props) {
                     border-color: rgba(168,85,247,0.7) !important;
                     background: rgba(168,85,247,0.04) !important;
                 }
+                .c-input input {
+                    background: transparent !important;
+                    background-color: transparent !important;
+                    -webkit-appearance: none;
+                    appearance: none;
+                }
+                .c-input input:-webkit-autofill {
+                    -webkit-box-shadow: 0 0 0 1000px rgba(15,10,30,0.6) inset !important;
+                    -webkit-text-fill-color: #fff !important;
+                }
                 .c-tab { transition: all 0.3s ease; }
                 .c-tab:hover { background: rgba(168,85,247,0.1) !important; }
                 .c-method-dropdown { transition: all 0.3s ease; }
@@ -1613,10 +1623,12 @@ function FormField({
                     style={{
                         flex: 1,
                         background: 'transparent',
+                        backgroundColor: 'transparent',
                         border: 'none',
                         outline: 'none',
                         color: '#fff',
                         fontSize: mob ? '12px' : '13px',
+                        WebkitAppearance: 'none',
                     }}
                 />
             </div>
