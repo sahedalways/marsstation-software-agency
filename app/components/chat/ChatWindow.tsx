@@ -471,6 +471,8 @@ export const ChatWindow = ({ isOpen, onClose, onServiceRequest }: ChatWindowProp
     const msgCountRef = useRef(0);
     const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
     const servicePromptShownRef = useRef(false);
+    const resetAbandonRef = useRef<() => void>(() => {});
+    const ABANDON_TIMEOUT_MS = 10 * 60 * 1000;
 
     useEffect(() => {
         return () => {
@@ -608,6 +610,7 @@ export const ChatWindow = ({ isOpen, onClose, onServiceRequest }: ChatWindowProp
     );
 
     const handleSend = useCallback(async (text: string) => {
+        resetAbandonRef.current();
         msgCountRef.current++;
         const mood = getHumanMood();
 
@@ -729,34 +732,49 @@ export const ChatWindow = ({ isOpen, onClose, onServiceRequest }: ChatWindowProp
         }
     }, []);
 
-    const sendTranscript = useCallback(async () => {
+    const sendTranscriptRef = useRef(() => {});
+    const abandonTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+    sendTranscriptRef.current = () => {
         if (!user || !messages.length) return;
         try {
-            await fetch('/api/chat/send-transcript', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    user,
-                    agent,
-                    messages: messages.map((m) => ({
-                        sender: m.sender,
-                        text: m.text,
-                        timestamp: m.timestamp,
-                    })),
-                }),
+            const body = JSON.stringify({
+                user,
+                agent,
+                messages: messages.map((m) => ({
+                    sender: m.sender,
+                    text: m.text,
+                    timestamp: m.timestamp,
+                })),
             });
+            navigator.sendBeacon('/api/chat/send-transcript', new Blob([body], { type: 'application/json' }));
         } catch (err) {
             console.error('Failed to send transcript:', err);
         }
-    }, [user, agent, messages]);
+    };
+
+    resetAbandonRef.current = () => {
+        if (abandonTimerRef.current) clearTimeout(abandonTimerRef.current);
+        if (!user || !messages.length) return;
+        abandonTimerRef.current = setTimeout(() => {
+            sendTranscriptRef.current();
+        }, ABANDON_TIMEOUT_MS);
+    };
+
+    useEffect(() => {
+        resetAbandonRef.current();
+        return () => {
+            if (abandonTimerRef.current) clearTimeout(abandonTimerRef.current);
+        };
+    });
 
     const handleClose = () => {
-        sendTranscript();
+        sendTranscriptRef.current();
         onClose();
     };
 
     const confirmEndChat = () => {
-        sendTranscript();
+        sendTranscriptRef.current();
         timeoutsRef.current.forEach(clearTimeout);
         timeoutsRef.current = [];
         clearInactivityTimer();
@@ -774,11 +792,11 @@ export const ChatWindow = ({ isOpen, onClose, onServiceRequest }: ChatWindowProp
 
     useEffect(() => {
         const handleBeforeUnload = () => {
-            sendTranscript();
+            sendTranscriptRef.current();
         };
         window.addEventListener('beforeunload', handleBeforeUnload);
         return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-    }, [sendTranscript]);
+    }, []);
 
     if (!isOpen) return null;
 
