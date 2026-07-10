@@ -100,6 +100,105 @@ export async function POST(req: Request) {
             }),
         });
 
+        // ─── Send confirmation to submitter ───
+        await transporter.sendMail({
+            from: `"${siteName}" <${process.env.MAIL_USER}>`,
+            to: email,
+            subject: `We've received your service request - ${siteName}`,
+            attachments: [
+                {
+                    filename: 'logo.png',
+                    path: './public/images/logo.png',
+                    cid: 'site-logo',
+                },
+            ],
+            html: `
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8" /><title>Service Request Received - ${siteName}</title></head>
+<body style="margin:0;padding:0;background-color:#f4f6f9;font-family:'Segoe UI',Arial,Helvetica,sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f9;">
+<tr><td align="center" style="padding:40px 15px;">
+
+<table width="620" cellpadding="0" cellspacing="0" style="max-width:620px;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
+
+<!-- TOP ACCENT BAR -->
+<tr><td style="height:5px;background:linear-gradient(90deg,#7c3aed,#a855f7,#7c3aed);padding:0;font-size:0;line-height:0;">&nbsp;</td></tr>
+
+<!-- HEADER -->
+<tr>
+<td align="center" style="padding:40px 30px 32px;background:#ffffff;border-bottom:1px solid #e2e8f0;">
+    <table cellpadding="0" cellspacing="0" style="margin:0 auto 24px;"><tr>
+        <td style="background:#ffffff;padding:12px 22px;border-radius:10px;border:1px solid #e2e8f0;">
+            <img src="cid:site-logo" alt="${siteName}" height="40" style="display:block;height:40px;width:auto;" />
+        </td>
+    </tr></table>
+
+    <table cellpadding="0" cellspacing="0" style="margin:0 auto 16px;"><tr>
+        <td style="background:#22c55e12;border:1px solid #22c55e30;padding:5px 16px;border-radius:20px;">
+            <span style="color:#16a34a;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">CONFIRMATION</span>
+        </td>
+    </tr></table>
+
+    <h1 style="color:#1e293b;font-size:26px;margin:0 0 8px;font-weight:700;letter-spacing:-0.3px;">
+        Thank you, ${escapeHtml(fullName)}!
+    </h1>
+    <p style="color:#64748b;font-size:14px;margin:0;line-height:1.5;">
+        We have received your service request
+    </p>
+</td>
+</tr>
+
+<!-- CONTENT -->
+<tr>
+<td style="padding:32px 36px 28px;background:#ffffff;">
+
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;"><tr>
+        <td style="padding:20px 22px;border-radius:10px;background:#f0fdf4;border:1px solid #bbf7d0;border-left:5px solid #16a34a;">
+            <p style="margin:0;color:#166534;font-size:15px;line-height:1.7;font-weight:500;">
+                Your service request has been submitted successfully. Our team will review your project requirements and get back to you within <strong>3 working days</strong>.
+            </p>
+        </td>
+    </tr></table>
+
+    <table cellpadding="0" cellspacing="0" style="margin-bottom:20px;"><tr>
+        <td style="width:4px;background:#7c3aed;border-radius:2px;">&nbsp;</td>
+        <td style="padding-left:12px;">
+            <p style="color:#475569;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin:0;">Summary</p>
+        </td>
+    </tr></table>
+
+    <table width="100%" cellpadding="0" cellspacing="0" style="color:#334155;font-size:15px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;padding:4px 20px;">
+        ${buildSummaryRow('Full Name', escapeHtml(fullName))}
+        ${buildSummaryRow('Email', escapeHtml(email))}
+        ${buildSummaryRow('Phone', escapeHtml(phone))}
+        ${buildSummaryRow('Company', escapeHtml(company))}
+        ${buildSummaryRow('Preferred Contact', escapeHtml(contactMethodLabel))}
+    </table>
+
+</td>
+</tr>
+
+<!-- FOOTER -->
+<tr>
+<td align="center" style="padding:24px 25px;background:#f8fafc;border-top:1px solid #e2e8f0;">
+    <p style="margin:0 0 6px;color:#1e293b;font-size:15px;font-weight:700;">${escapeHtml(siteName)}</p>
+    <p style="margin:0 0 10px;color:#94a3b8;font-size:12px;line-height:1.6;">
+        &copy; ${new Date().getFullYear()} ${escapeHtml(siteName)}. All rights reserved.
+    </p>
+    <p style="margin:0;color:#94a3b8;font-size:11px;">This is an automated confirmation message.</p>
+</td>
+</tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>
+            `,
+        });
+
         return NextResponse.json({ success: true, message: 'Request submitted successfully' });
     } catch (error) {
         console.error('Service request error:', error);
@@ -139,11 +238,10 @@ function buildServiceRows(lines: string[]): string {
             const [label, ...rest] = line.split(':');
             const value = rest.join(':').trim();
             if (!value) {
-                // It's a plain line (e.g. "Services selected: website, mobile")
                 return `
                 <tr>
-                    <td style="padding: 14px 0; border-bottom: 1px solid rgba(139,92,246,0.15);">
-                        <div style="color: rgba(255,255,255,0.88); font-size: 13.5px; line-height: 1.6;">
+                    <td style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">
+                        <div style="color: #334155; font-size: 13.5px; line-height: 1.6;">
                             ${escapeHtml(line)}
                         </div>
                     </td>
@@ -151,10 +249,10 @@ function buildServiceRows(lines: string[]): string {
             }
             return `
                 <tr>
-                    <td style="padding: 14px 0; border-bottom: 1px solid rgba(139,92,246,0.15);">
+                    <td style="padding: 12px 0; border-bottom: 1px solid #e2e8f0;">
                         <table width="100%" cellpadding="0" cellspacing="0"><tr>
                             <td style="
-                                color: #a78bfa;
+                                color: #64748b;
                                 font-size: 11px;
                                 text-transform: uppercase;
                                 letter-spacing: 1.5px;
@@ -163,7 +261,7 @@ function buildServiceRows(lines: string[]): string {
                                 vertical-align: top;
                                 padding-top: 2px;
                             ">${escapeHtml(label.trim())}</td>
-                            <td style="color: #fff; font-size: 13.5px; font-weight: 600; line-height: 1.5;">
+                            <td style="color: #0f172a; font-size: 13.5px; font-weight: 600; line-height: 1.5;">
                                 ${escapeHtml(value)}
                             </td>
                         </tr></table>
@@ -183,9 +281,9 @@ function buildTechPills(techStack: string[]): string {
                 display: inline-block;
                 padding: 4px 12px;
                 border-radius: 6px;
-                background: linear-gradient(135deg, rgba(139,92,246,0.25), rgba(99,102,241,0.18));
-                border: 1px solid rgba(139,92,246,0.4);
-                color: #e9d5ff;
+                background: #eef2ff;
+                border: 1px solid #c7d2fe;
+                color: #4338ca;
                 font-size: 11px;
                 font-weight: 600;
                 margin: 3px 4px 3px 0;
@@ -193,6 +291,20 @@ function buildTechPills(techStack: string[]): string {
         `
         )
         .join('');
+}
+
+/* ─── Summary row helper for confirmation email ─── */
+function buildSummaryRow(label: string, value: string): string {
+    return `
+        <tr>
+            <td style="padding:12px 0;border-bottom:1px solid #e2e8f0;">
+                <table width="100%" cellpadding="0" cellspacing="0"><tr>
+                    <td style="color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:150px;">${label}</td>
+                    <td style="color:#0f172a;font-size:14px;font-weight:600;">${value}</td>
+                </tr></table>
+            </td>
+        </tr>
+    `;
 }
 
 /* ─── Main email HTML ─── */
@@ -229,109 +341,75 @@ function buildEmailHtml(data: {
 <!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"/><title>New Service Request</title></head>
-<body style="margin:0;padding:0;background:#0a0a14;font-family:'Segoe UI',Arial,Helvetica,sans-serif;">
+<body style="margin:0;padding:0;background-color:#f4f6f9;font-family:'Segoe UI',Arial,Helvetica,sans-serif;">
 
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a14;">
-<tr><td align="center" style="padding:50px 15px;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f9;">
+<tr><td align="center" style="padding:40px 15px;">
 
-<table width="620" cellpadding="0" cellspacing="0" style="
-    max-width:620px;
-    background:#0f0a2e;
-    border-radius:20px;
-    overflow:hidden;
-    border:1px solid rgba(139,92,246,0.4);
-    box-shadow:0 25px 70px rgba(0,0,0,0.7), 0 0 80px rgba(139,92,246,0.18), 0 0 60px rgba(99,102,241,0.12);
-">
+<table width="620" cellpadding="0" cellspacing="0" style="max-width:620px;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
 
 <!-- TOP ACCENT BAR -->
 <tr>
-    <td style="height:5px;background:linear-gradient(90deg,#4f46e5,#7c3aed,#a855f7,#7c3aed,#4f46e5);padding:0;font-size:0;line-height:0;">&nbsp;</td>
+    <td style="height:5px;background:linear-gradient(90deg,#7c3aed,#a855f7,#7c3aed);padding:0;font-size:0;line-height:0;">&nbsp;</td>
 </tr>
 
 <!-- HEADER -->
 <tr>
-<td align="center" style="
-    padding:48px 30px 36px;
-    background:linear-gradient(135deg,#1e1050 0%,#0f0a2e 60%,#1a0f3a 100%);
-    border-bottom:1px solid rgba(139,92,246,0.25);
-">
+<td align="center" style="padding:40px 30px 32px;background:#ffffff;border-bottom:1px solid #e2e8f0;">
     <!-- Logo -->
     <table cellpadding="0" cellspacing="0" style="margin:0 auto 24px;">
-    <tr><td style="
-        background:#fff;
-        padding:14px 24px;
-        border-radius:12px;
-        box-shadow:0 8px 28px rgba(0,0,0,0.5),0 0 30px rgba(139,92,246,0.4);
-        border:1px solid rgba(139,92,246,0.3);
-    ">
+    <tr><td style="background:#ffffff;padding:12px 22px;border-radius:10px;border:1px solid #e2e8f0;">
         <img src="cid:site-logo" alt="${siteName}" height="40"
              style="display:block;height:40px;width:auto;"/>
     </td></tr></table>
 
     <!-- Badge -->
-    <table cellpadding="0" cellspacing="0" style="margin:0 auto 18px;">
-    <tr><td style="
-        background:linear-gradient(135deg,rgba(139,92,246,0.3),rgba(99,102,241,0.2));
-        border:1px solid rgba(168,85,247,0.6);
-        padding:6px 20px;
-        border-radius:30px;
-    ">
-        <span style="color:#e9d5ff;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">
+    <table cellpadding="0" cellspacing="0" style="margin:0 auto 16px;">
+    <tr><td style="background:#7c3aed12;border:1px solid #7c3aed30;padding:5px 16px;border-radius:20px;">
+        <span style="color:#7c3aed;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">
              NEW SERVICE REQUEST
         </span>
     </td></tr></table>
 
-    <h1 style="color:#fff;font-size:26px;margin:0 0 10px;font-weight:700;letter-spacing:0.5px;">
+    <h1 style="color:#1e293b;font-size:26px;margin:0 0 8px;font-weight:700;letter-spacing:-0.3px;">
         New Project Request Received
     </h1>
-    <p style="color:rgba(255,255,255,0.65);font-size:13.5px;margin:0;line-height:1.5;">
+    <p style="color:#64748b;font-size:13.5px;margin:0;line-height:1.5;">
         A potential client has submitted their project requirements
     </p>
-
-    <div style="
-        width:80px;height:3px;
-        background:linear-gradient(90deg,transparent,#8b5cf6,#6366f1,transparent);
-        margin:20px auto 0;border-radius:2px;
-    "></div>
 </td>
 </tr>
 
 <!-- CONTENT -->
 <tr>
-<td style="padding:36px 36px 28px;background:linear-gradient(180deg,#0f0a2e 0%,#1a0f3a 100%);">
+<td style="padding:32px 36px 28px;background:#ffffff;">
 
     <!-- CLIENT INFO -->
     <table cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
     <tr>
-        <td style="width:4px;background:linear-gradient(180deg,#8b5cf6,#6366f1);border-radius:2px;">&nbsp;</td>
+        <td style="width:4px;background:#7c3aed;border-radius:2px;">&nbsp;</td>
         <td style="padding-left:12px;">
-            <p style="color:#a78bfa;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin:0;">
+            <p style="color:#475569;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin:0;">
                 Client Information
             </p>
         </td>
     </tr></table>
 
-    <table width="100%" cellpadding="0" cellspacing="0" style="
-        background:linear-gradient(135deg,rgba(139,92,246,0.1),rgba(99,102,241,0.07));
-        border:1px solid rgba(139,92,246,0.25);
-        border-radius:14px;
-        padding:6px 20px;
-        margin-bottom:24px;
-    ">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:4px 20px;margin-bottom:24px;">
         <tr>
-            <td style="padding:14px 0;border-bottom:1px solid rgba(139,92,246,0.15);">
+            <td style="padding:12px 0;border-bottom:1px solid #e2e8f0;">
                 <table width="100%" cellpadding="0" cellspacing="0"><tr>
-                    <td style="color:#a78bfa;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:150px;">Full Name</td>
-                    <td style="color:#fff;font-size:14px;font-weight:600;">${escapeHtml(fullName)}</td>
+                    <td style="color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:150px;">Full Name</td>
+                    <td style="color:#0f172a;font-size:14px;font-weight:600;">${escapeHtml(fullName)}</td>
                 </tr></table>
             </td>
         </tr>
         <tr>
-            <td style="padding:14px 0;border-bottom:1px solid rgba(139,92,246,0.15);">
+            <td style="padding:12px 0;border-bottom:1px solid #e2e8f0;">
                 <table width="100%" cellpadding="0" cellspacing="0"><tr>
-                    <td style="color:#a78bfa;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:150px;">Email</td>
+                    <td style="color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:150px;">Email</td>
                     <td>
-                        <a href="mailto:${escapeHtml(email)}" style="color:#c4b5fd;font-size:14px;font-weight:600;text-decoration:none;">
+                        <a href="mailto:${escapeHtml(email)}" style="color:#6366f1;font-size:14px;font-weight:600;text-decoration:none;">
                             ${escapeHtml(email)}
                         </a>
                     </td>
@@ -339,11 +417,11 @@ function buildEmailHtml(data: {
             </td>
         </tr>
         <tr>
-            <td style="padding:14px 0;border-bottom:1px solid rgba(139,92,246,0.15);">
+            <td style="padding:12px 0;border-bottom:1px solid #e2e8f0;">
                 <table width="100%" cellpadding="0" cellspacing="0"><tr>
-                    <td style="color:#a78bfa;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:150px;">Phone</td>
+                    <td style="color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:150px;">Phone</td>
                     <td>
-                        <a href="tel:${escapeHtml(phone)}" style="color:#c4b5fd;font-size:14px;font-weight:600;text-decoration:none;">
+                        <a href="tel:${escapeHtml(phone)}" style="color:#6366f1;font-size:14px;font-weight:600;text-decoration:none;">
                             ${escapeHtml(phone)}
                         </a>
                     </td>
@@ -351,28 +429,19 @@ function buildEmailHtml(data: {
             </td>
         </tr>
         <tr>
-            <td style="padding:14px 0;border-bottom:1px solid rgba(139,92,246,0.15);">
+            <td style="padding:12px 0;border-bottom:1px solid #e2e8f0;">
                 <table width="100%" cellpadding="0" cellspacing="0"><tr>
-                    <td style="color:#a78bfa;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:150px;">Company</td>
-                    <td style="color:#fff;font-size:14px;font-weight:600;">${escapeHtml(company)}</td>
+                    <td style="color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:150px;">Company</td>
+                    <td style="color:#0f172a;font-size:14px;font-weight:600;">${escapeHtml(company)}</td>
                 </tr></table>
             </td>
         </tr>
         <tr>
-            <td style="padding:14px 0;">
+            <td style="padding:12px 0;">
                 <table width="100%" cellpadding="0" cellspacing="0"><tr>
-                    <td style="color:#a78bfa;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:150px;">Preferred Contact</td>
+                    <td style="color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:150px;">Preferred Contact</td>
                     <td>
-                        <span style="
-                            display:inline-block;
-                            padding:3px 12px;
-                            border-radius:20px;
-                            background:rgba(139,92,246,0.2);
-                            border:1px solid rgba(139,92,246,0.4);
-                            color:#e9d5ff;
-                            font-size:12px;
-                            font-weight:600;
-                        ">${escapeHtml(contactMethodLabel)}</span>
+                        <span style="display:inline-block;padding:3px 12px;border-radius:20px;background:#eef2ff;border:1px solid #c7d2fe;color:#4338ca;font-size:12px;font-weight:600;">${escapeHtml(contactMethodLabel)}</span>
                     </td>
                 </tr></table>
             </td>
@@ -382,69 +451,55 @@ function buildEmailHtml(data: {
     <!-- PROJECT REQUIREMENTS -->
     <table cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
     <tr>
-        <td style="width:4px;background:linear-gradient(180deg,#a855f7,#8b5cf6);border-radius:2px;">&nbsp;</td>
+        <td style="width:4px;background:#7c3aed;border-radius:2px;">&nbsp;</td>
         <td style="padding-left:12px;">
-            <p style="color:#a78bfa;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin:0;">
+            <p style="color:#475569;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin:0;">
                 Project Requirements
             </p>
         </td>
     </tr></table>
 
-    <table width="100%" cellpadding="0" cellspacing="0" style="
-        background:rgba(139,92,246,0.08);
-        border:1px solid rgba(139,92,246,0.25);
-        border-left:4px solid #8b5cf6;
-        border-radius:14px;
-        padding:6px 20px;
-        margin-bottom:24px;
-    ">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #7c3aed;border-radius:12px;padding:4px 20px;margin-bottom:24px;">
         ${buildServiceRows(serviceLines)}
     </table>
 
     <!-- ESTIMATE -->
     <table cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
     <tr>
-        <td style="width:4px;background:linear-gradient(180deg,#f59e0b,#d97706);border-radius:2px;">&nbsp;</td>
+        <td style="width:4px;background:#d97706;border-radius:2px;">&nbsp;</td>
         <td style="padding-left:12px;">
-            <p style="color:#fbbf24;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin:0;">
+            <p style="color:#475569;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin:0;">
                 Project Estimate
             </p>
         </td>
     </tr></table>
 
-    <table width="100%" cellpadding="0" cellspacing="0" style="
-        background:linear-gradient(135deg,rgba(139,92,246,0.15),rgba(99,102,241,0.1));
-        border:1px solid rgba(139,92,246,0.35);
-        border-left:4px solid #f59e0b;
-        border-radius:14px;
-        padding:6px 20px;
-        margin-bottom:24px;
-    ">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #d97706;border-radius:12px;padding:4px 20px;margin-bottom:24px;">
         <tr>
-            <td style="padding:14px 0;border-bottom:1px solid rgba(139,92,246,0.15);">
+            <td style="padding:12px 0;border-bottom:1px solid #e2e8f0;">
                 <table width="100%" cellpadding="0" cellspacing="0"><tr>
-                    <td style="color:#a78bfa;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:150px;">Estimated Cost</td>
-                    <td style="color:#e9d5ff;font-size:15px;font-weight:700;">
-                        £${escapeHtml(minPrice)} — £${escapeHtml(maxPrice)}
+                    <td style="color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:150px;">Estimated Cost</td>
+                    <td style="color:#0f172a;font-size:15px;font-weight:700;">
+                        &pound;${escapeHtml(minPrice)} &mdash; &pound;${escapeHtml(maxPrice)}
                     </td>
                 </tr></table>
             </td>
         </tr>
         <tr>
-            <td style="padding:14px 0;border-bottom:1px solid rgba(139,92,246,0.15);">
+            <td style="padding:12px 0;border-bottom:1px solid #e2e8f0;">
                 <table width="100%" cellpadding="0" cellspacing="0"><tr>
-                    <td style="color:#a78bfa;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:150px;">Timeline</td>
-                    <td style="color:#fff;font-size:14px;font-weight:600;">
+                    <td style="color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:150px;">Timeline</td>
+                    <td style="color:#0f172a;font-size:14px;font-weight:600;">
                         ~${escapeHtml(timeline)}
                     </td>
                 </tr></table>
             </td>
         </tr>
         <tr>
-            <td style="padding:14px 0;">
+            <td style="padding:12px 0;">
                 <table width="100%" cellpadding="0" cellspacing="0"><tr>
-                    <td style="color:#a78bfa;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:150px;vertical-align:top;padding-top:2px;">Tech Stack</td>
-                    <td style="color:#fff;font-size:13px;font-weight:500;">
+                    <td style="color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:150px;vertical-align:top;padding-top:2px;">Tech Stack</td>
+                    <td style="color:#0f172a;font-size:13px;font-weight:500;">
                         ${buildTechPills(techStack)}
                     </td>
                 </tr></table>
@@ -457,17 +512,11 @@ function buildEmailHtml(data: {
             ? `
     <!-- NOTES -->
     <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
-    <tr><td style="
-        padding:18px 22px;
-        background:rgba(255,255,255,0.04);
-        border:1px solid rgba(255,255,255,0.1);
-        border-left:4px solid #6366f1;
-        border-radius:12px;
-    ">
-        <p style="margin:0 0 8px;color:#a78bfa;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">
+    <tr><td style="padding:16px 20px;background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #6366f1;border-radius:10px;">
+        <p style="margin:0 0 6px;color:#475569;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">
             Additional Notes
         </p>
-        <p style="margin:0;color:rgba(255,255,255,0.85);font-size:13.5px;line-height:1.7;white-space:pre-wrap;">
+        <p style="margin:0;color:#334155;font-size:13.5px;line-height:1.7;white-space:pre-wrap;">
             ${escapeHtml(notes)}
         </p>
     </td></tr></table>`
@@ -475,18 +524,12 @@ function buildEmailHtml(data: {
     }
 
     <!-- ACTION BOX -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
-    <tr><td style="
-        padding:22px 24px;
-        background:linear-gradient(135deg,rgba(139,92,246,0.22),rgba(99,102,241,0.18));
-        border:1px solid rgba(139,92,246,0.45);
-        border-left:5px solid #8b5cf6;
-        border-radius:14px;
-    ">
-        <p style="margin:0 0 8px;color:#c4b5fd;font-size:13.5px;font-weight:700;">📬 Action Required</p>
-        <p style="margin:0;color:rgba(255,255,255,0.8);font-size:13px;line-height:1.6;">
-            Please review this service request and respond within <strong style="color:#fff;">24–48 hours</strong>
-            via <strong style="color:#e9d5ff;">${escapeHtml(contactMethodLabel)}</strong>.
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+    <tr><td style="padding:20px 22px;background:#f8fafc;border:1px solid #e2e8f0;border-left:5px solid #7c3aed;border-radius:10px;">
+        <p style="margin:0 0 6px;color:#7c3aed;font-size:13.5px;font-weight:700;">Action Required</p>
+        <p style="margin:0;color:#475569;font-size:13px;line-height:1.6;">
+            Please review this service request and respond within <strong style="color:#0f172a;">24&ndash;48 hours</strong>
+            via <strong style="color:#7c3aed;">${escapeHtml(contactMethodLabel)}</strong>.
         </p>
     </td></tr></table>
 
@@ -494,14 +537,10 @@ function buildEmailHtml(data: {
     <table width="100%" cellpadding="0" cellspacing="0">
     <tr><td align="center">
         <table cellpadding="0" cellspacing="0"><tr>
-        <td style="
-            border-radius:12px;
-            background:linear-gradient(135deg,#8b5cf6 0%,#a855f7 50%,#6366f1 100%);
-            box-shadow:0 8px 25px rgba(139,92,246,0.5),inset 0 1px 0 rgba(255,255,255,0.2);
-        ">
+        <td style="border-radius:10px;background:#7c3aed;">
             <a href="mailto:${escapeHtml(email)}?subject=Re: Your Service Request"
-               style="display:inline-block;padding:15px 44px;color:#fff;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:0.5px;">
-                ✉ Reply to ${escapeHtml(fullName)}
+               style="display:inline-block;padding:14px 44px;color:#ffffff;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:0.5px;">
+                Reply to ${escapeHtml(fullName)}
             </a>
         </td>
         </tr></table>
@@ -512,17 +551,12 @@ function buildEmailHtml(data: {
 
 <!-- FOOTER -->
 <tr>
-<td align="center" style="
-    padding:28px 24px;
-    background:linear-gradient(180deg,#0a0520 0%,#060310 100%);
-    border-top:1px solid rgba(139,92,246,0.2);
-">
-    <div style="width:50px;height:2px;background:linear-gradient(90deg,transparent,#8b5cf6,#6366f1,transparent);margin:0 auto 16px;"></div>
-    <p style="margin:0 0 6px;color:#fff;font-size:15px;font-weight:700;letter-spacing:0.5px;">${escapeHtml(siteName)}</p>
-    <p style="margin:0 0 12px;color:#666;font-size:11.5px;line-height:1.5;">
-        © ${new Date().getFullYear()} <span style="color:#8b5cf6;font-weight:600;">${escapeHtml(siteName)}</span>. All rights reserved.
+<td align="center" style="padding:24px 24px;background:#f8fafc;border-top:1px solid #e2e8f0;">
+    <p style="margin:0 0 6px;color:#1e293b;font-size:15px;font-weight:700;letter-spacing:0.5px;">${escapeHtml(siteName)}</p>
+    <p style="margin:0 0 10px;color:#94a3b8;font-size:11.5px;line-height:1.5;">
+        &copy; ${new Date().getFullYear()} ${escapeHtml(siteName)}. All rights reserved.
     </p>
-    <p style="margin:0;color:#444;font-size:10.5px;font-style:italic;">
+    <p style="margin:0;color:#94a3b8;font-size:10.5px;">
         This is an automated message from the Service Requirement Modal.
     </p>
 </td>

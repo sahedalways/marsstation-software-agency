@@ -99,23 +99,11 @@ export async function POST(req: Request) {
         const attachmentsHtml =
             processedFiles.length > 0
                 ? `
-        <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px;">
             <tr>
-                <td style="
-                    padding:22px 24px;
-                    border-radius:14px;
-                    background: linear-gradient(135deg, rgba(115, 42, 235, 0.12), rgba(184, 0, 46, 0.08));
-                    border:1px solid rgba(115, 42, 235, 0.32);
-                ">
-                    <p style="
-                        margin:0 0 16px;
-                        color:#c084fc;
-                        font-size:12px;
-                        font-weight:700;
-                        letter-spacing:1.5px;
-                        text-transform:uppercase;
-                    ">
-                        📎 Attachments (${processedFiles.length})
+                <td style="padding:20px 22px;border-radius:10px;background:#f8fafc;border:1px solid #e2e8f0;">
+                    <p style="margin:0 0 14px;color:#475569;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">
+                        Attachments (${processedFiles.length})
                     </p>
 
                     ${imageFiles.length > 0 ? renderImageGrid(imageFiles) : ''}
@@ -137,6 +125,7 @@ export async function POST(req: Request) {
             },
         });
 
+        // ─── Send notification to company ───
         await transporter.sendMail({
             from: `"${siteName}" <${process.env.MAIL_USER}>`,
             to: process.env.CONTACT_EMAIL,
@@ -147,68 +136,66 @@ export async function POST(req: Request) {
 <!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8" /><title>New ${typeLabel} Submission</title></head>
-<body style="margin:0;padding:0;background: linear-gradient(135deg, #0a0a0a 0%, #1a0508 50%, #100520 100%); font-family: 'Segoe UI', Arial, Helvetica, sans-serif;">
+<body style="margin:0;padding:0;background-color:#f4f6f9;font-family:'Segoe UI',Arial,Helvetica,sans-serif;">
 
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;">
-<tr><td align="center" style="padding:50px 15px;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f9;">
+<tr><td align="center" style="padding:40px 15px;">
 
-<table width="620" cellpadding="0" cellspacing="0" style="max-width:620px;background:#141414;border-radius:20px;overflow:hidden;border:1px solid rgba(184, 0, 46, 0.4);box-shadow: 0 25px 70px rgba(0,0,0,0.7), 0 0 60px rgba(184, 0, 46, 0.18), 0 0 80px rgba(115, 42, 235, 0.15);">
+<table width="620" cellpadding="0" cellspacing="0" style="max-width:620px;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
 
 <!-- TOP ACCENT BAR -->
-<tr><td style="height:6px;background: linear-gradient(90deg, #4a0014 0%, #b8002e 25%, #732aeb 50%, #b8002e 75%, #4a0014 100%);padding:0;font-size:0;line-height:0;">&nbsp;</td></tr>
+<tr><td style="height:5px;background:linear-gradient(90deg, #b8002e, #732aeb);padding:0;font-size:0;line-height:0;">&nbsp;</td></tr>
 
 <!-- HEADER -->
 <tr>
-<td align="center" style="padding:50px 30px 40px;background: linear-gradient(135deg, #2a0510 0%, #1a0820 50%, #0f0420 100%);border-bottom:2px solid rgba(184, 0, 46, 0.35);">
-    <table cellpadding="0" cellspacing="0" style="margin:0 auto 28px;"><tr>
-        <td style="background:#ffffff;padding:16px 26px;border-radius:14px;box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 30px rgba(184, 0, 46, 0.45), 0 0 40px rgba(115, 42, 235, 0.35);border:2px solid rgba(184, 0, 46, 0.4);">
-            <img src="cid:site-logo" alt="${siteName}" height="44" style="display:block;height:44px;width:auto;" />
+<td align="center" style="padding:40px 30px 32px;background:#ffffff;border-bottom:1px solid #e2e8f0;">
+    <table cellpadding="0" cellspacing="0" style="margin:0 auto 24px;"><tr>
+        <td style="background:#ffffff;padding:12px 22px;border-radius:10px;border:1px solid #e2e8f0;">
+            <img src="cid:site-logo" alt="${siteName}" height="40" style="display:block;height:40px;width:auto;" />
         </td>
     </tr></table>
 
-    <table cellpadding="0" cellspacing="0" style="margin:0 auto 18px;"><tr>
-        <td style="background: linear-gradient(135deg, ${typeBadgeColor}44, rgba(115, 42, 235, 0.22));border:1px solid ${typeBadgeColor}88;padding:6px 18px;border-radius:30px;">
-            <span style="color:#ffffff;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">● NEW ${typeLabel.toUpperCase()}</span>
+    <table cellpadding="0" cellspacing="0" style="margin:0 auto 16px;"><tr>
+        <td style="background:${typeBadgeColor}12;border:1px solid ${typeBadgeColor}30;padding:5px 16px;border-radius:20px;">
+            <span style="color:${typeBadgeColor};font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">● NEW ${typeLabel.toUpperCase()}</span>
         </td>
     </tr></table>
 
-    <h1 style="color:#ffffff;font-size:28px;margin:0 0 12px;font-weight:700;letter-spacing:0.5px;text-shadow: 0 2px 12px rgba(184, 0, 46, 0.4);">
+    <h1 style="color:#1e293b;font-size:26px;margin:0 0 8px;font-weight:700;letter-spacing:-0.3px;">
         New ${typeLabel} Received
     </h1>
-    <p style="color:rgba(255,255,255,0.7);font-size:14px;margin:0;line-height:1.5;">
+    <p style="color:#64748b;font-size:14px;margin:0;line-height:1.5;">
         A new ${typeLabel.toLowerCase()} has been submitted from your website
     </p>
-    <div style="width:90px;height:3px;background: linear-gradient(90deg, transparent, #b8002e, #732aeb, #b8002e, transparent);margin:22px auto 0;border-radius:2px;"></div>
 </td>
 </tr>
 
 <!-- CONTENT -->
 <tr>
-<td style="padding:40px 40px 30px;background: linear-gradient(180deg, #141414 0%, #160a14 100%);">
+<td style="padding:32px 36px 28px;background:#ffffff;">
 
-    <table cellpadding="0" cellspacing="0" style="margin-bottom:25px;"><tr>
-        <td style="width:4px;background: linear-gradient(180deg, #b8002e, #732aeb);border-radius:2px;">&nbsp;</td>
+    <table cellpadding="0" cellspacing="0" style="margin-bottom:20px;"><tr>
+        <td style="width:4px;background:${typeBadgeColor};border-radius:2px;">&nbsp;</td>
         <td style="padding-left:12px;">
-            <p style="color:#e63956;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin:0;">Submission Details</p>
+            <p style="color:#475569;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin:0;">Submission Details</p>
         </td>
     </tr></table>
 
-    <table width="100%" cellpadding="0" cellspacing="0" style="color:#fff;font-size:15px;background: linear-gradient(135deg, rgba(184, 0, 46, 0.08), rgba(115, 42, 235, 0.06));border-radius:14px;border:1px solid rgba(184, 0, 46, 0.22);padding:8px 20px;">
-        ${detailRow('Request Type', `<span style="color:#ff8899; font-weight:700;">${typeLabel}</span>`)}
+    <table width="100%" cellpadding="0" cellspacing="0" style="color:#334155;font-size:15px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;padding:4px 20px;">
+        ${detailRow('Request Type', `<span style="color:${typeBadgeColor};font-weight:700;">${typeLabel}</span>`)}
         ${detailRow('Full Name', fullName || '-')}
-        ${detailRow('Email', `<a href="mailto:${email}" style="color:#a875ff; text-decoration:none; font-weight:600;">${email}</a>`)}
-        ${detailRow('Phone', `<a href="tel:${phone}" style="color:#ff5577; text-decoration:none; font-weight:600;">${phone}</a>`)}
+        ${detailRow('Email', `<a href="mailto:${email}" style="color:#6366f1;text-decoration:none;font-weight:600;">${email}</a>`)}
+        ${detailRow('Phone', `<a href="tel:${phone}" style="color:#b8002e;text-decoration:none;font-weight:600;">${phone}</a>`)}
         ${detailRow('Preferred Contact', contactMethodLabel)}
-
     </table>
 
     ${
         description
             ? `
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;"><tr>
-        <td style="padding:20px 22px;border-radius:12px;background: rgba(184, 0, 46, 0.08);border:1px solid rgba(184, 0, 46, 0.28);border-left:4px solid #b8002e;">
-            <p style="margin:0 0 10px;color:#e63956;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">${typeLabel} Description</p>
-            <p style="margin:0;color:rgba(255,255,255,0.88);font-size:14px;line-height:1.7;white-space:pre-wrap;">${escapeHtml(description)}</p>
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px;"><tr>
+        <td style="padding:18px 20px;border-radius:10px;background:#fef2f2;border:1px solid #fecaca;border-left:4px solid #b8002e;">
+            <p style="margin:0 0 8px;color:#b8002e;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">${typeLabel} Description</p>
+            <p style="margin:0;color:#334155;font-size:14px;line-height:1.7;white-space:pre-wrap;">${escapeHtml(description)}</p>
         </td>
     </tr></table>`
             : ''
@@ -217,22 +204,22 @@ export async function POST(req: Request) {
     ${attachmentsHtml}
 
     <!-- INFO BOX -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:30px;"><tr>
-        <td style="padding:24px 26px;border-radius:14px;background: linear-gradient(135deg, rgba(184, 0, 46, 0.22), rgba(115, 42, 235, 0.18));border:1px solid rgba(184, 0, 46, 0.4);border-left:5px solid #b8002e;box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);">
-            <p style="margin:0 0 8px;color:#ff8899;font-size:14px;font-weight:700;letter-spacing:0.5px;">📩 Action Required</p>
-            <p style="margin:0;color:rgba(255,255,255,0.8);font-size:13px;line-height:1.6;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:24px;"><tr>
+        <td style="padding:20px 22px;border-radius:10px;background:#f8fafc;border:1px solid #e2e8f0;border-left:5px solid #b8002e;">
+            <p style="margin:0 0 6px;color:#b8002e;font-size:14px;font-weight:700;">Action Required</p>
+            <p style="margin:0;color:#475569;font-size:13px;line-height:1.6;">
                 Please review this ${typeLabel.toLowerCase()} and respond within 3 working days via the customer's preferred contact method (${contactMethodLabel}).
             </p>
         </td>
     </tr></table>
 
     <!-- CTA -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:32px;"><tr>
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:28px;"><tr>
         <td align="center">
             <table cellpadding="0" cellspacing="0"><tr>
-                <td style="border-radius:12px;background: linear-gradient(135deg, #b8002e 0%, #732aeb 100%);box-shadow: 0 8px 25px rgba(184, 0, 46, 0.45), 0 8px 25px rgba(115, 42, 235, 0.35), inset 0 1px 0 rgba(255,255,255,0.2);">
-                    <a href="mailto:${email}?subject=Re: Your ${typeLabel}${orderNumber ? ` (#${orderNumber})` : ''}" style="display:inline-block;padding:15px 42px;color:#ffffff;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:1px;text-transform:uppercase;">
-                        ✉ Reply to ${fullName || 'Customer'}
+                <td style="border-radius:10px;background:#b8002e;">
+                    <a href="mailto:${email}?subject=Re: Your ${typeLabel}${orderNumber ? ` (#${orderNumber})` : ''}" style="display:inline-block;padding:14px 40px;color:#ffffff;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:0.5px;">
+                        Reply to ${fullName || 'Customer'}
                     </a>
                 </td>
             </tr></table>
@@ -244,13 +231,117 @@ export async function POST(req: Request) {
 
 <!-- FOOTER -->
 <tr>
-<td align="center" style="padding:32px 25px;background: linear-gradient(180deg, #0a0204 0%, #0f0418 100%);border-top:2px solid rgba(184, 0, 46, 0.3);">
-    <div style="width:50px;height:2px;background: linear-gradient(90deg, transparent, #b8002e, #732aeb, transparent);margin:0 auto 18px;"></div>
-    <p style="margin:0 0 8px;color:#ffffff;font-size:16px;font-weight:700;letter-spacing:1px;">${siteName}</p>
-    <p style="margin:0 0 14px;color:#888;font-size:12px;line-height:1.6;">
-        © ${new Date().getFullYear()} <span style="color:#b8002e;font-weight:600;">${siteName}</span>. All rights reserved.
+<td align="center" style="padding:24px 25px;background:#f8fafc;border-top:1px solid #e2e8f0;">
+    <p style="margin:0 0 6px;color:#1e293b;font-size:15px;font-weight:700;">${siteName}</p>
+    <p style="margin:0 0 10px;color:#94a3b8;font-size:12px;line-height:1.6;">
+        &copy; ${new Date().getFullYear()} ${siteName}. All rights reserved.
     </p>
-    <p style="margin:0;color:#555;font-size:11px;font-style:italic;">This is an automated message from your website contact form.</p>
+    <p style="margin:0;color:#94a3b8;font-size:11px;">This is an automated message from your website contact form.</p>
+</td>
+</tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>
+            `,
+        });
+
+        // ─── Send confirmation to submitter ───
+        await transporter.sendMail({
+            from: `"${siteName}" <${process.env.MAIL_USER}>`,
+            to: email,
+            subject: `We've received your ${typeLabel} - ${siteName}`,
+            attachments: [
+                {
+                    filename: 'logo.png',
+                    path: './public/images/logo.png',
+                    cid: 'site-logo',
+                },
+            ],
+            html: `
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8" /><title>${typeLabel} Received - ${siteName}</title></head>
+<body style="margin:0;padding:0;background-color:#f4f6f9;font-family:'Segoe UI',Arial,Helvetica,sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f9;">
+<tr><td align="center" style="padding:40px 15px;">
+
+<table width="620" cellpadding="0" cellspacing="0" style="max-width:620px;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;box-shadow:0 4px 24px rgba(0,0,0,0.06);">
+
+<!-- TOP ACCENT BAR -->
+<tr><td style="height:5px;background:linear-gradient(90deg, #b8002e, #732aeb);padding:0;font-size:0;line-height:0;">&nbsp;</td></tr>
+
+<!-- HEADER -->
+<tr>
+<td align="center" style="padding:40px 30px 32px;background:#ffffff;border-bottom:1px solid #e2e8f0;">
+    <table cellpadding="0" cellspacing="0" style="margin:0 auto 24px;"><tr>
+        <td style="background:#ffffff;padding:12px 22px;border-radius:10px;border:1px solid #e2e8f0;">
+            <img src="cid:site-logo" alt="${siteName}" height="40" style="display:block;height:40px;width:auto;" />
+        </td>
+    </tr></table>
+
+    <table cellpadding="0" cellspacing="0" style="margin:0 auto 16px;"><tr>
+        <td style="background:#22c55e12;border:1px solid #22c55e30;padding:5px 16px;border-radius:20px;">
+            <span style="color:#16a34a;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">CONFIRMATION</span>
+        </td>
+    </tr></table>
+
+    <h1 style="color:#1e293b;font-size:26px;margin:0 0 8px;font-weight:700;letter-spacing:-0.3px;">
+        Thank you, ${fullName || 'Customer'}!
+    </h1>
+    <p style="color:#64748b;font-size:14px;margin:0;line-height:1.5;">
+        We have received your ${typeLabel.toLowerCase()}
+    </p>
+</td>
+</tr>
+
+<!-- CONTENT -->
+<tr>
+<td style="padding:32px 36px 28px;background:#ffffff;">
+
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;"><tr>
+        <td style="padding:20px 22px;border-radius:10px;background:#f0fdf4;border:1px solid #bbf7d0;border-left:5px solid #16a34a;">
+            <p style="margin:0;color:#166534;font-size:15px;line-height:1.7;font-weight:500;">
+                Your ${typeLabel.toLowerCase()} has been submitted successfully. Our team will review it and get back to you within <strong>3 working days</strong>.
+            </p>
+        </td>
+    </tr></table>
+
+    <table cellpadding="0" cellspacing="0" style="margin-bottom:20px;"><tr>
+        <td style="width:4px;background:${typeBadgeColor};border-radius:2px;">&nbsp;</td>
+        <td style="padding-left:12px;">
+            <p style="color:#475569;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin:0;">Summary</p>
+        </td>
+    </tr></table>
+
+    <table width="100%" cellpadding="0" cellspacing="0" style="color:#334155;font-size:15px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0;padding:4px 20px;">
+        ${detailRow('Request Type', `<span style="color:${typeBadgeColor};font-weight:700;">${typeLabel}</span>`)}
+        ${detailRow('Full Name', fullName || '-')}
+        ${detailRow('Email', email)}
+        ${detailRow('Phone', phone || '-')}
+        ${detailRow('Preferred Contact', contactMethodLabel)}
+    </table>
+
+    ${
+        orderNumber
+            ? `<p style="margin:20px 0 0;color:#64748b;font-size:13px;line-height:1.5;">Reference: <strong style="color:#0f172a;">#${escapeHtml(orderNumber)}</strong></p>`
+            : ''
+    }
+
+</td>
+</tr>
+
+<!-- FOOTER -->
+<tr>
+<td align="center" style="padding:24px 25px;background:#f8fafc;border-top:1px solid #e2e8f0;">
+    <p style="margin:0 0 6px;color:#1e293b;font-size:15px;font-weight:700;">${siteName}</p>
+    <p style="margin:0 0 10px;color:#94a3b8;font-size:12px;line-height:1.6;">
+        &copy; ${new Date().getFullYear()} ${siteName}. All rights reserved.
+    </p>
+    <p style="margin:0;color:#94a3b8;font-size:11px;">This is an automated confirmation message.</p>
 </td>
 </tr>
 
@@ -277,12 +368,12 @@ export async function POST(req: Request) {
 function detailRow(label: string, value: string, isLast: boolean = false): string {
     return `
         <tr>
-            <td style="padding:18px 0; ${isLast ? '' : 'border-bottom:1px solid rgba(184, 0, 46, 0.15);'}">
+            <td style="padding:14px 0;${isLast ? '' : 'border-bottom:1px solid #e2e8f0;'}">
                 <table width="100%" cellpadding="0" cellspacing="0"><tr>
-                    <td style="color:#a8546b;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:140px;vertical-align:middle;">
+                    <td style="color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600;width:140px;vertical-align:middle;">
                         ${label}
                     </td>
-                    <td style="color:#fff;font-weight:600;font-size:14px;">
+                    <td style="color:#0f172a;font-weight:600;font-size:14px;">
                         ${value}
                     </td>
                 </tr></table>
@@ -335,8 +426,8 @@ function renderImageGrid(images: { file: File; cid?: string; sizeStr: string }[]
 function imageCell(img: { file: File; cid?: string; sizeStr: string }): string {
     return `
         <table width="100%" cellpadding="0" cellspacing="0" style="
-            background: rgba(0,0,0,0.35);
-            border:1px solid rgba(115, 42, 235, 0.3);
+            background:#ffffff;
+            border:1px solid #e2e8f0;
             border-radius:10px;
             overflow:hidden;
         ">
@@ -347,12 +438,12 @@ function imageCell(img: { file: File; cid?: string; sizeStr: string }): string {
                 </td>
             </tr>
             <tr>
-                <td style="padding:10px 12px;">
-                    <div style="color:#fff;font-size:12px;font-weight:600;word-break:break-all;line-height:1.4;">
+                <td style="padding:10px 12px;background:#fafafa;">
+                    <div style="color:#0f172a;font-size:12px;font-weight:600;word-break:break-all;line-height:1.4;">
                         ${escapeHtml(img.file.name)}
                     </div>
-                    <div style="color:rgba(255,255,255,0.5);font-size:10px;margin-top:3px;">
-                        🖼 Image • ${img.sizeStr}
+                    <div style="color:#94a3b8;font-size:10px;margin-top:3px;">
+                        Image &bull; ${img.sizeStr}
                     </div>
                 </td>
             </tr>
@@ -388,8 +479,8 @@ function renderFileChips(files: { file: File; ext: string; sizeStr: string }[]):
                 <tr>
                     <td style="padding:6px 0;">
                         <table width="100%" cellpadding="0" cellspacing="0" style="
-                            background:rgba(255,255,255,0.04);
-                            border:1px solid ${meta.color}55;
+                            background:#ffffff;
+                            border:1px solid #e2e8f0;
                             border-left:3px solid ${meta.color};
                             border-radius:10px;
                         ">
@@ -397,20 +488,20 @@ function renderFileChips(files: { file: File; ext: string; sizeStr: string }[]):
                                 <td style="padding:12px 14px;width:44px;vertical-align:middle;">
                                     <div style="
                                         width:36px;height:36px;border-radius:8px;
-                                        background:${meta.color}22;
-                                        border:1px solid ${meta.color}66;
+                                        background:${meta.color}10;
+                                        border:1px solid ${meta.color}40;
                                         color:${meta.color};
                                         font-size:18px;text-align:center;line-height:36px;
                                     ">${meta.icon}</div>
                                 </td>
                                 <td style="padding:12px 14px 12px 0;vertical-align:middle;">
-                                    <div style="color:#fff;font-size:13px;font-weight:600;word-break:break-all;line-height:1.4;">
+                                    <div style="color:#0f172a;font-size:13px;font-weight:600;word-break:break-all;line-height:1.4;">
                                         ${escapeHtml(f.file.name)}
                                     </div>
-                                    <div style="color:rgba(255,255,255,0.55);font-size:11px;margin-top:3px;">
+                                    <div style="color:#94a3b8;font-size:11px;margin-top:3px;">
                                         <span style="
                                             display:inline-block;
-                                            background:${meta.color}22;
+                                            background:${meta.color}15;
                                             color:${meta.color};
                                             padding:1px 6px;
                                             border-radius:4px;
