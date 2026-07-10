@@ -3,6 +3,7 @@
 
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
+import { useLenis } from '../../contexts/SmoothScrollContext';
 
 interface Props {
     open: boolean;
@@ -53,6 +54,7 @@ interface ContactInfo {
 const CONTACT_STEP = 8;
 
 export function ServiceRequirementModal({ open, onClose, mob }: Props) {
+    const { lenis } = useLenis();
     const [currentStep, setCurrentStep] = useState(1);
     const [services, setServices] = useState<ServiceType[]>([]);
     const [answers, setAnswers] = useState<Record<number, string[]>>({});
@@ -103,6 +105,18 @@ export function ServiceRequirementModal({ open, onClose, mob }: Props) {
             document.body.style.overflow = '';
         };
     }, [open]);
+
+    useEffect(() => {
+        if (!lenis) return;
+        if (open) {
+            lenis.stop();
+        } else {
+            lenis.start();
+        }
+        return () => {
+            lenis.start();
+        };
+    }, [open, lenis]);
 
     /* ─── Steps configuration (8 total) ─── */
     const steps: Record<number, StepConfig> = {
@@ -276,7 +290,7 @@ export function ServiceRequirementModal({ open, onClose, mob }: Props) {
                 {
                     id: 'payment',
                     title: 'Payment Integration',
-                    description: 'Stripe, PayPal, bKash, SSLCommerz.',
+                    description: 'Stripe, PayPal, Worldpay, Square, Braintree.',
                     iconBg: '#dcfce7',
                     iconColor: '#16a34a',
                     icon: <CardIcon color="#16a34a" />,
@@ -733,6 +747,7 @@ ${contact.notes || 'None'}
                     max-width: 580px;
                     max-height: 92vh;
                     overflow-y: auto;
+                    overscroll-behavior: contain;
                     background: linear-gradient(180deg, #0f0a2e 0%, #1a0f3a 50%, #2a1758 100%);
                     border: 1px solid rgba(139,92,246,0.35);
                     border-radius: 22px;
@@ -807,8 +822,8 @@ ${contact.notes || 'None'}
             `}</style>
 
             {/* ⚠ Don't close on overlay click */}
-            <div className="srm-overlay">
-                <div className="srm-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="srm-overlay" data-lenis-prevent>
+                <div className="srm-modal" onClick={(e) => e.stopPropagation()} data-lenis-prevent>
                     {/* HEADER */}
                     <div
                         style={{
