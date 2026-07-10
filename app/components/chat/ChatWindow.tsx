@@ -729,9 +729,34 @@ export const ChatWindow = ({ isOpen, onClose, onServiceRequest }: ChatWindowProp
         }
     }, []);
 
-    const handleClose = () => onClose();
+    const sendTranscript = useCallback(async () => {
+        if (!user || !messages.length) return;
+        try {
+            await fetch('/api/chat/send-transcript', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user,
+                    agent,
+                    messages: messages.map((m) => ({
+                        sender: m.sender,
+                        text: m.text,
+                        timestamp: m.timestamp,
+                    })),
+                }),
+            });
+        } catch (err) {
+            console.error('Failed to send transcript:', err);
+        }
+    }, [user, agent, messages]);
+
+    const handleClose = () => {
+        sendTranscript();
+        onClose();
+    };
 
     const confirmEndChat = () => {
+        sendTranscript();
         timeoutsRef.current.forEach(clearTimeout);
         timeoutsRef.current = [];
         clearInactivityTimer();
@@ -746,6 +771,14 @@ export const ChatWindow = ({ isOpen, onClose, onServiceRequest }: ChatWindowProp
         setShowEndConfirm(false);
         onClose();
     };
+
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            sendTranscript();
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [sendTranscript]);
 
     if (!isOpen) return null;
 
