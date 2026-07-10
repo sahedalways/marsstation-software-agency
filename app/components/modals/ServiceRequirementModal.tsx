@@ -62,6 +62,7 @@ export function ServiceRequirementModal({ open, onClose, mob }: Props) {
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [submitError, setSubmitError] = useState<string | null>(null);
+    const [showCloseConfirm, setShowCloseConfirm] = useState(false);
 
     const [contact, setContact] = useState<ContactInfo>({
         name: '',
@@ -846,7 +847,7 @@ ${contact.notes || 'None'}
                             {/* ✕ CLOSE BUTTON */}
                             <button
                                 type="button"
-                                onClick={onClose}
+                                onClick={() => setShowCloseConfirm(true)}
                                 style={{
                                     width: '30px',
                                     height: '30px',
@@ -1513,6 +1514,137 @@ ${contact.notes || 'None'}
                     )}
                 </div>
             </div>
+
+            {showCloseConfirm && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        inset: 0,
+                        background: 'rgba(0,0,0,.65)',
+                        backdropFilter: 'blur(8px)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        zIndex: 9999999,
+                        padding: '20px',
+                    }}
+                    onClick={() => setShowCloseConfirm(false)}
+                >
+                    <div
+                        onClick={(e) => e.stopPropagation()}
+                        style={{
+                            width: mob ? '90%' : '400px',
+                            padding: '35px 30px',
+                            borderRadius: '20px',
+                            textAlign: 'center',
+                            background: 'linear-gradient(145deg,#ffffff,#eef0ff)',
+                            boxShadow: '0 30px 80px rgba(90,40,200,.35)',
+                            animation: 'srmCloseConfirmScale .35s ease',
+                        }}
+                    >
+                        <div
+                            style={{
+                                width: '65px',
+                                height: '65px',
+                                margin: '0 auto 20px',
+                                borderRadius: '50%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '28px',
+                                color: '#fff',
+                                background: 'linear-gradient(135deg, #732aeb, #5a1ec8)',
+                                boxShadow: '0 10px 30px rgba(115,42,235,.35)',
+                            }}
+                        >
+                            ?
+                        </div>
+
+                        <h3
+                            style={{
+                                color: '#10162f',
+                                fontSize: mob ? '20px' : '22px',
+                                marginBottom: '10px',
+                                fontWeight: 600,
+                            }}
+                        >
+                            Close?
+                        </h3>
+
+                        <p
+                            style={{
+                                color: '#4b5563',
+                                fontSize: '14px',
+                                lineHeight: 1.6,
+                                marginBottom: '25px',
+                            }}
+                        >
+                            Are you sure you want to close? Your progress will be lost.
+                        </p>
+
+                        <div style={{ display: 'flex', gap: 10 }}>
+                            <button
+                                onClick={() => setShowCloseConfirm(false)}
+                                style={{
+                                    flex: 1,
+                                    padding: '11px 0',
+                                    borderRadius: '10px',
+                                    border: '1px solid #d1d5db',
+                                    background: '#fff',
+                                    color: '#374151',
+                                    fontSize: '14px',
+                                    fontWeight: 600,
+                                    cursor: 'pointer',
+                                    fontFamily: 'inherit',
+                                    transition: '.25s',
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.background = '#f9fafb';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.background = '#fff';
+                                }}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setShowCloseConfirm(false);
+                                    onClose();
+                                }}
+                                style={{
+                                    flex: 1,
+                                    padding: '11px 0',
+                                    borderRadius: '10px',
+                                    border: 'none',
+                                    color: '#fff',
+                                    cursor: 'pointer',
+                                    background: 'linear-gradient(135deg, #732aeb, #5a1ec8)',
+                                    fontSize: '14px',
+                                    fontWeight: 600,
+                                    fontFamily: 'inherit',
+                                    transition: '.25s',
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.transform = 'translateY(-2px)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.transform = 'translateY(0)';
+                                }}
+                            >
+                                Yes, Close
+                            </button>
+                        </div>
+                    </div>
+
+                    <style>{`
+                        @keyframes srmCloseConfirmScale {
+                            from { opacity:0; transform:scale(.85); }
+                            to { opacity:1; transform:scale(1); }
+                        }
+                    `}</style>
+                </div>
+            )}
         </>
     );
 }
