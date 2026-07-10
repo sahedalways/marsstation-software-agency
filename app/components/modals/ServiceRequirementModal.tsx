@@ -1532,7 +1532,7 @@ ${contact.notes || 'None'}
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        zIndex: 9999999,
+                        zIndex: 9999999999,
                         padding: '20px',
                     }}
                     onClick={() => setShowCloseConfirm(false)}
