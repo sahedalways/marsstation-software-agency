@@ -78,6 +78,7 @@ export function ServiceRequirementModal({ open, onClose, mob }: Props) {
 
     useEffect(() => {
         if (open) {
+            document.body.style.overflow = 'hidden';
             setCurrentStep(1);
             setServices([]);
             setAnswers({});
@@ -95,7 +96,12 @@ export function ServiceRequirementModal({ open, onClose, mob }: Props) {
                 notes: '',
             });
             setContactErrors({});
+        } else {
+            document.body.style.overflow = '';
         }
+        return () => {
+            document.body.style.overflow = '';
+        };
     }, [open]);
 
     /* ─── Steps configuration (8 total) ─── */
@@ -708,6 +714,7 @@ ${contact.notes || 'None'}
 
                         z-index: 999999999 !important;
 
+                        overflow-y: auto;
                         display: flex;
                     align-items: center;
                     justify-content: center;
