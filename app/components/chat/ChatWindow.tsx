@@ -746,6 +746,10 @@ export const ChatWindow = ({ isOpen, onClose, onServiceRequest }: ChatWindowProp
                     text: m.text,
                     timestamp: m.timestamp,
                 })),
+                conversation: conversationRef.current.map((c) => ({
+                    role: c.role,
+                    content: c.content,
+                })),
             });
             navigator.sendBeacon('/api/chat/send-transcript', new Blob([body], { type: 'application/json' }));
         } catch (err) {
