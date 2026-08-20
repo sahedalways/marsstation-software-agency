@@ -1,8 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { API_BASE } from '../lib/api';
 import { Testimonial } from '../types/testimonial';
+
+interface ApiReview {
+    id: number;
+    name: string;
+    position: string;
+    rating: number;
+    description: string;
+    status: string;
+    dp_path: string | null;
+    created_at: string;
+}
 
 export function useTestimonials() {
     const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
@@ -15,18 +26,27 @@ export function useTestimonials() {
                 setLoading(true);
                 setError(null);
 
-                const { data, error: supaError } = await supabase
-                    .from('testimonials')
-                    .select('*')
-                    .eq('is_active', true)
-                    .order('display_order', { ascending: true });
+                const res = await fetch(`${API_BASE}/reviews?per_page=50`);
+                const json = await res.json();
 
-                if (supaError) {
-                    throw supaError;
+                if (!json.success) {
+                    throw new Error(json.message || 'Failed to fetch testimonials');
                 }
 
-                if (data && data.length > 0) {
-                    setTestimonials(data);
+                const mapped: Testimonial[] = (json.data || []).map((r: ApiReview) => ({
+                    id: r.id,
+                    name: r.name,
+                    role: r.position || '',
+                    avatar: r.dp_path || '',
+                    text: r.description,
+                    rating: r.rating,
+                    is_active: r.status === 'approved',
+                    display_order: r.id,
+                    created_at: r.created_at,
+                }));
+
+                if (mapped.length > 0) {
+                    setTestimonials(mapped);
                 }
             } catch (err: any) {
                 console.error('Testimonials fetch error:', err);

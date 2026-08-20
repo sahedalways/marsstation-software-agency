@@ -1,8 +1,7 @@
-// app/api/service-request/route.ts
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { siteConfig } from '../../config/site';
-import { supabase } from '../../lib/supabase';
+import { API_BASE } from '../../lib/api';
 
 export async function POST(req: Request) {
     try {
@@ -15,12 +14,10 @@ export async function POST(req: Request) {
         const contactMethod = (formData.get('contactMethod') as string) || 'email';
         const description = (formData.get('description') as string) || '';
 
-        // ── Parse description sections ──
         const projectReqs = extractSection(description, 'PROJECT REQUIREMENTS', 'ESTIMATE');
         const estimateRaw = extractSection(description, 'ESTIMATE', 'ADDITIONAL NOTES');
         const notes = extractSection(description, 'ADDITIONAL NOTES', null);
 
-        // Parse estimate values
         const priceMatch = estimateRaw.match(/Price:\s*£([\d,]+)\s*-\s*£([\d,]+)/);
         const timelineMatch = estimateRaw.match(/Timeline:\s*~?(\d+)\s*weeks/);
         const techMatch = estimateRaw.match(/Tech Stack:\s*(.+)/);
@@ -30,7 +27,6 @@ export async function POST(req: Request) {
         const timeline = timelineMatch?.[1] ? `${timelineMatch[1]} weeks` : '—';
         const techStack = techMatch?.[1] ? techMatch[1].split(',').map((t) => t.trim()) : [];
 
-        // Parse service selections from projectReqs
         const serviceLines = projectReqs
             .split('|')
             .map((s) => s.trim())
@@ -39,27 +35,30 @@ export async function POST(req: Request) {
         const siteName = siteConfig?.name || 'Your Company';
         const contactMethodLabel = contactMethod.charAt(0).toUpperCase() + contactMethod.slice(1);
 
-        const { error: dbError } = await supabase.from('service_requests').insert([
-            {
-                full_name: fullName,
-                email,
-                phone,
-                company,
-                contact_method: contactMethod,
-                description,
+        const apiForm = new FormData();
+        apiForm.append('full_name', fullName);
+        apiForm.append('email', email);
+        if (phone) apiForm.append('phone', phone);
+        if (company && company !== 'N/A') apiForm.append('company', company);
+        apiForm.append('preferred_contact', contactMethod);
+        serviceLines.forEach((s) => apiForm.append('selected_services[]', s));
+        if (notes) apiForm.append('additional_notes', notes);
 
-                estimated_min_price: minPrice,
-                estimated_max_price: maxPrice,
-                estimated_timeline: timeline,
+        const rawAttachments = formData.getAll('attachments') as File[];
+        const validFiles = rawAttachments.filter((f): f is File => f instanceof File && f.size > 0);
+        validFiles.forEach((f) => apiForm.append('attachments', f));
 
-                services: serviceLines,
-                tech_stack: techStack,
-                additional_notes: notes,
-            },
-        ]);
-
-        if (dbError) {
-            console.error('Supabase Service Request Error:', dbError);
+        try {
+            const apiRes = await fetch(`${API_BASE}/get-services`, {
+                method: 'POST',
+                body: apiForm,
+            });
+            const apiData = await apiRes.json();
+            if (!apiData.success) {
+                console.error('Backend API service request error:', apiData.message);
+            }
+        } catch (apiErr) {
+            console.error('Backend API service request failed:', apiErr);
         }
 
         const transporter = nodemailer.createTransport({

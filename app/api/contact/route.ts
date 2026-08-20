@@ -1,8 +1,7 @@
-// app/api/contact/route.ts
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { siteConfig } from '../../config/site';
-import { supabase } from '../../lib/supabase';
+import { API_BASE } from '../../lib/api';
 
 export async function POST(req: Request) {
     try {
@@ -36,21 +35,43 @@ export async function POST(req: Request) {
             );
         }
 
-        const { error: dbError } = await supabase.from('contact_submissions').insert([
-            {
-                full_name: fullName,
-                email: email,
-                phone: phone,
-                order_number: orderNumber || null,
-                description: description,
-                request_type: requestType,
-                contact_method: contactMethod,
-                attachment_count: validFiles.length,
-            },
-        ]);
+        const apiPayload: Record<string, any> = {
+            full_name: fullName,
+            email: email,
+        };
 
-        if (dbError) {
-            console.error('Supabase DB Insert Error:', dbError);
+        if (requestType === 'complaint') {
+            apiPayload.description = description;
+            try {
+                const apiRes = await fetch(`${API_BASE}/complaints`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(apiPayload),
+                });
+                const apiData = await apiRes.json();
+                if (!apiData.success) {
+                    console.error('Backend API complaint error:', apiData.message);
+                }
+            } catch (apiErr) {
+                console.error('Backend API complaint failed:', apiErr);
+            }
+        } else {
+            apiPayload.query = description;
+            if (phone) apiPayload.phone = phone;
+            apiPayload.preferred_contact = contactMethod;
+            try {
+                const apiRes = await fetch(`${API_BASE}/queries`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(apiPayload),
+                });
+                const apiData = await apiRes.json();
+                if (!apiData.success) {
+                    console.error('Backend API query error:', apiData.message);
+                }
+            } catch (apiErr) {
+                console.error('Backend API query failed:', apiErr);
+            }
         }
 
         const processedFiles = await Promise.all(

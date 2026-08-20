@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { siteConfig } from '../../config/site';
-import { supabase } from '../../lib/supabase';
+import { API_BASE } from '../../lib/api';
 
 export async function POST(req: Request) {
     try {
@@ -11,16 +11,18 @@ export async function POST(req: Request) {
 
         const siteName = siteConfig?.name || 'Your Company';
 
-        const { error: dbError } = await supabase.from('chat_leads').insert([
-            {
-                name: name,
-                email: email,
-                agent: agent || null,
-            },
-        ]);
-
-        if (dbError) {
-            console.error('Supabase DB Insert Error:', dbError);
+        try {
+            const apiRes = await fetch(`${API_BASE}/leads`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, agent: agent || null }),
+            });
+            const apiData = await apiRes.json();
+            if (!apiData.success) {
+                console.error('Backend API lead error:', apiData.message);
+            }
+        } catch (apiErr) {
+            console.error('Backend API lead failed:', apiErr);
         }
 
         const transporter = nodemailer.createTransport({
