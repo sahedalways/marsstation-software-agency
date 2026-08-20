@@ -495,7 +495,6 @@ export function TestimonialSection({ cardsIn, mob }: Props) {
                                                             width: mob ? '60px' : '74px',
                                                             height: mob ? '60px' : '74px',
                                                             borderRadius: '50%',
-                                                            background: `url(${t.avatar}) center/cover`,
                                                             border: isActive
                                                                 ? '2px solid rgba(168,85,247,0.7)'
                                                                 : '2px solid rgba(105,62,205,0.4)',
@@ -503,8 +502,33 @@ export function TestimonialSection({ cardsIn, mob }: Props) {
                                                                 ? '0 0 20px rgba(168,85,247,0.4)'
                                                                 : 'none',
                                                             transition: 'all 0.5s ease',
+                                                            overflow: 'hidden',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            background: 'rgba(105,62,205,0.2)',
+                                                            flexShrink: 0,
                                                         }}
-                                                    />
+                                                    >
+                                                        {t.avatar ? (
+                                                            <img
+                                                                src={t.avatar}
+                                                                alt={t.name}
+                                                                onError={(e) => {
+                                                                    (e.target as HTMLImageElement).style.display = 'none';
+                                                                }}
+                                                                style={{
+                                                                    width: '100%',
+                                                                    height: '100%',
+                                                                    objectFit: 'cover',
+                                                                }}
+                                                            />
+                                                        ) : (
+                                                            <span style={{ fontSize: mob ? '22px' : '28px', color: '#c084fc', fontWeight: 700 }}>
+                                                                {t.name?.charAt(0) || '?'}
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 </div>
 
                                                 {/* Name + Role */}
