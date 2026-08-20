@@ -172,11 +172,11 @@ const FALLBACK_SERVICES: ServiceTab[] = [
 ];
 
 export function ServicesSec({ cardsIn, mob, onGetStarted }: Props) {
-    const [activeTab, setActiveTab] = useState(1);
+    const [activeTab, setActiveTab] = useState(0);
     const [selectedImg, setSelectedImg] = useState<string | null>(null);
     const { services } = useServices(FALLBACK_SERVICES);
 
-    const active = services[activeTab];
+    const active = services[activeTab] || services[0];
 
     const bottomFeatures = [
         {
