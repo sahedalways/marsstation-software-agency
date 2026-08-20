@@ -1,8 +1,8 @@
-// components/home/ServicesSec.tsx
 'use client';
 
 import { useState } from 'react';
 import { SectionHeading } from '../../common/SectionHeading';
+import { useServices, ServiceTab } from '../../../hooks/useServices';
 
 interface Props {
     cardsIn: boolean;
@@ -10,490 +10,171 @@ interface Props {
     onGetStarted?: () => void;
 }
 
-interface ServiceTab {
-    id: number;
-    title: string;
-    tech: string;
-    techColor: string;
-    icon: React.ReactNode;
-    iconColor: string;
-    description: string;
-    features: string[];
-    projects: { name: string; type: string; img: string; link: string }[];
+const ICONS: Record<string, React.ReactNode> = {
+    web: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" />
+            <line x1="8" y1="21" x2="16" y2="21" />
+            <line x1="12" y1="17" x2="12" y2="21" />
+        </svg>
+    ),
+    ecommerce: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="9" cy="21" r="1" />
+            <circle cx="20" cy="21" r="1" />
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+        </svg>
+    ),
+    ai: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z" />
+            <path d="M16 14h.01" />
+            <path d="M8 14h.01" />
+            <path d="M12 16v2" />
+            <path d="M6 10H4a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h1" />
+            <path d="M18 10h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-1" />
+            <rect x="5" y="10" width="14" height="10" rx="3" />
+        </svg>
+    ),
+    saas: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M17.5 19a4.5 4.5 0 1 0-1.36-8.79A6 6 0 0 0 6 12.5a4.5 4.5 0 0 0 0 9h11.5z" />
+        </svg>
+    ),
+    custom: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="16 18 22 12 16 6" />
+            <polyline points="8 6 2 12 8 18" />
+        </svg>
+    ),
+    bag: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <path d="M16 10a4 4 0 0 1-8 0" />
+        </svg>
+    ),
+    android: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+            <line x1="12" y1="18" x2="12.01" y2="18" />
+        </svg>
+    ),
+    ios: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.05 20.28c-.98.95-2.05.86-3.08.41-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.41C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
+        </svg>
+    ),
+    layers: (
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 17l10 5 10-5" />
+            <path d="M2 12l10 5 10-5" />
+        </svg>
+    ),
+};
+
+function getIcon(key: string): React.ReactNode {
+    return ICONS[key] || ICONS.web;
 }
+
+const FALLBACK_SERVICES: ServiceTab[] = [
+    {
+        id: 1, title: 'Business Websites', tech: 'WordPress', techColor: '#3b82f6', iconColor: '#60a5fa', iconKey: 'web',
+        description: 'We craft professional business websites that reflect your brand identity, attract clients and drive growth using modern WordPress technology.',
+        features: ['Custom WordPress Development', 'Responsive Design', 'SEO Optimized', 'Lightning Fast Performance', 'Easy Content Management', 'Premium Support'],
+        projects: [
+            { name: 'Sterling and Reeve', type: 'WordPress Site', img: '/images/Sterling%20and%20Reeve.png', link: 'https://sterlingandreeve.co.uk/' },
+            { name: 'AgencyHub', type: 'Corporate Site', img: '/images/AgencyHub.png', link: 'https://agencyhub.com/' },
+            { name: 'StartUpify', type: 'Landing Page', img: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=300&fit=crop', link: 'https://startupify.club/' },
+        ],
+    },
+    {
+        id: 2, title: 'E-Commerce Websites', tech: 'WordPress', techColor: '#3b82f6', iconColor: '#c084fc', iconKey: 'ecommerce',
+        description: 'We build powerful, secure and user-friendly e-commerce websites using WordPress and WooCommerce that help you sell more and manage everything effortlessly.',
+        features: ['Custom WooCommerce Development', 'Payment Gateway Integration', 'Product Management System', 'Shipping & Tax Configuration', 'SEO Optimized & Mobile Friendly', 'Speed Optimization'],
+        projects: [
+            { name: 'ShopLux', type: 'WooCommerce Store', img: '/images/ShopLux.png', link: 'https://shoplux-ng.netlify.app/' },
+            { name: 'FurniCasa', type: 'WooCommerce Store', img: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop', link: 'https://furnicasa.store/' },
+            { name: 'BookNest', type: 'WooCommerce Store', img: '/images/BookNest.png', link: 'https://booknest.app/' },
+        ],
+    },
+    {
+        id: 3, title: 'AI Automation', tech: 'AI / ML', techColor: '#f43f5e', iconColor: '#fb7185', iconKey: 'ai',
+        description: 'We build intelligent AI-powered automation solutions that streamline your business workflows, reduce manual tasks and boost productivity with cutting-edge machine learning technology.',
+        features: ['AI Chatbot Development', 'Workflow Automation', 'Predictive Analytics', 'Natural Language Processing', 'Custom AI Model Training', 'API & System Integration'],
+        projects: [
+            { name: 'Clip Forge AI', type: 'AI Automation', img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project40.png', link: 'https://clip-forge-ai-frontend-91gz97irp-sahed44.vercel.app/' },
+            { name: 'SmartBot', type: 'AI Chatbot', img: '/images/SmartBot-AI.png', link: 'https://play.google.com/store/apps/details?id=com.yogeshj.chatbot&pcampaignid=web_share' },
+            { name: 'DataMind', type: 'ML Platform', img: '/images/DataMind.png', link: 'https://aidata-mind.com/' },
+        ],
+    },
+    {
+        id: 4, title: 'SaaS Website', tech: 'Full Stack', techColor: '#22c55e', iconColor: '#4ade80', iconKey: 'saas',
+        description: 'Modern SaaS platforms built with cutting-edge full-stack technologies for scalability, performance, and growth.',
+        features: ['Multi-tenant Architecture', 'Subscription Management', 'Real-time Analytics', 'API Integration', 'Cloud Deployment', 'Enterprise Security'],
+        projects: [
+            { name: 'Sisfarma POS', type: 'SaaS Platform', img: '/images/Sisfarma%20POS.png', link: 'http://erp.blesslifeltd.com/' },
+            { name: 'BookingXpert', type: 'SaaS Platform', img: '/images/BookingXpert.png', link: 'https://bookingxpert.org/' },
+            { name: 'Crypto Luxor', type: 'SaaS Platform', img: '/images/Crypto%20Luxor.png', link: 'https://cryptoluxor.com/' },
+        ],
+    },
+    {
+        id: 5, title: 'Custom Website', tech: 'Full Stack', techColor: '#f97316', iconColor: '#fb923c', iconKey: 'custom',
+        description: 'Tailor-made custom web applications built from the ground up with the latest technologies to fit your unique requirements.',
+        features: ['Custom UI/UX Design', 'Modern Tech Stack (React/Next.js)', 'Scalable Backend', 'Database Architecture', 'Third-party Integrations', 'Continuous Support'],
+        projects: [
+            { name: 'AmazCart', type: 'Custom App', img: '/images/AmazCart.png', link: 'https://amazcart.ischooll.com' },
+            { name: 'Lotus PMC', type: 'Custom App', img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project37.png', link: 'https://lotus-pmc-web-frontend-mw9f8gxv0-sahed44.vercel.app/' },
+            { name: 'Kahad HR', type: 'Custom App', img: '/images/KahadHR.png', link: 'https://kahadhr.com' },
+        ],
+    },
+    {
+        id: 6, title: 'E-Commerce Solutions', tech: 'Full Stack', techColor: '#f97316', iconColor: '#fbbf24', iconKey: 'bag',
+        description: 'Enterprise-grade custom e-commerce solutions with complete control over features, integrations, and user experience.',
+        features: ['Headless Commerce', 'Multi-channel Selling', 'Inventory Management', 'Advanced Analytics', 'Multiple Payment Methods', 'Global Shipping Support'],
+        projects: [
+            { name: 'AmazCart', type: 'Custom App', img: '/images/AmazCart.png', link: 'https://amazcart.ischooll.com' },
+            { name: 'Saheds Food', type: 'Custom Store', img: '/images/Saheds%20Food.png', link: 'https://saheds-food.netlify.app/' },
+            { name: 'TrendBox', type: 'Custom Store', img: '/images/TrendBox.png', link: 'https://trendbox.co.in/' },
+        ],
+    },
+    {
+        id: 7, title: 'Android App', tech: 'Android', techColor: '#22c55e', iconColor: '#4ade80', iconKey: 'android',
+        description: 'Native Android applications built with Kotlin/Java that deliver smooth, fast and engaging user experiences.',
+        features: ['Native Kotlin/Java Development', 'Material Design UI', 'Play Store Deployment', 'Push Notifications', 'Offline Support', 'Performance Optimization'],
+        projects: [
+            { name: 'Kleancor', type: 'Android App', img: '/images/Kleancor.png', link: 'https://play.google.com/store/apps/details?id=com.kleancor.kleancorapp&pcampaignid=web_share' },
+            { name: 'Foodi - Food Delivery', type: 'Android App', img: '/images/Foodi%20-%20Food%20Delivery.png', link: 'https://play.google.com/store/apps/details?id=com.foodiBd&pcampaignid=web_share' },
+            { name: 'Taskeen', type: 'Android App', img: '/images/Taskeen.png', link: 'https://play.google.com/store/apps/details?id=taskeenaloula.realtor&pcampaignid=web_share' },
+        ],
+    },
+    {
+        id: 8, title: 'iPhone (iOS) App', tech: 'iOS', techColor: '#94a3b8', iconColor: '#cbd5e1', iconKey: 'ios',
+        description: 'Premium iOS applications built with Swift/SwiftUI for iPhone and iPad with native performance and Apple guidelines compliance.',
+        features: ['Native Swift/SwiftUI', 'Human Interface Design', 'App Store Deployment', 'iCloud Integration', 'Apple Pay Support', 'iPad Optimization'],
+        projects: [
+            { name: 'Kleancor', type: 'iOS App', img: '/images/Kleancor.png', link: 'https://play.google.com/store/apps/details?id=com.kleancor.kleancorapp&pcampaignid=web_share' },
+            { name: 'TravelLog', type: 'iOS App', img: '/images/Travelog%20-%20Travel%20Map%20Tracker.png', link: 'https://play.google.com/store/apps/details?id=com.ahnlee.jidoapp&pcampaignid=web_share' },
+            { name: 'MusicVibe', type: 'iOS App', img: '/images/Musivibe%20-%20Enjoy%20Various%20Music.png', link: 'https://play.google.com/store/apps/details?id=com.musivibe.player.allmusic&pcampaignid=web_share' },
+        ],
+    },
+    {
+        id: 9, title: 'Cross-Platform App', tech: 'Android + iPhone', techColor: '#3b82f6', iconColor: '#60a5fa', iconKey: 'layers',
+        description: 'Cross-platform mobile applications using Flutter & React Native that work seamlessly on both iOS and Android.',
+        features: ['Single Codebase', 'Flutter / React Native', 'Native Performance', 'Faster Time to Market', 'Cost Effective', 'Easy Maintenance'],
+        projects: [
+            { name: 'Kleancor', type: 'React Native', img: '/images/Kleancor.png', link: 'https://play.google.com/store/apps/details?id=com.kleancor.kleancorapp&pcampaignid=web_share' },
+            { name: 'ShopHub', type: 'React Native', img: '/images/ShopHub.png', link: 'https://play.google.com/store/apps/details?id=com.zpqv.shophub.shopper&pcampaignid=web_share' },
+            { name: 'EduLearn', type: 'React Native', img: '/images/EduLearn.png', link: 'https://play.google.com/store/apps/details?id=com.edulearn.classes.app&pcampaignid=web_share' },
+        ],
+    },
+];
 
 export function ServicesSec({ cardsIn, mob, onGetStarted }: Props) {
     const [activeTab, setActiveTab] = useState(1);
     const [selectedImg, setSelectedImg] = useState<string | null>(null);
-
-    const services: ServiceTab[] = [
-        {
-            id: 1,
-            title: 'Business Websites',
-            tech: 'WordPress',
-            techColor: '#3b82f6',
-            iconColor: '#60a5fa',
-            icon: (
-                <svg
-                    width="28"
-                    height="28"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                >
-                    <rect x="2" y="3" width="20" height="14" rx="2" />
-                    <line x1="8" y1="21" x2="16" y2="21" />
-                    <line x1="12" y1="17" x2="12" y2="21" />
-                </svg>
-            ),
-            description:
-                'We craft professional business websites that reflect your brand identity, attract clients and drive growth using modern WordPress technology.',
-            features: [
-                'Custom WordPress Development',
-                'Responsive Design',
-                'SEO Optimized',
-                'Lightning Fast Performance',
-                'Easy Content Management',
-                'Premium Support',
-            ],
-            projects: [
-                {
-                    name: 'Sterling and Reeve',
-                    type: 'WordPress Site',
-                    img: '/images/Sterling%20and%20Reeve.png',
-                    link: 'https://sterlingandreeve.co.uk/',
-                },
-                {
-                    name: 'AgencyHub',
-                    type: 'Corporate Site',
-                    img: '/images/AgencyHub.png',
-                    link: 'https://agencyhub.com/',
-                },
-                {
-                    name: 'StartUpify',
-                    type: 'Landing Page',
-                    img: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=300&fit=crop',
-                    link: 'https://startupify.club/',
-                },
-            ],
-        },
-        {
-            id: 2,
-            title: 'E-Commerce Websites',
-            tech: 'WordPress',
-            techColor: '#3b82f6',
-            iconColor: '#c084fc',
-            icon: (
-                <svg
-                    width="28"
-                    height="28"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                >
-                    <circle cx="9" cy="21" r="1" />
-                    <circle cx="20" cy="21" r="1" />
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-                </svg>
-            ),
-            description:
-                'We build powerful, secure and user-friendly e-commerce websites using WordPress and WooCommerce that help you sell more and manage everything effortlessly.',
-            features: [
-                'Custom WooCommerce Development',
-                'Payment Gateway Integration',
-                'Product Management System',
-                'Shipping & Tax Configuration',
-                'SEO Optimized & Mobile Friendly',
-                'Speed Optimization',
-            ],
-            projects: [
-                {
-                    name: 'ShopLux',
-                    type: 'WooCommerce Store',
-                    img: '/images/ShopLux.png',
-                    link: 'https://shoplux-ng.netlify.app/',
-                },
-                {
-                    name: 'FurniCasa',
-                    type: 'WooCommerce Store',
-                    img: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop',
-                    link: 'https://furnicasa.store/',
-                },
-                {
-                    name: 'BookNest',
-                    type: 'WooCommerce Store',
-                    img: '/images/BookNest.png',
-                    link: 'https://booknest.app/',
-                },
-            ],
-        },
-        {
-            id: 3,
-            title: 'AI Automation',
-            tech: 'AI / ML',
-            techColor: '#f43f5e',
-            iconColor: '#fb7185',
-            icon: (
-                <svg
-                    width="28"
-                    height="28"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                >
-                    <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z" />
-                    <path d="M16 14h.01" />
-                    <path d="M8 14h.01" />
-                    <path d="M12 16v2" />
-                    <path d="M6 10H4a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h1" />
-                    <path d="M18 10h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-1" />
-                    <rect x="5" y="10" width="14" height="10" rx="3" />
-                </svg>
-            ),
-            description:
-                'We build intelligent AI-powered automation solutions that streamline your business workflows, reduce manual tasks and boost productivity with cutting-edge machine learning technology.',
-            features: [
-                'AI Chatbot Development',
-                'Workflow Automation',
-                'Predictive Analytics',
-                'Natural Language Processing',
-                'Custom AI Model Training',
-                'API & System Integration',
-            ],
-            projects: [
-                {
-                    name: 'Clip Forge AI',
-                    type: 'AI Automation',
-                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project40.png',
-                    link: 'https://clip-forge-ai-frontend-91gz97irp-sahed44.vercel.app/',
-                },
-                {
-                    name: 'SmartBot',
-                    type: 'AI Chatbot',
-                    img: '/images/SmartBot-AI.png',
-                    link: 'https://play.google.com/store/apps/details?id=com.yogeshj.chatbot&pcampaignid=web_share',
-                },
-                {
-                    name: 'DataMind',
-                    type: 'ML Platform',
-                    img: '/images/DataMind.png',
-                    link: 'https://aidata-mind.com/',
-                },
-            ],
-        },
-        {
-            id: 4,
-            title: 'SaaS Website',
-            tech: 'Full Stack',
-            techColor: '#22c55e',
-            iconColor: '#4ade80',
-            icon: (
-                <svg
-                    width="28"
-                    height="28"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                >
-                    <path d="M17.5 19a4.5 4.5 0 1 0-1.36-8.79A6 6 0 0 0 6 12.5a4.5 4.5 0 0 0 0 9h11.5z" />
-                </svg>
-            ),
-            description:
-                'Modern SaaS platforms built with cutting-edge full-stack technologies for scalability, performance, and growth.',
-            features: [
-                'Multi-tenant Architecture',
-                'Subscription Management',
-                'Real-time Analytics',
-                'API Integration',
-                'Cloud Deployment',
-                'Enterprise Security',
-            ],
-            projects: [
-                {
-                    name: 'Sisfarma POS',
-                    type: 'SaaS Platform',
-                    img: '/images/Sisfarma%20POS.png',
-                    link: 'http://erp.blesslifeltd.com/',
-                },
-                {
-                    name: 'BookingXpert',
-                    type: 'SaaS Platform',
-                    img: '/images/BookingXpert.png',
-                    link: 'https://bookingxpert.org/',
-                },
-                {
-                    name: 'Crypto Luxor',
-                    type: 'SaaS Platform',
-                    img: '/images/Crypto%20Luxor.png',
-                    link: 'https://cryptoluxor.com/',
-                },
-            ],
-        },
-        {
-            id: 5,
-            title: 'Custom Website',
-            tech: 'Full Stack',
-            techColor: '#f97316',
-            iconColor: '#fb923c',
-            icon: (
-                <svg
-                    width="28"
-                    height="28"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                >
-                    <polyline points="16 18 22 12 16 6" />
-                    <polyline points="8 6 2 12 8 18" />
-                </svg>
-            ),
-            description:
-                'Tailor-made custom web applications built from the ground up with the latest technologies to fit your unique requirements.',
-            features: [
-                'Custom UI/UX Design',
-                'Modern Tech Stack (React/Next.js)',
-                'Scalable Backend',
-                'Database Architecture',
-                'Third-party Integrations',
-                'Continuous Support',
-            ],
-            projects: [
-                {
-                    name: 'AmazCart',
-                    type: 'Custom App',
-                    img: '/images/AmazCart.png',
-                    link: 'https://amazcart.ischooll.com',
-                },
-                {
-                    name: 'Lotus PMC',
-                    type: 'Custom App',
-                    img: 'https://lgaomkiqqxmfzlmbwzag.supabase.co/storage/v1/object/public/portfolio-images/Project37.png',
-                    link: 'https://lotus-pmc-web-frontend-mw9f8gxv0-sahed44.vercel.app/',
-                },
-                {
-                    name: 'Kahad HR',
-                    type: 'Custom App',
-                    img: '/images/KahadHR.png',
-                    link: 'https://kahadhr.com',
-                },
-            ],
-        },
-        {
-            id: 6,
-            title: 'E-Commerce Solutions',
-            tech: 'Full Stack',
-            techColor: '#f97316',
-            iconColor: '#fbbf24',
-            icon: (
-                <svg
-                    width="28"
-                    height="28"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                >
-                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                    <line x1="3" y1="6" x2="21" y2="6" />
-                    <path d="M16 10a4 4 0 0 1-8 0" />
-                </svg>
-            ),
-            description:
-                'Enterprise-grade custom e-commerce solutions with complete control over features, integrations, and user experience.',
-            features: [
-                'Headless Commerce',
-                'Multi-channel Selling',
-                'Inventory Management',
-                'Advanced Analytics',
-                'Multiple Payment Methods',
-                'Global Shipping Support',
-            ],
-            projects: [
-                {
-                    name: 'AmazCart',
-                    type: 'Custom App',
-                    img: '/images/AmazCart.png',
-                    link: 'https://amazcart.ischooll.com',
-                },
-                {
-                    name: 'Saheds Food',
-                    type: 'Custom Store',
-                    img: '/images/Saheds%20Food.png',
-                    link: 'https://saheds-food.netlify.app/',
-                },
-                {
-                    name: 'TrendBox',
-                    type: 'Custom Store',
-                    img: '/images/TrendBox.png',
-                    link: 'https://trendbox.co.in/',
-                },
-            ],
-        },
-        {
-            id: 7,
-            title: 'Android App',
-            tech: 'Android',
-            techColor: '#22c55e',
-            iconColor: '#4ade80',
-            icon: (
-                <svg
-                    width="28"
-                    height="28"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                >
-                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
-                    <line x1="12" y1="18" x2="12.01" y2="18" />
-                </svg>
-            ),
-            description:
-                'Native Android applications built with Kotlin/Java that deliver smooth, fast and engaging user experiences.',
-            features: [
-                'Native Kotlin/Java Development',
-                'Material Design UI',
-                'Play Store Deployment',
-                'Push Notifications',
-                'Offline Support',
-                'Performance Optimization',
-            ],
-            projects: [
-                {
-                    name: 'Kleancor',
-                    type: 'Android App',
-                    img: '/images/Kleancor.png',
-                    link: 'https://play.google.com/store/apps/details?id=com.kleancor.kleancorapp&pcampaignid=web_share',
-                },
-                {
-                    name: 'Foodi - Food Delivery',
-                    type: 'Android App',
-                    img: '/images/Foodi%20-%20Food%20Delivery.png',
-                    link: 'https://play.google.com/store/apps/details?id=com.foodiBd&pcampaignid=web_share',
-                },
-                {
-                    name: 'Taskeen',
-                    type: 'Android App',
-                    img: '/images/Taskeen.png',
-                    link: 'https://play.google.com/store/apps/details?id=taskeenaloula.realtor&pcampaignid=web_share',
-                },
-            ],
-        },
-        {
-            id: 8,
-            title: 'iPhone (iOS) App',
-            tech: 'iOS',
-            techColor: '#94a3b8',
-            iconColor: '#cbd5e1',
-            icon: (
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M17.05 20.28c-.98.95-2.05.86-3.08.41-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.41C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
-                </svg>
-            ),
-            description:
-                'Premium iOS applications built with Swift/SwiftUI for iPhone and iPad with native performance and Apple guidelines compliance.',
-            features: [
-                'Native Swift/SwiftUI',
-                'Human Interface Design',
-                'App Store Deployment',
-                'iCloud Integration',
-                'Apple Pay Support',
-                'iPad Optimization',
-            ],
-            projects: [
-                {
-                    name: 'Kleancor',
-                    type: 'iOS App',
-                    img: '/images/Kleancor.png',
-                    link: 'https://play.google.com/store/apps/details?id=com.kleancor.kleancorapp&pcampaignid=web_share',
-                },
-                {
-                    name: 'TravelLog',
-                    type: 'iOS App',
-                    img: '/images/Travelog%20-%20Travel%20Map%20Tracker.png',
-                    link: 'https://play.google.com/store/apps/details?id=com.ahnlee.jidoapp&pcampaignid=web_share',
-                },
-                {
-                    name: 'MusicVibe',
-                    type: 'iOS App',
-                    img: '/images/Musivibe%20-%20Enjoy%20Various%20Music.png',
-                    link: 'https://play.google.com/store/apps/details?id=com.musivibe.player.allmusic&pcampaignid=web_share',
-                },
-            ],
-        },
-        {
-            id: 9,
-            title: 'Cross-Platform App',
-            tech: 'Android + iPhone',
-            techColor: '#3b82f6',
-            iconColor: '#60a5fa',
-            icon: (
-                <svg
-                    width="28"
-                    height="28"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                >
-                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                    <path d="M2 17l10 5 10-5" />
-                    <path d="M2 12l10 5 10-5" />
-                </svg>
-            ),
-            description:
-                'Cross-platform mobile applications using Flutter & React Native that work seamlessly on both iOS and Android.',
-            features: [
-                'Single Codebase',
-                'Flutter / React Native',
-                'Native Performance',
-                'Faster Time to Market',
-                'Cost Effective',
-                'Easy Maintenance',
-            ],
-            projects: [
-                {
-                    name: 'Kleancor',
-                    type: 'React Native',
-                    img: '/images/Kleancor.png',
-                    link: 'https://play.google.com/store/apps/details?id=com.kleancor.kleancorapp&pcampaignid=web_share',
-                },
-                {
-                    name: 'ShopHub',
-                    type: 'React Native',
-                    img: '/images/ShopHub.png',
-                    link: 'https://play.google.com/store/apps/details?id=com.zpqv.shophub.shopper&pcampaignid=web_share',
-                },
-                {
-                    name: 'EduLearn',
-                    type: 'React Native',
-                    img: '/images/EduLearn.png',
-                    link: 'https://play.google.com/store/apps/details?id=com.edulearn.classes.app&pcampaignid=web_share',
-                },
-            ],
-        },
-    ];
+    const { services } = useServices(FALLBACK_SERVICES);
 
     const active = services[activeTab];
 
@@ -721,7 +402,7 @@ export function ServicesSec({ cardsIn, mob, onGetStarted }: Props) {
                                             marginTop: '4px',
                                         }}
                                     >
-                                        {svc.icon}
+                                        {getIcon(svc.iconKey)}
                                     </div>
                                     {/* Title */}
                                     <div
