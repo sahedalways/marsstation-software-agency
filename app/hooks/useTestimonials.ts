@@ -33,11 +33,13 @@ export function useTestimonials() {
                     throw new Error(json.message || 'Failed to fetch testimonials');
                 }
 
+                const storageBase = API_BASE.replace(/\/api\/?$/, '/storage');
+
                 const mapped: Testimonial[] = (json.data || []).map((r: ApiReview) => ({
                     id: r.id,
                     name: r.name,
                     role: r.position || '',
-                    avatar: r.dp_path || '',
+                    avatar: r.dp_path ? (r.dp_path.startsWith('http') ? r.dp_path : `${storageBase}/${r.dp_path}`) : '',
                     text: r.description,
                     rating: r.rating,
                     is_active: r.status === 'approved',
