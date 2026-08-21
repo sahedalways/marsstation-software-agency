@@ -50,19 +50,22 @@ interface ApiService {
 }
 
 const TYPE_META: Record<string, { tech: string; techColor: string; iconColor: string }> = {
-    website: { tech: 'WordPress', techColor: '#3b82f6', iconColor: '#60a5fa' },
+    web: { tech: 'Web Development', techColor: '#3b82f6', iconColor: '#60a5fa' },
     ecommerce: { tech: 'WordPress', techColor: '#3b82f6', iconColor: '#c084fc' },
+    uiux: { tech: 'UI/UX Design', techColor: '#f43f5e', iconColor: '#fb7185' },
+    branding: { tech: 'Branding', techColor: '#eab308', iconColor: '#facc15' },
+    marketing: { tech: 'Marketing', techColor: '#22c55e', iconColor: '#4ade80' },
     ai: { tech: 'AI / ML', techColor: '#f43f5e', iconColor: '#fb7185' },
     saas: { tech: 'Full Stack', techColor: '#22c55e', iconColor: '#4ade80' },
     custom: { tech: 'Full Stack', techColor: '#f97316', iconColor: '#fb923c' },
     android: { tech: 'Android', techColor: '#22c55e', iconColor: '#4ade80' },
     ios: { tech: 'iOS', techColor: '#94a3b8', iconColor: '#cbd5e1' },
     crossplatform: { tech: 'Android + iPhone', techColor: '#3b82f6', iconColor: '#60a5fa' },
-    mobile: { tech: 'Android + iPhone', techColor: '#3b82f6', iconColor: '#60a5fa' },
+    mobile: { tech: 'Mobile Apps', techColor: '#3b82f6', iconColor: '#60a5fa' },
 };
 
 function mapApiService(s: ApiService): ServiceTab {
-    const meta = TYPE_META[s.type] || TYPE_META.website;
+    const meta = TYPE_META[s.type] || TYPE_META.web;
     return {
         id: s.id,
         title: s.title,
@@ -78,7 +81,7 @@ function mapApiService(s: ApiService): ServiceTab {
             .sort((a, b) => a.order_index - b.order_index)
             .map((p) => ({
                 name: p.title,
-                type: p.type,
+                type: p.type ?? '',
                 img: p.picture_path || '',
                 link: p.view_link || '#',
             })),
@@ -93,13 +96,12 @@ export function useServices(fallback: ServiceTab[]) {
         async function fetchServices() {
             try {
                 setLoading(true);
-                const res = await fetch(`${API_BASE}/services?per_page=50`);
+                const res = await fetch(`${API_BASE}/services/active?per_page=50`);
                 const json = await res.json();
 
                 const data = json.data || json.data;
                 if (Array.isArray(data) && data.length > 0) {
                     const mapped = data
-                        .filter((s: ApiService) => s.is_active)
                         .sort((a: ApiService, b: ApiService) => a.order_index - b.order_index)
                         .map(mapApiService);
                     if (mapped.length > 0) {
