@@ -2,6 +2,7 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
+import { logReviewError } from '../../../lib/logReviewError';
 
 interface Props {
     mob: boolean;
@@ -77,19 +78,46 @@ export function TestimonialForm({ mob, cardsIn = true }: Props) {
             fd.append('rating', String(rating));
             if (photo) fd.append('photo', photo);
 
-            const res = await fetch('/api/testimonial', {
+            const res = await fetch('/api/testimonials', {
                 method: 'POST',
                 body: fd,
             });
-            const data = await res.json();
+
+            let data: { success?: boolean; message?: string } = {};
+            try {
+                data = await res.json();
+            } catch {
+                data = {};
+            }
 
             if (!res.ok || !data.success) {
-                throw new Error(data.message || 'Failed to submit');
+                const message = data.message || `Request failed with status ${res.status}`;
+                const submitError = new Error(message) as Error & { httpStatus?: number };
+                submitError.httpStatus = res.status;
+                throw submitError;
             }
 
             setSubmitted(true);
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Network error. Please try again.');
+            const message =
+                err instanceof Error ? err.message : 'Network error. Please try again.';
+            logReviewError({
+                source: 'review-form-section',
+                message,
+                stack: err instanceof Error ? err.stack : undefined,
+                status: err instanceof Error && 'httpStatus' in err ? (err as { httpStatus?: number }).httpStatus : undefined,
+                extra: {
+                    name: name.trim(),
+                    position: position.trim(),
+                    company: company.trim(),
+                    rating,
+                    reviewLength: text.trim().length,
+                    hasPhoto: !!photo,
+                    photoName: photo?.name || null,
+                    photoSize: photo?.size || null,
+                },
+            });
+            setError(message);
         } finally {
             setSubmitting(false);
         }

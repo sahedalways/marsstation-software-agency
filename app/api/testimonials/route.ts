@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { API_BASE } from '../../lib/api';
+import { appendErrorLog } from '../../lib/errorLogger';
 
 export async function POST(req: Request) {
     try {
@@ -10,24 +11,45 @@ export async function POST(req: Request) {
         const rating = Number(formData.get('rating')) || 5;
 
         if (!name || name.length < 2) {
+            await appendErrorLog({
+                source: '/api/testimonials',
+                message: 'Validation failed: Name is required (min 2 chars)',
+                status: 400,
+                extra: { providedNameLength: name.length },
+            });
             return NextResponse.json(
                 { success: false, message: 'Name is required (min 2 chars)' },
                 { status: 400 }
             );
         }
         if (!text || text.length < 10) {
+            await appendErrorLog({
+                source: '/api/testimonials',
+                message: `Validation failed: Review must be at least 10 characters (got ${text.length})`,
+                status: 400,
+            });
             return NextResponse.json(
                 { success: false, message: 'Review must be at least 10 characters' },
                 { status: 400 }
             );
         }
         if (text.length > 500) {
+            await appendErrorLog({
+                source: '/api/testimonials',
+                message: `Validation failed: Review must be under 500 characters (got ${text.length})`,
+                status: 400,
+            });
             return NextResponse.json(
                 { success: false, message: 'Review must be under 500 characters' },
                 { status: 400 }
             );
         }
         if (rating < 1 || rating > 5) {
+            await appendErrorLog({
+                source: '/api/testimonials',
+                message: `Validation failed: Rating must be 1-5 (got ${rating})`,
+                status: 400,
+            });
             return NextResponse.json(
                 { success: false, message: 'Rating must be 1-5' },
                 { status: 400 }
@@ -54,9 +76,20 @@ export async function POST(req: Request) {
             body: apiForm,
         });
 
-        const data = await res.json();
+        let data: { success?: boolean; message?: string } = {};
+        try {
+            data = await res.json();
+        } catch {
+            data = {};
+        }
 
         if (!data.success) {
+            await appendErrorLog({
+                source: '/api/testimonials',
+                message: `Backend API error: ${data.message || 'Failed to submit review'}`,
+                status: res.status,
+                extra: { name, rating },
+            });
             return NextResponse.json(
                 { success: false, message: data.message || 'Failed to submit review' },
                 { status: res.status }
@@ -69,6 +102,13 @@ export async function POST(req: Request) {
         });
     } catch (error) {
         console.error('Testimonial submit error:', error);
+        try {
+            await appendErrorLog({
+                source: '/api/testimonials',
+                message: error instanceof Error ? error.message : 'Unknown server error',
+                stack: error instanceof Error ? error.stack : undefined,
+            });
+        } catch {}
         return NextResponse.json(
             { success: false, message: 'Something went wrong' },
             { status: 500 }

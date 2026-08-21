@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { ToastMsgModal } from '../common/ToastMsgModal';
+import { logReviewError } from '../../lib/logReviewError';
 
 interface Props {
     open: boolean;
@@ -83,7 +84,14 @@ export function TestimonialFormModal({ open, onClose, mob }: Props) {
                 method: 'POST',
                 body: fd,
             });
-            const data = await res.json();
+
+            let data: { success?: boolean; message?: string } = {};
+            try {
+                data = await res.json();
+            } catch {
+                data = {};
+            }
+
             if (data.success) {
                 setToast({
                     type: 'success',
@@ -100,13 +108,43 @@ export function TestimonialFormModal({ open, onClose, mob }: Props) {
                 setPhoto(null);
                 setPhotoPreview(null);
             } else {
+                logReviewError({
+                    source: 'testimonial-form-modal',
+                    message: data.message || 'Submission failed',
+                    status: res.status,
+                    extra: {
+                        name: name.trim(),
+                        email: email.trim(),
+                        position: position.trim(),
+                        company: company.trim(),
+                        rating,
+                        reviewLength: text.trim().length,
+                        hasPhoto: !!photo,
+                        photoName: photo?.name || null,
+                        photoSize: photo?.size || null,
+                    },
+                });
                 setToast({
                     type: 'error',
                     title: 'Submission Failed',
                     message: data.message || 'Please try again later.',
                 });
             }
-        } catch {
+        } catch (err) {
+            logReviewError({
+                source: 'testimonial-form-modal',
+                message:
+                    err instanceof Error
+                        ? err.message
+                        : 'Unexpected error during testimonial submission',
+                stack: err instanceof Error ? err.stack : undefined,
+                extra: {
+                    name: name.trim(),
+                    rating,
+                    hasPhoto: !!photo,
+                    reviewLength: text.trim().length,
+                },
+            });
             setToast({
                 type: 'error',
                 title: 'Submission Failed',
